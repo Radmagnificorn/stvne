@@ -1,0 +1,19 @@
+{
+  "name": "stvne",
+  "version": "1.0.0",
+  "description": "Stephen Visual Novel Engine",
+  "main": "stvne",
+  "scripts": {
+    "test": "test",
+    "build": "webpack"
+  },
+  "author": "Stephen Brown",
+  "license": "ISC",
+  "dependencies": {
+    "webpack": "^3.10.0"
+  },
+  "devDependencies": {
+    "ts-loader": "^3.5.0",
+    "typescript": "^2.7.1"
+  }
+}
