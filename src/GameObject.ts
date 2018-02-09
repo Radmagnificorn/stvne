@@ -1,18 +1,25 @@
 import GameWindow from "./GameWindow";
+import {Component} from "./components/Component";
 
 class GameObject {
 
     children: GameObject[] = [];
     parent: GameObject;
     location: Vector2d;
+    private components: Component[] = [];
 
+    constructor(location: Vector2d = new Vector2d(0,0)) {
+        this.location = location;
+    }
 
     update(): void {
+        this.components.forEach(c => c.update());
         this.children.forEach(c => c.update());
-    };
+    }
     render(gameWindow: GameWindow): void {
-        this.children.forEach(c => c.render(gameWindow));
-    };
+        this.components.forEach(component => component.render(gameWindow));
+        this.children.forEach(child => child.render(gameWindow));
+    }
 
     getChildren(): GameObject[] {
         return this.children;
@@ -26,6 +33,10 @@ class GameObject {
     private setParent(parent: GameObject): GameObject {
         this.parent = parent;
         return this;
+    }
+
+    addComponent(component: Component) {
+        this.components.push(component.register(this));
     }
 
 }

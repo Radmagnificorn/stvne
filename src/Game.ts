@@ -1,16 +1,22 @@
 import GameObject, {Vector2d} from "./GameObject";
 import GameWindow from "./GameWindow";
-import TextObject from "./TextObject";
+import TextComponent from "./components/TextComponent";
+import ImageComponent from "./components/ImageComponent";
+import ResourceLoader from "./ResourceLoader";
+import AniTestComponent from "./components/AniTestComponent";
 
 class Game {
 
     gameWindow: GameWindow;
     running: boolean = false;
+    resourceLoader: ResourceLoader;
+    fps: number = 24;
 
     sceneGraph: GameObject;
 
-    constructor(gameWindow: GameWindow) {
+    constructor(gameWindow: GameWindow, resourceLoader: ResourceLoader) {
         this.gameWindow = gameWindow;
+        this.resourceLoader = resourceLoader;
     }
 
     start() {
@@ -22,10 +28,14 @@ class Game {
 
         this.sceneGraph = empty;
 
-        let level1 = new TextObject("level 1 at 0, 0")
-        let level2 = new TextObject("level 2 at 30, 30", new Vector2d(30, 30));
-        let level3 = new TextObject("level 3 at 60, 60", new Vector2d(60, 60));
-        let level22 = new TextObject("level 2 at 200, 200", new Vector2d(200, 200));
+        let level1 = new GameObject();
+        level1.addComponent(new TextComponent("level 1 at 0, 0"));
+        let level2 = new GameObject(new Vector2d(30, 30));
+        level2.addComponent(new TextComponent("level 2 at 30, 30"));
+        let level3 = new GameObject(new Vector2d(60, 60));
+
+        let level22 = new GameObject(new Vector2d(200, 200));
+        level22.addComponent(new AniTestComponent());
 
         level1.appendChild(level2);
         level1.appendChild(level22);
@@ -33,7 +43,11 @@ class Game {
 
         this.sceneGraph.appendChild(level1);
 
-        this.sceneGraph.render(this.gameWindow);
+        this.resourceLoader.loadImage("test.png").then(img => {
+            level3.addComponent(new ImageComponent(img));
+            setInterval(this.loop.bind(this), 1000/this.fps);
+        }).catch(() => alert("image not loaded"));
+
 
     }
 
@@ -46,6 +60,9 @@ class Game {
     }
 
     loop() {
+        this.sceneGraph.update();
+        this.gameWindow.clear();
+        this.sceneGraph.render(this.gameWindow);
 
     }
 
