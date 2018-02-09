@@ -4,6 +4,7 @@ import TextComponent from "./components/TextComponent";
 import ImageComponent from "./components/ImageComponent";
 import ResourceLoader from "./ResourceLoader";
 import AniTestComponent from "./components/AniTestComponent";
+import HtmlDivComponent from "./components/HtmlDivComponent";
 
 class Game {
 
@@ -28,8 +29,8 @@ class Game {
 
         this.sceneGraph = empty;
 
-        let level1 = new GameObject();
-        level1.addComponent(new TextComponent("level 1 at 0, 0"));
+        let level1 = new GameObject(new Vector2d(50, 50));
+        level1.addComponent(new HtmlDivComponent(200, 200, '#999999'));
         let level2 = new GameObject(new Vector2d(30, 30));
         level2.addComponent(new TextComponent("level 2 at 30, 30"));
         let level3 = new GameObject(new Vector2d(60, 60));

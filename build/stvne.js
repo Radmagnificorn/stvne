@@ -68,7 +68,27 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(1);
+class Component {
+    onAdd() { }
+    update() { }
+    render(gameWindow) { }
+    //called by parent when component is added
+    register(parent) {
+        this.gameObject = parent;
+        this.onAdd();
+        return this;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Component;
+
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(0);
 
 class TextComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
     constructor(text) {
@@ -86,24 +106,6 @@ class TextComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Comp
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class Component {
-    update() { }
-    render(gameWindow) { }
-    //called by parent when component is added
-    register(parent) {
-        this.gameObject = parent;
-        return this;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Component;
-
-
-
-/***/ }),
 /* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -111,7 +113,7 @@ class Component {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameWindow__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Game__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceLoader__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceLoader__ = __webpack_require__(9);
 
 
 
@@ -158,6 +160,9 @@ class GameWindow {
         this.ctx.fillStyle = 'white';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
+    addHtmlElement(html) {
+        this.rootElement.appendChild(html);
+    }
 }
 /* harmony default export */ __webpack_exports__["a"] = (GameWindow);
 
@@ -168,9 +173,11 @@ class GameWindow {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameObject__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_TextComponent__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_TextComponent__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ImageComponent__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_AniTestComponent__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_HtmlDivComponent__ = __webpack_require__(8);
+
 
 
 
@@ -187,8 +194,8 @@ class Game {
         let empty = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */]();
         empty.location = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](0, 0);
         this.sceneGraph = empty;
-        let level1 = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */]();
-        level1.addComponent(new __WEBPACK_IMPORTED_MODULE_1__components_TextComponent__["a" /* default */]("level 1 at 0, 0"));
+        let level1 = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](50, 50));
+        level1.addComponent(new __WEBPACK_IMPORTED_MODULE_4__components_HtmlDivComponent__["a" /* default */](200, 200, '#999999'));
         let level2 = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](30, 30));
         level2.addComponent(new __WEBPACK_IMPORTED_MODULE_1__components_TextComponent__["a" /* default */]("level 2 at 30, 30"));
         let level3 = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](60, 60));
@@ -266,7 +273,7 @@ class Vector2d {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(0);
 
 class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
     constructor(image) {
@@ -286,7 +293,7 @@ class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Com
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TextComponent__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TextComponent__ = __webpack_require__(1);
 
 class AniTestComponent extends __WEBPACK_IMPORTED_MODULE_0__TextComponent__["a" /* default */] {
     constructor() {
@@ -303,6 +310,48 @@ class AniTestComponent extends __WEBPACK_IMPORTED_MODULE_0__TextComponent__["a" 
 
 /***/ }),
 /* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(0);
+
+class HtmlDivComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
+    constructor(height, width, color, doc = document) {
+        super();
+        this.isAdded = false;
+        this.height = height;
+        this.width = width;
+        this.color = color;
+        this.doc = doc;
+    }
+    onAdd() {
+        this.createElement();
+    }
+    createElement() {
+        let root = this.doc.createElement('div');
+        root.style.position = 'absolute';
+        root.style.left = this.px(this.gameObject.location.x);
+        root.style.top = this.px(this.gameObject.location.y);
+        root.style.width = this.px(this.width);
+        root.style.height = this.px(this.height);
+        root.style.backgroundColor = this.color;
+        this.element = root;
+    }
+    px(num) {
+        return num.toString() + 'px';
+    }
+    render(gameWindow) {
+        if (!this.isAdded) {
+            gameWindow.addHtmlElement(this.element);
+            this.isAdded = true;
+        }
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (HtmlDivComponent);
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
