@@ -4,7 +4,7 @@ import ResourceLoader from "./ResourceLoader";
 
 let container = document.getElementById('stvne');
 
-let gameWindow = new GameWindow(720, 1080, document);
+let gameWindow = new GameWindow(720, 1280, document);
 
 gameWindow.appendToElement(container);
 

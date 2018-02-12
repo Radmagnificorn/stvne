@@ -6,7 +6,7 @@ class HtmlDivComponent extends Component {
     private height: number;
     private width: number;
     private color: string;
-    private element: HTMLDivElement;
+    protected element: HTMLDivElement;
     private isAdded: boolean = false;
     private doc: Document | undefined;
 
@@ -22,14 +22,14 @@ class HtmlDivComponent extends Component {
         this.createElement();
     }
 
-    private createElement() {
+    protected createElement() {
         let root = this.doc.createElement('div');
         root.style.position = 'absolute';
         root.style.left = this.px(this.gameObject.location.x);
         root.style.top = this.px(this.gameObject.location.y);
         root.style.width = this.px(this.width);
         root.style.height = this.px(this.height);
-        root.style.backgroundColor = this.color;
+        root.style.background = this.color;
         this.element = root;
     }
 
@@ -42,6 +42,10 @@ class HtmlDivComponent extends Component {
             gameWindow.addHtmlElement(this.element);
             this.isAdded = true;
         }
+    }
+
+    getHtmlElement(): HTMLDivElement {
+        return this.element;
     }
 
 
