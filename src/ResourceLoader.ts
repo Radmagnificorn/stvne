@@ -9,6 +9,10 @@ class ResourceLoader {
         });
 
     }
+
+    loadImages(... urls: string[]): Promise<HTMLImageElement[]> {
+        return Promise.all(urls.map(url => this.loadImage(url)));
+    }
 }
 
 export default ResourceLoader;

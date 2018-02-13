@@ -24,43 +24,39 @@ class Game {
     start() {
         this.running = true;
 
-        let empty = new GameObject();
+        let root = new GameObject();
 
-        empty.location = new Vector2d(0, 0);
+        root.location = new Vector2d(0, 0);
 
-        this.sceneGraph = empty;
+        this.sceneGraph = root;
 
         let textboxText = "This is some text. I want this text to display inside of the dialog box. It should break correctly on the words. Pneumonoultramicroscopicsilicovolcanoconiosos";
         let text2 = "And this is some more text that I want to show after the first round of text. Hopefully this works out as planned.";
 
-        let dialog = new AnimatedTextboxComponent(250, 1280, "rgba(200,200,200,0.8)");
 
+        this.resourceLoader.loadImages("test.png", "office.png").then(imgs => {
 
-        let level1 = new GameObject(new Vector2d(0, 450));
-        level1.addComponent(dialog);
-
-        dialog.getHtmlElement().addEventListener('click', (ev => {
-            dialog.writeText(text2);
-        }));
-
-        let level2 = new GameObject(new Vector2d(30, 30));
-        level2.addComponent(new TextComponent("level 2 at 30, 30"));
-        let level3 = new GameObject(new Vector2d(60, 60));
-
-        let level22 = new GameObject(new Vector2d(200, 200));
-        level22.addComponent(new AniTestComponent());
-
-        level1.appendChild(level2);
-        level1.appendChild(level22);
-        level2.appendChild(level3);
-
-        this.sceneGraph.appendChild(level1);
-
-        this.resourceLoader.loadImage("test.png").then(img => {
+            let dialogBox = new GameObject(new Vector2d(0, 450));
+            let dialog = new AnimatedTextboxComponent(250, 1280, "rgba(200,200,200,0.8)");
+            dialogBox.addComponent(dialog);
             dialog.writeText(textboxText);
-            level3.addComponent(new ImageComponent(img));
+            dialog.getHtmlElement().addEventListener('click', (ev => {
+                dialog.writeText(text2);
+            }));
+
+            let background = new GameObject(new Vector2d(0,0));
+            background.addComponent(new ImageComponent(imgs[1]));
+
+            let vampire = new GameObject(new Vector2d(60, 60));
+            vampire.addComponent(new ImageComponent(imgs[0]));
+
+            background.appendChild(vampire);
+            this.sceneGraph.appendChild(background);
+            this.sceneGraph.appendChild(dialogBox);
+
+
             setInterval(this.loop.bind(this), 1000/this.fps);
-        }).catch(() => alert("image not loaded"));
+        });
 
 
     }

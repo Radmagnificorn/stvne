@@ -5,11 +5,11 @@ class GameObject {
 
     children: GameObject[] = [];
     parent: GameObject;
-    location: Vector2d;
+    private _location: Vector2d;
     private components: Component[] = [];
 
     constructor(location: Vector2d = new Vector2d(0,0)) {
-        this.location = location;
+        this._location = location;
     }
 
     update(): void {
@@ -37,6 +37,14 @@ class GameObject {
 
     addComponent(component: Component) {
         this.components.push(component.register(this));
+    }
+
+    get location(): Vector2d {
+        return this._location;
+    }
+
+    set location(location: Vector2d) {
+        this._location = location;
     }
 
 }

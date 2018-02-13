@@ -60,433 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class Component {
-    onAdd() { }
-    update() { }
-    render(gameWindow) { }
-    //called by parent when component is added
-    register(parent) {
-        this.gameObject = parent;
-        this.onAdd();
-        return this;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Component;
-
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(0);
-
-class TextComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
-    constructor(text) {
-        super();
-        this.text = text;
-    }
-    render(gameWindow) {
-        super.render(gameWindow);
-        let ctx = gameWindow.getGraphicsContext();
-        ctx.fillStyle = 'black';
-        ctx.fillText(this.text, this.gameObject.location.x, this.gameObject.location.y);
-    }
-}
-/* harmony default export */ __webpack_exports__["a"] = (TextComponent);
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameWindow__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Game__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceLoader__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__screenconfig__ = __webpack_require__(16);
-
-
-
-
-let container = document.getElementById('stvne');
-let gameWindow = new __WEBPACK_IMPORTED_MODULE_0__GameWindow__["a" /* default */](720, 1280, document);
-Object(__WEBPACK_IMPORTED_MODULE_3__screenconfig__["a" /* default */])(gameWindow.rootElement, document, screen);
-gameWindow.appendToElement(container);
-let resourceLoader = new __WEBPACK_IMPORTED_MODULE_2__ResourceLoader__["a" /* default */]();
-let game = new __WEBPACK_IMPORTED_MODULE_1__Game__["a" /* default */](gameWindow, resourceLoader);
-game.start();
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class GameWindow {
-    constructor(height, width, doc = document) {
-        this.canvas = doc.createElement('canvas');
-        this.ctx = this.canvas.getContext("2d");
-        this.canvas.height = height;
-        this.canvas.width = width;
-        this.canvas.style.top = '0px';
-        this.canvas.style.left = '0px';
-        this.canvas.style.position = 'absolute';
-        this.rootElement = doc.createElement('div');
-        this.rootElement.style.width = width.toString() + 'px';
-        this.rootElement.style.height = height.toString() + 'px';
-        this.rootElement.style.position = 'relative';
-        this.rootElement.appendChild(this.canvas);
-    }
-    appendToElement(parent) {
-        parent.appendChild(this.rootElement);
-    }
-    drawText(text, location, font = '30px Arial') {
-        let ctx = this.canvas.getContext("2d");
-        ctx.font = font;
-        ctx.fillText(text, location.x, location.y);
-    }
-    getGraphicsContext() {
-        return this.ctx;
-    }
-    clear() {
-        this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-    addHtmlElement(html) {
-        this.rootElement.appendChild(html);
-    }
-}
-/* harmony default export */ __webpack_exports__["a"] = (GameWindow);
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameObject__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_TextComponent__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ImageComponent__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_AniTestComponent__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_AnimatedTextboxComponent__ = __webpack_require__(8);
-
-
-
-
-
-class Game {
-    constructor(gameWindow, resourceLoader) {
-        this.running = false;
-        this.fps = 24;
-        this.gameWindow = gameWindow;
-        this.resourceLoader = resourceLoader;
-    }
-    start() {
-        this.running = true;
-        let empty = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */]();
-        empty.location = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](0, 0);
-        this.sceneGraph = empty;
-        let textboxText = "This is some text. I want this text to display inside of the dialog box. It should break correctly on the words. Pneumonoultramicroscopicsilicovolcanoconiosos";
-        let text2 = "And this is some more text that I want to show after the first round of text. Hopefully this works out as planned.";
-        let dialog = new __WEBPACK_IMPORTED_MODULE_4__components_AnimatedTextboxComponent__["a" /* default */](250, 1280, "rgba(200,200,200,0.8)");
-        let level1 = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](0, 450));
-        level1.addComponent(dialog);
-        dialog.getHtmlElement().addEventListener('click', (ev => {
-            dialog.writeText(text2);
-        }));
-        let level2 = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](30, 30));
-        level2.addComponent(new __WEBPACK_IMPORTED_MODULE_1__components_TextComponent__["a" /* default */]("level 2 at 30, 30"));
-        let level3 = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](60, 60));
-        let level22 = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](200, 200));
-        level22.addComponent(new __WEBPACK_IMPORTED_MODULE_3__components_AniTestComponent__["a" /* default */]());
-        level1.appendChild(level2);
-        level1.appendChild(level22);
-        level2.appendChild(level3);
-        this.sceneGraph.appendChild(level1);
-        this.resourceLoader.loadImage("test.png").then(img => {
-            dialog.writeText(textboxText);
-            level3.addComponent(new __WEBPACK_IMPORTED_MODULE_2__components_ImageComponent__["a" /* default */](img));
-            setInterval(this.loop.bind(this), 1000 / this.fps);
-        }).catch(() => alert("image not loaded"));
-    }
-    stop() {
-    }
-    pause() {
-    }
-    loop() {
-        this.sceneGraph.update();
-        this.gameWindow.clear();
-        this.sceneGraph.render(this.gameWindow);
-    }
-}
-/* harmony default export */ __webpack_exports__["a"] = (Game);
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class GameObject {
-    constructor(location = new Vector2d(0, 0)) {
-        this.children = [];
-        this.components = [];
-        this.location = location;
-    }
-    update() {
-        this.components.forEach(c => c.update());
-        this.children.forEach(c => c.update());
-    }
-    render(gameWindow) {
-        this.components.forEach(component => component.render(gameWindow));
-        this.children.forEach(child => child.render(gameWindow));
-    }
-    getChildren() {
-        return this.children;
-    }
-    appendChild(child) {
-        child.setParent(this);
-        this.children.push(child);
-    }
-    setParent(parent) {
-        this.parent = parent;
-        return this;
-    }
-    addComponent(component) {
-        this.components.push(component.register(this));
-    }
-}
-class Vector2d {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Vector2d;
-
-/* harmony default export */ __webpack_exports__["b"] = (GameObject);
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(0);
-
-class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
-    constructor(image) {
-        super();
-        this.image = image;
-    }
-    render(gameWindow) {
-        let ctx = gameWindow.getGraphicsContext();
-        ctx.drawImage(this.image, this.gameObject.location.x, this.gameObject.location.y);
-    }
-}
-/* harmony default export */ __webpack_exports__["a"] = (ImageComponent);
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TextComponent__ = __webpack_require__(1);
-
-class AniTestComponent extends __WEBPACK_IMPORTED_MODULE_0__TextComponent__["a" /* default */] {
-    constructor() {
-        super("0");
-        this.count = 0;
-    }
-    update() {
-        this.count++;
-        this.text = this.count.toString();
-    }
-}
-/* harmony default export */ __webpack_exports__["a"] = (AniTestComponent);
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__HtmlDivComponent__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AnimatedTextboxStyle_scss__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AnimatedTextboxStyle_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__AnimatedTextboxStyle_scss__);
-
-
-class AnimatedDialogBoxComponent extends __WEBPACK_IMPORTED_MODULE_0__HtmlDivComponent__["a" /* default */] {
-    constructor(height, width, color = "#000000", doc = document) {
-        super(height, width, color, doc);
-    }
-    createStyleableText(text) {
-        return text.split(' ').map(word => this.createStyleableWord(word));
-    }
-    createStyleableWord(word) {
-        let styleableWord = document.createElement('div');
-        styleableWord.className = 'word';
-        [...word].forEach(char => {
-            let styleableLetter = document.createElement('span');
-            styleableLetter.innerText = char;
-            styleableLetter.style.visibility = 'hidden';
-            styleableWord.appendChild(styleableLetter);
-        });
-        return styleableWord;
-    }
-    createElement() {
-        super.createElement();
-        this.element.className = 'animated_dialog_box';
-    }
-    update() {
-        let letterIterator = this.letters.next();
-        if (!letterIterator.done) {
-            letterIterator.value.style.visibility = 'visible';
-        }
-    }
-    *showLetters() {
-        let words = this.element.children;
-        for (let w = 0; w < words.length; w++) {
-            for (let l = 0; l < words[w].children.length; l++) {
-                yield words[w].children[l];
-            }
-        }
-    }
-    writeText(text) {
-        if (!this.element) {
-            this.createElement();
-        }
-        this.element.innerHTML = '';
-        this.createStyleableText(text).forEach(word => this.element.appendChild(word));
-        this.letters = this.showLetters();
-    }
-}
-/* harmony default export */ __webpack_exports__["a"] = (AnimatedDialogBoxComponent);
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(0);
-
-class HtmlDivComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
-    constructor(height, width, color, doc = document) {
-        super();
-        this.isAdded = false;
-        this.height = height;
-        this.width = width;
-        this.color = color;
-        this.doc = doc;
-    }
-    onAdd() {
-        this.createElement();
-    }
-    createElement() {
-        let root = this.doc.createElement('div');
-        root.style.position = 'absolute';
-        root.style.left = this.px(this.gameObject.location.x);
-        root.style.top = this.px(this.gameObject.location.y);
-        root.style.width = this.px(this.width);
-        root.style.height = this.px(this.height);
-        root.style.background = this.color;
-        this.element = root;
-    }
-    px(num) {
-        return num.toString() + 'px';
-    }
-    render(gameWindow) {
-        if (!this.isAdded) {
-            gameWindow.addHtmlElement(this.element);
-            this.isAdded = true;
-        }
-    }
-    getHtmlElement() {
-        return this.element;
-    }
-}
-/* harmony default export */ __webpack_exports__["a"] = (HtmlDivComponent);
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(11);
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(13)(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {
-	module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./AnimatedTextboxStyle.scss", function() {
-		var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./AnimatedTextboxStyle.scss");
-
-		if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-
-		var locals = (function(a, b) {
-			var key, idx = 0;
-
-			for(key in a) {
-				if(!b || a[key] !== b[key]) return false;
-				idx++;
-			}
-
-			for(key in b) idx--;
-
-			return idx === 0;
-		}(content.locals, newContent.locals));
-
-		if(!locals) throw new Error('Aborting CSS HMR due to changed css-modules locals.');
-
-		update(newContent);
-	});
-
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(12)(false);
-// imports
-
-
-// module
-exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radius: 10px 10px 0 0; }\n  .animated_dialog_box .word {\n    font-family: Arial;\n    font-size: 35px;\n    margin: 3px;\n    display: inline-block; }\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 12 */
 /***/ (function(module, exports) {
 
 /*
@@ -568,7 +146,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 13 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -634,7 +212,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(14);
+var	fixUrls = __webpack_require__(7);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -950,7 +528,176 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 14 */
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class Component {
+    onAdd() { }
+    update() { }
+    render(gameWindow) { }
+    //called by parent when component is added
+    register(parent) {
+        this.gameObject = parent;
+        this.onAdd();
+        return this;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Component;
+
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameWindow__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Game__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceLoader__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__screenconfig__ = __webpack_require__(16);
+
+
+
+
+let container = document.getElementById('stvne');
+let gameWindow = new __WEBPACK_IMPORTED_MODULE_0__GameWindow__["a" /* default */](720, 1280, document);
+Object(__WEBPACK_IMPORTED_MODULE_3__screenconfig__["a" /* default */])(gameWindow.rootElement, document, screen);
+gameWindow.appendToElement(container);
+let resourceLoader = new __WEBPACK_IMPORTED_MODULE_2__ResourceLoader__["a" /* default */]();
+let game = new __WEBPACK_IMPORTED_MODULE_1__Game__["a" /* default */](gameWindow, resourceLoader);
+window.onresize = () => scaleScreen(gameWindow, document, screen);
+scaleScreen(gameWindow, document, screen);
+game.start();
+function scaleScreen(gameWindow, document, screen) {
+    let scale = Math.min(window.innerWidth / gameWindow.width, window.innerHeight / gameWindow.height);
+    gameWindow.rootElement.style.transform = "scale(" + scale + ")";
+}
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameWindow_scss__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameWindow_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__GameWindow_scss__);
+
+class GameWindow {
+    constructor(height, width, doc = document) {
+        this._canvas = doc.createElement('canvas');
+        this._ctx = this._canvas.getContext("2d");
+        this._canvas.height = height;
+        this._canvas.width = width;
+        this._rootElement = doc.createElement('div');
+        this._rootElement.id = 'game_window';
+        this._rootElement.style.width = width.toString() + 'px';
+        this._rootElement.style.height = height.toString() + 'px';
+        this._rootElement.appendChild(this._canvas);
+        this._height = height;
+        this._width = width;
+    }
+    get height() {
+        return this._height;
+    }
+    get width() {
+        return this._width;
+    }
+    get rootElement() {
+        return this._rootElement;
+    }
+    appendToElement(parent) {
+        parent.appendChild(this._rootElement);
+    }
+    drawText(text, location, font = '30px Arial') {
+        let ctx = this._canvas.getContext("2d");
+        ctx.font = font;
+        ctx.fillText(text, location.x, location.y);
+    }
+    getGraphicsContext() {
+        return this._ctx;
+    }
+    get ctx() {
+        return this._ctx;
+    }
+    clear() {
+        this._ctx.fillStyle = 'white';
+        this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
+    }
+    addHtmlElement(html) {
+        this._rootElement.appendChild(html);
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (GameWindow);
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(6);
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(1)(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {
+	module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/lib/loader.js!./GameWindow.scss", function() {
+		var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/sass-loader/lib/loader.js!./GameWindow.scss");
+
+		if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+
+		var locals = (function(a, b) {
+			var key, idx = 0;
+
+			for(key in a) {
+				if(!b || a[key] !== b[key]) return false;
+				idx++;
+			}
+
+			for(key in b) idx--;
+
+			return idx === 0;
+		}(content.locals, newContent.locals));
+
+		if(!locals) throw new Error('Aborting CSS HMR due to changed css-modules locals.');
+
+		update(newContent);
+	});
+
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// imports
+
+
+// module
+exports.push([module.i, "#game_window {\n  position: relative;\n  top: 0;\n  left: 0; }\n  #game_window canvas {\n    position: absolute;\n    top: 0;\n    left: 0; }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports) {
 
 
@@ -1045,6 +792,300 @@ module.exports = function (css) {
 
 
 /***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameObject__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_ImageComponent__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_AnimatedTextboxComponent__ = __webpack_require__(11);
+
+
+
+class Game {
+    constructor(gameWindow, resourceLoader) {
+        this.running = false;
+        this.fps = 24;
+        this.gameWindow = gameWindow;
+        this.resourceLoader = resourceLoader;
+    }
+    start() {
+        this.running = true;
+        let root = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */]();
+        root.location = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](0, 0);
+        this.sceneGraph = root;
+        let textboxText = "This is some text. I want this text to display inside of the dialog box. It should break correctly on the words. Pneumonoultramicroscopicsilicovolcanoconiosos";
+        let text2 = "And this is some more text that I want to show after the first round of text. Hopefully this works out as planned.";
+        this.resourceLoader.loadImages("test.png", "office.png").then(imgs => {
+            let dialogBox = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](0, 450));
+            let dialog = new __WEBPACK_IMPORTED_MODULE_2__components_AnimatedTextboxComponent__["a" /* default */](250, 1280, "rgba(200,200,200,0.8)");
+            dialogBox.addComponent(dialog);
+            dialog.writeText(textboxText);
+            dialog.getHtmlElement().addEventListener('click', (ev => {
+                dialog.writeText(text2);
+            }));
+            let background = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](0, 0));
+            background.addComponent(new __WEBPACK_IMPORTED_MODULE_1__components_ImageComponent__["a" /* default */](imgs[1]));
+            let vampire = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](60, 60));
+            vampire.addComponent(new __WEBPACK_IMPORTED_MODULE_1__components_ImageComponent__["a" /* default */](imgs[0]));
+            background.appendChild(vampire);
+            this.sceneGraph.appendChild(background);
+            this.sceneGraph.appendChild(dialogBox);
+            setInterval(this.loop.bind(this), 1000 / this.fps);
+        });
+    }
+    stop() {
+    }
+    pause() {
+    }
+    loop() {
+        this.sceneGraph.update();
+        this.gameWindow.clear();
+        this.sceneGraph.render(this.gameWindow);
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (Game);
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class GameObject {
+    constructor(location = new Vector2d(0, 0)) {
+        this.children = [];
+        this.components = [];
+        this._location = location;
+    }
+    update() {
+        this.components.forEach(c => c.update());
+        this.children.forEach(c => c.update());
+    }
+    render(gameWindow) {
+        this.components.forEach(component => component.render(gameWindow));
+        this.children.forEach(child => child.render(gameWindow));
+    }
+    getChildren() {
+        return this.children;
+    }
+    appendChild(child) {
+        child.setParent(this);
+        this.children.push(child);
+    }
+    setParent(parent) {
+        this.parent = parent;
+        return this;
+    }
+    addComponent(component) {
+        this.components.push(component.register(this));
+    }
+    get location() {
+        return this._location;
+    }
+    set location(location) {
+        this._location = location;
+    }
+}
+class Vector2d {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Vector2d;
+
+/* harmony default export */ __webpack_exports__["b"] = (GameObject);
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(2);
+
+class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
+    constructor(image) {
+        super();
+        this.image = image;
+    }
+    render(gameWindow) {
+        let ctx = gameWindow.getGraphicsContext();
+        ctx.drawImage(this.image, this.gameObject.location.x, this.gameObject.location.y);
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (ImageComponent);
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__HtmlDivComponent__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AnimatedTextboxStyle_scss__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AnimatedTextboxStyle_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__AnimatedTextboxStyle_scss__);
+
+
+class AnimatedDialogBoxComponent extends __WEBPACK_IMPORTED_MODULE_0__HtmlDivComponent__["a" /* default */] {
+    constructor(height, width, color = "#000000", doc = document) {
+        super(height, width, color, doc);
+    }
+    createStyleableText(text) {
+        return text.split(' ').map(word => this.createStyleableWord(word));
+    }
+    createStyleableWord(word) {
+        let styleableWord = document.createElement('div');
+        styleableWord.className = 'word';
+        [...word].forEach(char => {
+            let styleableLetter = document.createElement('span');
+            styleableLetter.innerText = char;
+            styleableLetter.style.visibility = 'hidden';
+            styleableWord.appendChild(styleableLetter);
+        });
+        return styleableWord;
+    }
+    createElement() {
+        super.createElement();
+        this.element.className = 'animated_dialog_box';
+    }
+    update() {
+        let letterIterator = this.letters.next();
+        if (!letterIterator.done) {
+            letterIterator.value.style.visibility = 'visible';
+        }
+    }
+    *showLetters() {
+        let words = this.element.children;
+        for (let w = 0; w < words.length; w++) {
+            for (let l = 0; l < words[w].children.length; l++) {
+                yield words[w].children[l];
+            }
+        }
+    }
+    writeText(text) {
+        if (!this.element) {
+            this.createElement();
+        }
+        this.element.innerHTML = '';
+        this.createStyleableText(text).forEach(word => this.element.appendChild(word));
+        this.letters = this.showLetters();
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (AnimatedDialogBoxComponent);
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(2);
+
+class HtmlDivComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
+    constructor(height, width, color, doc = document) {
+        super();
+        this.isAdded = false;
+        this.height = height;
+        this.width = width;
+        this.color = color;
+        this.doc = doc;
+    }
+    onAdd() {
+        this.createElement();
+    }
+    createElement() {
+        let root = this.doc.createElement('div');
+        root.style.position = 'absolute';
+        root.style.left = this.px(this.gameObject.location.x);
+        root.style.top = this.px(this.gameObject.location.y);
+        root.style.width = this.px(this.width);
+        root.style.height = this.px(this.height);
+        root.style.background = this.color;
+        this.element = root;
+    }
+    px(num) {
+        return num.toString() + 'px';
+    }
+    render(gameWindow) {
+        if (!this.isAdded) {
+            gameWindow.addHtmlElement(this.element);
+            this.isAdded = true;
+        }
+    }
+    getHtmlElement() {
+        return this.element;
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (HtmlDivComponent);
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(14);
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(1)(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {
+	module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./AnimatedTextboxStyle.scss", function() {
+		var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./AnimatedTextboxStyle.scss");
+
+		if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+
+		var locals = (function(a, b) {
+			var key, idx = 0;
+
+			for(key in a) {
+				if(!b || a[key] !== b[key]) return false;
+				idx++;
+			}
+
+			for(key in b) idx--;
+
+			return idx === 0;
+		}(content.locals, newContent.locals));
+
+		if(!locals) throw new Error('Aborting CSS HMR due to changed css-modules locals.');
+
+		update(newContent);
+	});
+
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// imports
+
+
+// module
+exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radius: 10px 10px 0 0; }\n  .animated_dialog_box .word {\n    font-family: Arial;\n    font-size: 35px;\n    margin: 3px;\n    display: inline-block; }\n", ""]);
+
+// exports
+
+
+/***/ }),
 /* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1058,6 +1099,9 @@ class ResourceLoader {
             img.src = url;
         });
     }
+    loadImages(...urls) {
+        return Promise.all(urls.map(url => this.loadImage(url)));
+    }
 }
 /* harmony default export */ __webpack_exports__["a"] = (ResourceLoader);
 
@@ -1070,6 +1114,8 @@ class ResourceLoader {
 /* harmony export (immutable) */ __webpack_exports__["a"] = screenConfig;
 function screenConfig(rootElement, document, screen) {
     //do some backup stuff if app manifest isn't supported
+
+
 }
 
 /***/ })
