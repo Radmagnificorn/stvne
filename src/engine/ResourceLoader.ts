@@ -1,5 +1,5 @@
 class ResourceLoader {
-    loadImage(url: string): Promise<HTMLImageElement> {
+    static loadImage(url: string): Promise<HTMLImageElement> {
         let img = new Image();
 
         return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -10,7 +10,7 @@ class ResourceLoader {
 
     }
 
-    loadImages(... urls: string[]): Promise<HTMLImageElement[]> {
+    static loadImages(... urls: string[]): Promise<HTMLImageElement[]> {
         return Promise.all(urls.map(url => this.loadImage(url)));
     }
 }

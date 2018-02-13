@@ -1,12 +1,10 @@
-import GameWindow from "./GameWindow";
-import Game from "./Game";
-import ResourceLoader from "./ResourceLoader";
-import screenConfig from "./screenconfig";
+import GameWindow from "./engine/GameWindow";
+import Game from "./testgame/Game";
+import ResourceLoader from "./engine/ResourceLoader";
 
 let container = document.getElementById('stvne');
 
 let gameWindow = new GameWindow(720, 1280, document);
-screenConfig(gameWindow.rootElement, document, screen);
 
 gameWindow.appendToElement(container);
 
