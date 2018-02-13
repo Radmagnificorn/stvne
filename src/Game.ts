@@ -37,7 +37,7 @@ class Game {
         this.resourceLoader.loadImages("test.png", "office.png").then(imgs => {
 
             let dialogBox = new GameObject(new Vector2d(0, 450));
-            let dialog = new AnimatedTextboxComponent(250, 1280, "rgba(200,200,200,0.8)");
+            let dialog = new AnimatedTextboxComponent();
             dialogBox.addComponent(dialog);
             dialog.writeText(textboxText);
             dialog.getHtmlElement().addEventListener('click', (ev => {

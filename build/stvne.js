@@ -691,7 +691,7 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, "#game_window {\n  position: relative;\n  top: 0;\n  left: 0; }\n  #game_window canvas {\n    position: absolute;\n    top: 0;\n    left: 0; }\n", ""]);
+exports.push([module.i, "body {\n  margin: 0;\n  padding: 0; }\n  body #stvne #game_window {\n    position: relative;\n    top: 0;\n    left: 0;\n    margin: 0;\n    transform-origin: top left; }\n    body #stvne #game_window canvas {\n      position: absolute;\n      top: 0;\n      left: 0; }\n", ""]);
 
 // exports
 
@@ -818,7 +818,7 @@ class Game {
         let text2 = "And this is some more text that I want to show after the first round of text. Hopefully this works out as planned.";
         this.resourceLoader.loadImages("test.png", "office.png").then(imgs => {
             let dialogBox = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* Vector2d */](0, 450));
-            let dialog = new __WEBPACK_IMPORTED_MODULE_2__components_AnimatedTextboxComponent__["a" /* default */](250, 1280, "rgba(200,200,200,0.8)");
+            let dialog = new __WEBPACK_IMPORTED_MODULE_2__components_AnimatedTextboxComponent__["a" /* default */]();
             dialogBox.addComponent(dialog);
             dialog.writeText(textboxText);
             dialog.getHtmlElement().addEventListener('click', (ev => {
@@ -929,8 +929,8 @@ class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Com
 
 
 class AnimatedDialogBoxComponent extends __WEBPACK_IMPORTED_MODULE_0__HtmlDivComponent__["a" /* default */] {
-    constructor(height, width, color = "#000000", doc = document) {
-        super(height, width, color, doc);
+    constructor(id = '', doc = document) {
+        super(id, doc);
     }
     createStyleableText(text) {
         return text.split(' ').map(word => this.createStyleableWord(word));
@@ -984,12 +984,9 @@ class AnimatedDialogBoxComponent extends __WEBPACK_IMPORTED_MODULE_0__HtmlDivCom
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(2);
 
 class HtmlDivComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
-    constructor(height, width, color, doc = document) {
+    constructor(className, doc = document) {
         super();
         this.isAdded = false;
-        this.height = height;
-        this.width = width;
-        this.color = color;
         this.doc = doc;
     }
     onAdd() {
@@ -1000,9 +997,6 @@ class HtmlDivComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* C
         root.style.position = 'absolute';
         root.style.left = this.px(this.gameObject.location.x);
         root.style.top = this.px(this.gameObject.location.y);
-        root.style.width = this.px(this.width);
-        root.style.height = this.px(this.height);
-        root.style.background = this.color;
         this.element = root;
     }
     px(num) {
@@ -1080,7 +1074,7 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radius: 10px 10px 0 0; }\n  .animated_dialog_box .word {\n    font-family: Arial;\n    font-size: 35px;\n    margin: 3px;\n    display: inline-block; }\n", ""]);
+exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radius: 20px 20px 0 0;\n  position: absolute;\n  top: 450px;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background: rgba(0, 0, 0, 0.7);\n  border: 3px solid #ffffff; }\n  .animated_dialog_box .word {\n    font-family: Arial;\n    font-size: 40px;\n    color: #ffffff;\n    margin: 0 5px 0 5px;\n    display: inline-block; }\n", ""]);
 
 // exports
 

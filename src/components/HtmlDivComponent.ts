@@ -3,18 +3,12 @@ import GameWindow from "../GameWindow";
 
 class HtmlDivComponent extends Component {
 
-    private height: number;
-    private width: number;
-    private color: string;
     protected element: HTMLDivElement;
     private isAdded: boolean = false;
     private doc: Document | undefined;
 
-    constructor(height: number, width: number, color: string, doc: Document = document) {
+    constructor(className: string, doc: Document = document) {
         super();
-        this.height = height;
-        this.width = width;
-        this.color = color;
         this.doc = doc;
     }
 
@@ -27,9 +21,6 @@ class HtmlDivComponent extends Component {
         root.style.position = 'absolute';
         root.style.left = this.px(this.gameObject.location.x);
         root.style.top = this.px(this.gameObject.location.y);
-        root.style.width = this.px(this.width);
-        root.style.height = this.px(this.height);
-        root.style.background = this.color;
         this.element = root;
     }
 

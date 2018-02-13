@@ -5,8 +5,8 @@ class AnimatedDialogBoxComponent extends HtmlDivComponent {
 
     private letters: Iterator<HTMLSpanElement>;
 
-    constructor(height: number, width: number, color: string = "#000000",  doc: Document = document) {
-        super(height, width, color, doc);
+    constructor(id: string = '', doc: Document = document) {
+        super(id, doc);
     }
 
     private createStyleableText(text: string): HTMLDivElement[] {
