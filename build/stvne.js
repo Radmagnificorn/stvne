@@ -114,11 +114,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameWindow__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Game__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceLoader__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__screenconfig__ = __webpack_require__(16);
+
 
 
 
 let container = document.getElementById('stvne');
 let gameWindow = new __WEBPACK_IMPORTED_MODULE_0__GameWindow__["a" /* default */](720, 1280, document);
+Object(__WEBPACK_IMPORTED_MODULE_3__screenconfig__["a" /* default */])(gameWindow.rootElement, document, screen);
 gameWindow.appendToElement(container);
 let resourceLoader = new __WEBPACK_IMPORTED_MODULE_2__ResourceLoader__["a" /* default */]();
 let game = new __WEBPACK_IMPORTED_MODULE_1__Game__["a" /* default */](gameWindow, resourceLoader);
@@ -1058,6 +1061,16 @@ class ResourceLoader {
 }
 /* harmony default export */ __webpack_exports__["a"] = (ResourceLoader);
 
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = screenConfig;
+function screenConfig(rootElement, document, screen) {
+    //do some backup stuff if app manifest isn't supported
+}
 
 /***/ })
 /******/ ]);
