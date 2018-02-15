@@ -29,7 +29,7 @@ class AnimatedDialogBoxComponent extends HtmlDivComponent {
 
     createElement() {
         super.createElement();
-        this.element.className = 'animated_dialog_box';
+        this._element.className = 'animated_dialog_box';
     }
 
     update() {
@@ -40,7 +40,7 @@ class AnimatedDialogBoxComponent extends HtmlDivComponent {
     }
 
     private *showLetters(): Iterator<HTMLSpanElement> {
-        let words = this.element.children;
+        let words = this._element.children;
         for (let w = 0; w < words.length; w++) {
             for(let l = 0; l < words[w].children.length; l++) {
                 yield <HTMLSpanElement>words[w].children[l];
@@ -50,11 +50,11 @@ class AnimatedDialogBoxComponent extends HtmlDivComponent {
 
 
     writeText(text: string) {
-        if (!this.element) {
+        if (!this._element) {
             this.createElement();
         }
-        this.element.innerHTML = '';
-        this.createStyleableText(text).forEach(word => this.element.appendChild(word));
+        this._element.innerHTML = '';
+        this.createStyleableText(text).forEach(word => this._element.appendChild(word));
         this.letters = this.showLetters();
     }
 }

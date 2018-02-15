@@ -3,7 +3,7 @@ import GameWindow from "../GameWindow";
 
 class HtmlDivComponent extends Component {
 
-    protected element: HTMLDivElement;
+    protected _element: HTMLDivElement;
     private isAdded: boolean = false;
     private doc: Document | undefined;
 
@@ -21,7 +21,7 @@ class HtmlDivComponent extends Component {
         root.style.position = 'absolute';
         root.style.left = this.px(this.gameObject.location.x);
         root.style.top = this.px(this.gameObject.location.y);
-        this.element = root;
+        this._element = root;
     }
 
     private px(num: number): string {
@@ -30,13 +30,13 @@ class HtmlDivComponent extends Component {
 
     render(gameWindow: GameWindow) {
         if (!this.isAdded) {
-            gameWindow.addHtmlElement(this.element);
+            gameWindow.addHtmlElement(this._element);
             this.isAdded = true;
         }
     }
 
-    getHtmlElement(): HTMLDivElement {
-        return this.element;
+    get element(): HTMLDivElement {
+        return this._element;
     }
 
 

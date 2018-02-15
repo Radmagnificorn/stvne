@@ -23,7 +23,7 @@ class StartArea extends Area {
         let dialog = new AnimatedTextboxComponent();
         dialogBox.addComponent(dialog);
         dialog.writeText(textboxText);
-        dialog.getHtmlElement().addEventListener('click', (ev => {
+        dialog.element.addEventListener('click', (ev => {
             dialog.writeText(text2);
         }));
 
