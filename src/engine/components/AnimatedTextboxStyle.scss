@@ -10,6 +10,15 @@
     background: rgba(0, 0, 0, 0.7);
     border: 3px solid #ffffff;
 
+    &.visible {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s;
+
     .word {
         font-family: Arial;
         font-size: 40px;

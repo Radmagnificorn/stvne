@@ -7,20 +7,22 @@ class HtmlDivComponent extends Component {
     private isAdded: boolean = false;
     private doc: Document | undefined;
 
-    constructor(className: string, doc: Document = document) {
+    constructor(id: string, doc: Document = document) {
         super();
         this.doc = doc;
+        this.createElement(id);
     }
 
     onAdd() {
-        this.createElement();
+        this.element.style.left = this.px(this.gameObject.location.x);
+        this.element.style.top = this.px(this.gameObject.location.y);
     }
 
-    protected createElement() {
+    protected createElement(id: string) {
         let root = this.doc.createElement('div');
+        root.id = id;
+        root.className = 'game_object';
         root.style.position = 'absolute';
-        root.style.left = this.px(this.gameObject.location.x);
-        root.style.top = this.px(this.gameObject.location.y);
         this._element = root;
     }
 

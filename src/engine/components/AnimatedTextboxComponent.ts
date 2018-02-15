@@ -4,9 +4,11 @@ import "./AnimatedTextboxStyle.scss";
 class AnimatedDialogBoxComponent extends HtmlDivComponent {
 
     private letters: Iterator<HTMLSpanElement>;
+    private isVisible: boolean = false;
 
     constructor(id: string = '', doc: Document = document) {
         super(id, doc);
+        this._element.classList.add('animated_dialog_box');
     }
 
     private createStyleableText(text: string): HTMLDivElement[] {
@@ -27,15 +29,12 @@ class AnimatedDialogBoxComponent extends HtmlDivComponent {
         return styleableWord;
     }
 
-    createElement() {
-        super.createElement();
-        this._element.className = 'animated_dialog_box';
-    }
-
     update() {
-        let letterIterator = this.letters.next();
-        if (!letterIterator.done) {
-            letterIterator.value.style.visibility = 'visible';
+        if (this.isVisible) {
+            let letterIterator = this.letters.next();
+            if (!letterIterator.done) {
+                letterIterator.value.style.visibility = 'visible';
+            }
         }
     }
 
@@ -48,14 +47,21 @@ class AnimatedDialogBoxComponent extends HtmlDivComponent {
         }
     }
 
+    private showDialog() {
+        this.isVisible = true;
+        this.element.classList.add('visible');
+    }
+
+    private hideDialog() {
+        this.isVisible = false;
+        this.element.classList.remove('visible');
+    }
 
     writeText(text: string) {
-        if (!this._element) {
-            this.createElement();
-        }
         this._element.innerHTML = '';
         this.createStyleableText(text).forEach(word => this._element.appendChild(word));
         this.letters = this.showLetters();
+        this.showDialog();
     }
 }
 

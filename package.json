@@ -4,20 +4,20 @@
   "description": "Stephen Visual Novel Engine",
   "main": "stvne",
   "scripts": {
-    "test": "test",
+    "test": "jest",
     "build": "webpack"
   },
   "author": "Stephen Brown",
   "license": "ISC",
-  "dependencies": {
-    "webpack": "^3.10.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "css-loader": "^0.28.9",
+    "jest": "^22.3.0",
     "node-sass": "^4.7.2",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.20.1",
     "ts-loader": "^3.5.0",
-    "typescript": "^2.7.1"
+    "typescript": "^2.7.1",
+    "webpack": "^3.11.0"
   }
 }

@@ -4,6 +4,8 @@ import AnimatedTextboxComponent from "../engine/components/AnimatedTextboxCompon
 import {Vector2d} from "../engine/GameObject";
 import GameObject from "../engine/GameObject";
 import ResourceLoader from "../engine/ResourceLoader";
+import HtmlDivComponent from "../engine/components/HtmlDivComponent";
+import HtmlImageComponent from "../engine/components/HtmlImageComponent";
 
 class StartArea extends Area {
 
@@ -22,16 +24,21 @@ class StartArea extends Area {
         let dialogBox = new GameObject(new Vector2d(0, 450));
         let dialog = new AnimatedTextboxComponent();
         dialogBox.addComponent(dialog);
-        dialog.writeText(textboxText);
+        //dialog.writeText(textboxText);
         dialog.element.addEventListener('click', (ev => {
             dialog.writeText(text2);
         }));
 
         let background = new GameObject(new Vector2d(0,0));
-        background.addComponent(new ImageComponent(imgs[1]));
+        background.addComponent(new HtmlImageComponent('office',imgs[1]));
 
-        let vampire = new GameObject(new Vector2d(60, 60));
-        vampire.addComponent(new ImageComponent(imgs[0]));
+        //vampire
+        let vampire = new GameObject(new Vector2d(286, 60));
+        let vampImageComponent = new HtmlImageComponent('vampire', imgs[0]);
+        vampire.addComponent(vampImageComponent);
+        vampImageComponent.element.addEventListener('click', (e) => {
+            dialog.writeText("Hello, I am a vampire. Welcome to my study. As you can see, I have many books");
+        });
 
         background.appendChild(vampire);
         this.sceneGraph.appendChild(background);
