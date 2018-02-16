@@ -1,12 +1,6 @@
-import GameObject, {Vector2d} from "../engine/GameObject";
 import GameWindow from "../engine/GameWindow";
-import TextComponent from "../engine/components/TextComponent";
-import ImageComponent from "../engine/components/ImageComponent";
 import ResourceLoader from "../engine/ResourceLoader";
-import AniTestComponent from "../engine/components/AniTestComponent";
-import HtmlDivComponent from "../engine/components/HtmlDivComponent";
-import AnimatedTextboxComponent from "../engine/components/AnimatedTextboxComponent";
-import Area from "../engine/Area";
+import Scene from "../engine/Scene";
 import StartArea from "./StartArea";
 
 class Game {
@@ -15,7 +9,7 @@ class Game {
     running: boolean = false;
     resourceLoader: ResourceLoader;
     fps: number = 24;
-    currentArea: Area;
+    currentArea: Scene;
 
     constructor(gameWindow: GameWindow, resourceLoader: ResourceLoader) {
         this.gameWindow = gameWindow;
@@ -29,7 +23,7 @@ class Game {
         this.currentArea = startArea;
 
         startArea.loadResources().then(() => {
-            setInterval(this.loop.bind(this), 1000 / this.fps);
+            this.gameWindow.setScene(startArea);
         });
 
 
@@ -44,12 +38,6 @@ class Game {
 
     }
 
-    loop() {
-        this.currentArea.update();
-        this.gameWindow.clear();
-        this.currentArea.render(this.gameWindow);
-
-    }
 
 }
 

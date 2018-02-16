@@ -1,19 +1,37 @@
 import {Component} from "./Component";
-import GameWindow from "../GameWindow";
 
 class ImageComponent extends Component {
 
-    image: HTMLImageElement;
+    private _image: HTMLImageElement;
+    private _fitImage: boolean;
 
-    constructor(image: HTMLImageElement) {
+    constructor(image: HTMLImageElement, fitImage = false) {
         super();
-        this.image = image;
+        this._image = image;
+        this._fitImage = fitImage;
     }
 
-    render(gameWindow: GameWindow) {
-        let ctx = gameWindow.getGraphicsContext();
-        ctx.drawImage(this.image, this.gameObject.location.x, this.gameObject.location.y);
+    onAdd() {
+        let goElement = this.gameObject.element;
+        goElement.style.backgroundImage = "url('" + this._image.src + "')";
+        if (this._fitImage) {
+            this.gameObject.height = this.image.height;
+            this.gameObject.width = this.image.width;
+        }
     }
+
+    get image(): HTMLImageElement {
+        return this._image;
+    }
+
+    set image(image: HTMLImageElement) {
+        this._image = image;
+    }
+
+    get name(): string {
+        return "image";
+    }
+
 
 }
 

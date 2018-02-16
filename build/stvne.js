@@ -65,57 +65,6 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class GameObject {
-    constructor(location = new Vector2d(0, 0)) {
-        this.children = [];
-        this.components = [];
-        this._location = location;
-    }
-    update() {
-        this.components.forEach(c => c.update());
-        this.children.forEach(c => c.update());
-    }
-    render(gameWindow) {
-        this.components.forEach(component => component.render(gameWindow));
-        this.children.forEach(child => child.render(gameWindow));
-    }
-    getChildren() {
-        return this.children;
-    }
-    appendChild(child) {
-        child.setParent(this);
-        this.children.push(child);
-    }
-    setParent(parent) {
-        this.parent = parent;
-        return this;
-    }
-    addComponent(component) {
-        this.components.push(component.register(this));
-    }
-    get location() {
-        return this._location;
-    }
-    set location(location) {
-        this._location = location;
-    }
-}
-class Vector2d {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Vector2d;
-
-/* harmony default export */ __webpack_exports__["b"] = (GameObject);
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports) {
 
 /*
@@ -197,7 +146,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -579,44 +528,92 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(14);
-
-class HtmlDivComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
-    constructor(id, doc = document) {
-        super();
-        this.isAdded = false;
-        this.doc = doc;
-        this.createElement(id);
+class GameObject {
+    constructor(x = 0, y = 0) {
+        this.children = [];
+        this._components = {};
+        this._element = document.createElement('div');
+        this._element.style.position = 'absolute';
+        this.location = new Vector2d(x, y);
     }
-    onAdd() {
-        this.element.style.left = this.px(this.gameObject.location.x);
-        this.element.style.top = this.px(this.gameObject.location.y);
+    getChildren() {
+        return this.children;
     }
-    createElement(id) {
-        let root = this.doc.createElement('div');
-        root.id = id;
-        root.className = 'game_object';
-        root.style.position = 'absolute';
-        this._element = root;
+    appendChild(child) {
+        child.setParent(this);
+        this.children.push(child);
     }
-    px(num) {
-        return num.toString() + 'px';
+    setParent(parent) {
+        this.parent = parent;
+        return this;
     }
-    render(gameWindow) {
-        if (!this.isAdded) {
-            gameWindow.addHtmlElement(this._element);
-            this.isAdded = true;
-        }
+    addComponent(component) {
+        this._components[component.name] = component.register(this);
+    }
+    get components() {
+        return this._components;
+    }
+    get location() {
+        return new Vector2d(parseInt(this._element.style.left, 10), parseInt(this._element.style.top, 10));
+    }
+    set location(location) {
+        this._element.style.top = location.y + 'px';
+        this._element.style.left = location.x + 'px';
+    }
+    get height() {
+        return parseInt(this._element.style.height, 10);
+    }
+    set height(height) {
+        this._element.style.height = height + 'px';
+    }
+    get width() {
+        return parseInt(this._element.style.width, 10);
+    }
+    set width(width) {
+        this._element.style.width = width + 'px';
     }
     get element() {
         return this._element;
     }
+    generateElement() {
+        this._element.innerHTML = '';
+        this.children.forEach(child => {
+            this._element.appendChild(child.generateElement());
+        });
+        return this._element;
+    }
 }
-/* harmony default export */ __webpack_exports__["a"] = (HtmlDivComponent);
+class Vector2d {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+/* unused harmony export Vector2d */
+
+/* harmony default export */ __webpack_exports__["a"] = (GameObject);
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class Component {
+    onAdd() { }
+    //called by parent when component is added
+    register(parent) {
+        this.gameObject = parent;
+        this.onAdd();
+        return this;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Component;
+
 
 
 /***/ }),
@@ -654,7 +651,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 let container = document.getElementById('stvne');
 let gameWindow = new __WEBPACK_IMPORTED_MODULE_0__engine_GameWindow__["a" /* default */](720, 1280, document);
-gameWindow.appendToElement(container);
+container.appendChild(gameWindow.rootElement);
 let resourceLoader = new __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__["a" /* default */]();
 let game = new __WEBPACK_IMPORTED_MODULE_1__testgame_Game__["a" /* default */](gameWindow, resourceLoader);
 window.onresize = () => scaleScreen(gameWindow, document, screen);
@@ -676,15 +673,10 @@ function scaleScreen(gameWindow, document, screen) {
 
 class GameWindow {
     constructor(height, width, doc = document) {
-        this._canvas = doc.createElement('canvas');
-        this._ctx = this._canvas.getContext("2d");
-        this._canvas.height = height;
-        this._canvas.width = width;
         this._rootElement = doc.createElement('div');
         this._rootElement.id = 'game_window';
         this._rootElement.style.width = width.toString() + 'px';
         this._rootElement.style.height = height.toString() + 'px';
-        this._rootElement.appendChild(this._canvas);
         this._height = height;
         this._width = width;
     }
@@ -697,26 +689,9 @@ class GameWindow {
     get rootElement() {
         return this._rootElement;
     }
-    appendToElement(parent) {
-        parent.appendChild(this._rootElement);
-    }
-    drawText(text, location, font = '30px Arial') {
-        let ctx = this._canvas.getContext("2d");
-        ctx.font = font;
-        ctx.fillText(text, location.x, location.y);
-    }
-    getGraphicsContext() {
-        return this._ctx;
-    }
-    get ctx() {
-        return this._ctx;
-    }
-    clear() {
-        this._ctx.fillStyle = 'white';
-        this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
-    }
-    addHtmlElement(html) {
-        this._rootElement.appendChild(html);
+    setScene(scene) {
+        this._rootElement.innerHTML = '';
+        this._rootElement.appendChild(scene.sceneGraph.generateElement());
     }
 }
 /* harmony default export */ __webpack_exports__["a"] = (GameWindow);
@@ -741,7 +716,7 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(2)(content, options);
+var update = __webpack_require__(1)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
@@ -776,7 +751,7 @@ if(false) {
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(0)(false);
 // imports
 
 
@@ -900,17 +875,12 @@ class Game {
         let startArea = new __WEBPACK_IMPORTED_MODULE_0__StartArea__["a" /* default */]();
         this.currentArea = startArea;
         startArea.loadResources().then(() => {
-            setInterval(this.loop.bind(this), 1000 / this.fps);
+            this.gameWindow.setScene(startArea);
         });
     }
     stop() {
     }
     pause() {
-    }
-    loop() {
-        this.currentArea.update();
-        this.gameWindow.clear();
-        this.currentArea.render(this.gameWindow);
     }
 }
 /* harmony default export */ __webpack_exports__["a"] = (Game);
@@ -921,39 +891,49 @@ class Game {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_Area__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__engine_components_AnimatedTextboxComponent__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_Scene__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__engine_components_DialogComponent__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_ResourceLoader__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__engine_components_HtmlImageComponent__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__engine_components_ImageComponent__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__engine_ActionEvents__ = __webpack_require__(18);
 
 
 
 
 
 
-class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* default */] {
+class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Scene__["a" /* default */] {
     constructor() {
         super();
     }
     buildScene(imgs) {
-        let textboxText = "This is some text. I want this text to display inside of the dialog box. It should break correctly on the words. Pneumonoultramicroscopicsilicovolcanoconiosos";
-        let text2 = "And this is some more text that I want to show after the first round of text. Hopefully this works out as planned.";
-        let dialogBox = new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* Vector2d */](0, 450));
-        let dialog = new __WEBPACK_IMPORTED_MODULE_1__engine_components_AnimatedTextboxComponent__["a" /* default */]();
-        dialogBox.addComponent(dialog);
-        //dialog.writeText(textboxText);
-        dialog.element.addEventListener('click', (ev => {
-            dialog.writeText(text2);
-        }));
-        let background = new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* Vector2d */](0, 0));
-        background.addComponent(new __WEBPACK_IMPORTED_MODULE_4__engine_components_HtmlImageComponent__["a" /* default */]('office', imgs[1]));
+        let dialogBox = new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* default */](0, 450);
+        dialogBox.addComponent(new __WEBPACK_IMPORTED_MODULE_1__engine_components_DialogComponent__["a" /* default */]());
+        let dialog = dialogBox.components['dialog'];
+        let background = new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* default */](0, 0);
+        background.addComponent(new __WEBPACK_IMPORTED_MODULE_4__engine_components_ImageComponent__["a" /* default */](imgs[1], true));
         //vampire
-        let vampire = new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["b" /* default */](new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* Vector2d */](286, 60));
-        let vampImageComponent = new __WEBPACK_IMPORTED_MODULE_4__engine_components_HtmlImageComponent__["a" /* default */]('vampire', imgs[0]);
+        let vampire = new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* default */](286, 60);
+        let vampImageComponent = new __WEBPACK_IMPORTED_MODULE_4__engine_components_ImageComponent__["a" /* default */](imgs[0], true);
         vampire.addComponent(vampImageComponent);
-        vampImageComponent.element.addEventListener('click', (e) => {
-            dialog.writeText("Hello, I am a vampire. Welcome to my study. As you can see, I have many books");
+        vampire.element.addEventListener('click', (e) => {
+            dialog.writeText("Hello, I am a vampire. Welcome to my study. As you can see, I have many books")
+                .then(() => __WEBPACK_IMPORTED_MODULE_5__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox.element))
+                .then(() => dialog.writeText("and not just any books..."))
+                .then(() => __WEBPACK_IMPORTED_MODULE_5__engine_ActionEvents__["a" /* default */].pause(1000))
+                .then(() => dialog.writeText("good books.", false))
+                .then(() => __WEBPACK_IMPORTED_MODULE_5__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox.element))
+                .then(() => dialog.writeText("do you like to read books?"))
+                .then(() => dialog.writeOptions(["Yes", "No"], false))
+                .then((response) => {
+                if (response === "Yes") {
+                    dialog.writeText("Yes, I thought you might");
+                }
+                else {
+                    dialog.writeText("Oh, well that's ok...");
+                }
+            });
         });
         background.appendChild(vampire);
         this.sceneGraph.appendChild(background);
@@ -976,17 +956,11 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameObject__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameObject__ = __webpack_require__(2);
 
-class Area {
-    constructor(rootObject = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */]()) {
+class Scene {
+    constructor(rootObject = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* default */]()) {
         this.sceneGraph = rootObject;
-    }
-    update() {
-        this._sceneGraph.update();
-    }
-    render(gameWindow) {
-        this._sceneGraph.render(gameWindow);
     }
     get sceneGraph() {
         return this._sceneGraph;
@@ -998,7 +972,7 @@ class Area {
         return Promise.resolve();
     }
 }
-/* harmony default export */ __webpack_exports__["a"] = (Area);
+/* harmony default export */ __webpack_exports__["a"] = (Scene);
 
 
 /***/ }),
@@ -1006,16 +980,23 @@ class Area {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__HtmlDivComponent__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AnimatedTextboxStyle_scss__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AnimatedTextboxStyle_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__AnimatedTextboxStyle_scss__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__DialogStyle_scss__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__DialogStyle_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__DialogStyle_scss__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__AnimationTimer__ = __webpack_require__(16);
 
 
-class AnimatedDialogBoxComponent extends __WEBPACK_IMPORTED_MODULE_0__HtmlDivComponent__["a" /* default */] {
-    constructor(id = '', doc = document) {
-        super(id, doc);
+
+class DialogComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
+    constructor() {
+        super();
         this.isVisible = false;
-        this._element.classList.add('animated_dialog_box');
+        this._running = false;
+        this._timer = new __WEBPACK_IMPORTED_MODULE_2__AnimationTimer__["a" /* default */](this.update.bind(this), 30);
+    }
+    onAdd() {
+        let element = this.gameObject.element;
+        element.classList.add('animated_dialog_box');
     }
     createStyleableText(text) {
         return text.split(' ').map(word => this.createStyleableWord(word));
@@ -1037,10 +1018,14 @@ class AnimatedDialogBoxComponent extends __WEBPACK_IMPORTED_MODULE_0__HtmlDivCom
             if (!letterIterator.done) {
                 letterIterator.value.style.visibility = 'visible';
             }
+            else {
+                this.sendFinishedNotification();
+                this._timer.stop();
+            }
         }
     }
     *showLetters() {
-        let words = this._element.children;
+        let words = this.gameObject.element.children;
         for (let w = 0; w < words.length; w++) {
             for (let l = 0; l < words[w].children.length; l++) {
                 yield words[w].children[l];
@@ -1049,48 +1034,49 @@ class AnimatedDialogBoxComponent extends __WEBPACK_IMPORTED_MODULE_0__HtmlDivCom
     }
     showDialog() {
         this.isVisible = true;
-        this.element.classList.add('visible');
+        this.gameObject.element.classList.add('visible');
     }
     hideDialog() {
         this.isVisible = false;
-        this.element.classList.remove('visible');
+        this.gameObject.element.classList.remove('visible');
     }
-    writeText(text) {
-        this._element.innerHTML = '';
-        this.createStyleableText(text).forEach(word => this._element.appendChild(word));
+    writeText(text, clearBox = true) {
+        if (clearBox) {
+            this.gameObject.element.innerHTML = '';
+        }
+        this.createStyleableText(text).forEach(word => this.gameObject.element.appendChild(word));
         this.letters = this.showLetters();
         this.showDialog();
+        this._timer.start();
+        return new Promise(resolve => { this.sendFinishedNotification = resolve; });
+    }
+    writeOptions(options, clearBox = true) {
+        return new Promise(resolve => {
+            options.forEach(option => {
+                let button = document.createElement('div');
+                button.innerText = option;
+                button.classList.add('dialog_option');
+                this.gameObject.element.appendChild(button);
+                button.addEventListener('click', ev => {
+                    resolve(option);
+                });
+            });
+            this.writeText('', clearBox);
+        });
+    }
+    get name() {
+        return "dialog";
     }
 }
-/* harmony default export */ __webpack_exports__["a"] = (AnimatedDialogBoxComponent);
+/* harmony default export */ __webpack_exports__["a"] = (DialogComponent);
 
 
 /***/ }),
 /* 14 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class Component {
-    onAdd() { }
-    update() { }
-    render(gameWindow) { }
-    //called by parent when component is added
-    register(parent) {
-        this.gameObject = parent;
-        this.onAdd();
-        return this;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Component;
-
-
-
-/***/ }),
-/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(16);
+var content = __webpack_require__(15);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -1104,13 +1090,13 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(2)(content, options);
+var update = __webpack_require__(1)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
 if(false) {
-	module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/sass-loader/lib/loader.js!./AnimatedTextboxStyle.scss", function() {
-		var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/sass-loader/lib/loader.js!./AnimatedTextboxStyle.scss");
+	module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/sass-loader/lib/loader.js!./DialogStyle.scss", function() {
+		var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/sass-loader/lib/loader.js!./DialogStyle.scss");
 
 		if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 
@@ -1136,17 +1122,37 @@ if(false) {
 }
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(0)(false);
 // imports
 
 
 // module
-exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radius: 20px 20px 0 0;\n  position: absolute;\n  top: 450px;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background: rgba(0, 0, 0, 0.7);\n  border: 3px solid #ffffff;\n  visibility: hidden;\n  opacity: 0;\n  transition: visibility 0s, opacity 0.5s; }\n  .animated_dialog_box.visible {\n    visibility: visible;\n    opacity: 1; }\n  .animated_dialog_box .word {\n    font-family: Arial;\n    font-size: 40px;\n    color: #ffffff;\n    margin: 0 5px 0 5px;\n    display: inline-block; }\n", ""]);
+exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radius: 20px 20px 0 0;\n  position: absolute;\n  top: 450px;\n  left: 0;\n  height: 225px;\n  width: 1235px;\n  background: rgba(0, 0, 0, 0.7);\n  border: 3px solid #ffffff;\n  visibility: hidden;\n  opacity: 0;\n  transition: visibility 0s, opacity 0.5s; }\n  .animated_dialog_box.visible {\n    visibility: visible;\n    opacity: 1; }\n  .animated_dialog_box .word {\n    font-family: Arial;\n    font-size: 40px;\n    color: #ffffff;\n    margin: 0 5px 0 5px;\n    display: inline-block; }\n  .animated_dialog_box .dialog_option {\n    height: 40px;\n    width: 1200px;\n    border: 2px solid #ffffff;\n    font-size: 30px;\n    text-align: center;\n    font-weight: bold;\n    color: #ffffff;\n    margin: 5px auto; }\n", ""]);
 
 // exports
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class AnimationTimer {
+    constructor(action, fps) {
+        this._action = action;
+        this._fps = fps;
+    }
+    start() {
+        this._timerId = setInterval(this._action, 1000 / this._fps);
+    }
+    stop() {
+        clearInterval(this._timerId);
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (AnimationTimer);
 
 
 /***/ }),
@@ -1154,23 +1160,58 @@ exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radi
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__HtmlDivComponent__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(3);
 
-class HtmlImageComponent extends __WEBPACK_IMPORTED_MODULE_0__HtmlDivComponent__["a" /* default */] {
-    constructor(id, image, height = -1, width = -1) {
-        super(id);
-        this.element.style.backgroundImage = "url('" + image.src + "')";
-        if (height < 0 || width < 0) {
-            this.element.style.height = image.height + 'px';
-            this.element.style.width = image.width + 'px';
-        }
-        else {
-            this.element.style.height = height + 'px';
-            this.element.style.width = width + 'px';
+class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
+    constructor(image, fitImage = false) {
+        super();
+        this._image = image;
+        this._fitImage = fitImage;
+    }
+    onAdd() {
+        let goElement = this.gameObject.element;
+        goElement.style.backgroundImage = "url('" + this._image.src + "')";
+        if (this._fitImage) {
+            this.gameObject.height = this.image.height;
+            this.gameObject.width = this.image.width;
         }
     }
+    get image() {
+        return this._image;
+    }
+    set image(image) {
+        this._image = image;
+    }
+    get name() {
+        return "image";
+    }
 }
-/* harmony default export */ __webpack_exports__["a"] = (HtmlImageComponent);
+/* harmony default export */ __webpack_exports__["a"] = (ImageComponent);
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class ActionEvents {
+    static pause(time) {
+        return new Promise(resolve => {
+            setTimeout(resolve, time);
+        });
+    }
+    static waitForClick(element) {
+        // wait for a click, then have the listener remove itself
+        return new Promise(resolve => {
+            let listener = (e) => {
+                resolve();
+                element.removeEventListener('click', listener);
+            };
+            element.addEventListener('click', listener);
+        });
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (ActionEvents);
 
 
 /***/ })

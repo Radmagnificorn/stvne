@@ -6,7 +6,7 @@ let container = document.getElementById('stvne');
 
 let gameWindow = new GameWindow(720, 1280, document);
 
-gameWindow.appendToElement(container);
+container.appendChild(gameWindow.rootElement);
 
 let resourceLoader = new ResourceLoader();
 

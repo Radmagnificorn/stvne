@@ -5,8 +5,8 @@
     position: absolute;
     top: 450px;
     left: 0;
-    right: 0;
-    bottom: 0;
+    height: 225px;
+    width: 1235px;
     background: rgba(0, 0, 0, 0.7);
     border: 3px solid #ffffff;
 
@@ -25,5 +25,16 @@
         color: #ffffff;
         margin: 0 5px 0 5px;
         display: inline-block;
+    }
+
+    .dialog_option {
+        height: 40px;
+        width: 1200px;
+        border: 2px solid #ffffff;
+        font-size: 30px;
+        text-align: center;
+        font-weight: bold;
+        color: #ffffff;
+        margin: 5px auto;
     }
 }

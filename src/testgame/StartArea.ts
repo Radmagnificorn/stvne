@@ -1,44 +1,47 @@
-import Area from "../engine/Area";
-import ImageComponent from "../engine/components/ImageComponent";
-import AnimatedTextboxComponent from "../engine/components/AnimatedTextboxComponent";
-import {Vector2d} from "../engine/GameObject";
+import Scene from "../engine/Scene";
+import AnimatedTextboxComponent, {default as DialogComponent} from "../engine/components/DialogComponent";
 import GameObject from "../engine/GameObject";
 import ResourceLoader from "../engine/ResourceLoader";
-import HtmlDivComponent from "../engine/components/HtmlDivComponent";
-import HtmlImageComponent from "../engine/components/HtmlImageComponent";
+import ImageComponent from "../engine/components/ImageComponent";
+import ActionEvents from "../engine/ActionEvents";
 
-class StartArea extends Area {
+class StartArea extends Scene {
 
     constructor() {
         super();
-
-
-
     }
 
     buildScene(imgs: HTMLImageElement[]) {
-        let textboxText = "This is some text. I want this text to display inside of the dialog box. It should break correctly on the words. Pneumonoultramicroscopicsilicovolcanoconiosos";
-        let text2 = "And this is some more text that I want to show after the first round of text. Hopefully this works out as planned.";
 
+        let dialogBox = new GameObject(0, 450);
+        dialogBox.addComponent(new AnimatedTextboxComponent());
+        let dialog = <DialogComponent>dialogBox.components['dialog'];
 
-        let dialogBox = new GameObject(new Vector2d(0, 450));
-        let dialog = new AnimatedTextboxComponent();
-        dialogBox.addComponent(dialog);
-        //dialog.writeText(textboxText);
-        dialog.element.addEventListener('click', (ev => {
-            dialog.writeText(text2);
-        }));
-
-        let background = new GameObject(new Vector2d(0,0));
-        background.addComponent(new HtmlImageComponent('office',imgs[1]));
+        let background = new GameObject(0,0);
+        background.addComponent(new ImageComponent(imgs[1], true));
 
         //vampire
-        let vampire = new GameObject(new Vector2d(286, 60));
-        let vampImageComponent = new HtmlImageComponent('vampire', imgs[0]);
+        let vampire = new GameObject(286, 60);
+        let vampImageComponent = new ImageComponent(imgs[0], true);
         vampire.addComponent(vampImageComponent);
-        vampImageComponent.element.addEventListener('click', (e) => {
-            dialog.writeText("Hello, I am a vampire. Welcome to my study. As you can see, I have many books");
+        vampire.element.addEventListener('click', (e) => {
+            dialog.writeText("Hello, I am a vampire. Welcome to my study. As you can see, I have many books")
+                .then(() => ActionEvents.waitForClick(dialogBox.element))
+                .then(() => dialog.writeText("and not just any books..."))
+                .then(() => ActionEvents.pause(1000))
+                .then(() => dialog.writeText("good books.", false))
+                .then(() => ActionEvents.waitForClick(dialogBox.element))
+                .then(() => dialog.writeText("do you like to read books?"))
+                .then(() => dialog.writeOptions(["Yes", "No"], false))
+                .then((response) => {
+                    if (response === "Yes") {
+                        dialog.writeText("Yes, I thought you might");
+                    } else {
+                        dialog.writeText("Oh, well that's ok...");
+                    }
+                })
         });
+
 
         background.appendChild(vampire);
         this.sceneGraph.appendChild(background);
@@ -56,5 +59,7 @@ class StartArea extends Area {
 
 
 }
+
+
 
 export default StartArea;

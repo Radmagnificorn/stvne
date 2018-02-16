@@ -6,13 +6,13 @@ export abstract class Component {
 
     onAdd(): void {}
 
-    update(): void {}
-    render(gameWindow: GameWindow): void {}
-
     //called by parent when component is added
     register(parent: GameObject): Component {
         this.gameObject = parent;
         this.onAdd();
         return this;
     }
+
+    name: string;
 }
+

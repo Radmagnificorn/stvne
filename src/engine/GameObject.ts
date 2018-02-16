@@ -5,20 +5,13 @@ class GameObject {
 
     children: GameObject[] = [];
     parent: GameObject;
-    private _location: Vector2d;
-    private components: Component[] = [];
+    private _components: {[key: string]: Component} = {};
+    private _element: HTMLElement;
 
-    constructor(location: Vector2d = new Vector2d(0,0)) {
-        this._location = location;
-    }
-
-    update(): void {
-        this.components.forEach(c => c.update());
-        this.children.forEach(c => c.update());
-    }
-    render(gameWindow: GameWindow): void {
-        this.components.forEach(component => component.render(gameWindow));
-        this.children.forEach(child => child.render(gameWindow));
+    constructor(x: number = 0, y: number = 0) {
+        this._element = document.createElement('div');
+        this._element.style.position = 'absolute';
+        this.location = new Vector2d(x, y);
     }
 
     getChildren(): GameObject[] {
@@ -36,15 +29,51 @@ class GameObject {
     }
 
     addComponent(component: Component) {
-        this.components.push(component.register(this));
+        this._components[component.name] = component.register(this);
+    }
+
+    get components() {
+        return this._components;
     }
 
     get location(): Vector2d {
-        return this._location;
+        return new Vector2d(
+            parseInt(this._element.style.left, 10),
+            parseInt(this._element.style.top, 10));
     }
 
     set location(location: Vector2d) {
-        this._location = location;
+        this._element.style.top = location.y + 'px';
+        this._element.style.left = location.x + 'px';
+    }
+
+    get height(): number {
+        return parseInt(this._element.style.height, 10);
+    }
+
+    set height(height: number) {
+        this._element.style.height = height + 'px';
+    }
+
+    get width(): number {
+        return parseInt(this._element.style.width, 10);
+    }
+
+    set width(width: number) {
+        this._element.style.width = width + 'px';
+    }
+
+
+    get element() {
+        return this._element
+    }
+
+    generateElement() {
+        this._element.innerHTML = '';
+        this.children.forEach(child => {
+            this._element.appendChild(child.generateElement());
+        });
+        return this._element;
     }
 
 }
