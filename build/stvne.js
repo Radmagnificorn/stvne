@@ -925,9 +925,9 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Scene__["a" /* defau
                 .then(() => dialog.writeText("good books.", false))
                 .then(() => __WEBPACK_IMPORTED_MODULE_5__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox.element))
                 .then(() => dialog.writeText("do you like to read books?"))
-                .then(() => dialog.writeOptions(["Yes", "No"], false))
+                .then(() => dialog.writeOptions(["Yes, books are awesome!", "No... not a fan."], false))
                 .then((response) => {
-                if (response === "Yes") {
+                if (response === "Yes, books are awesome!") {
                     dialog.writeText("Yes, I thought you might");
                 }
                 else {
@@ -1130,7 +1130,7 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radius: 20px 20px 0 0;\n  position: absolute;\n  top: 450px;\n  left: 0;\n  height: 225px;\n  width: 1235px;\n  background: rgba(0, 0, 0, 0.7);\n  border: 3px solid #ffffff;\n  visibility: hidden;\n  opacity: 0;\n  transition: visibility 0s, opacity 0.5s; }\n  .animated_dialog_box.visible {\n    visibility: visible;\n    opacity: 1; }\n  .animated_dialog_box .word {\n    font-family: Arial;\n    font-size: 40px;\n    color: #ffffff;\n    margin: 0 5px 0 5px;\n    display: inline-block; }\n  .animated_dialog_box .dialog_option {\n    height: 40px;\n    width: 1200px;\n    border: 2px solid #ffffff;\n    font-size: 30px;\n    text-align: center;\n    font-weight: bold;\n    color: #ffffff;\n    margin: 5px auto; }\n", ""]);
+exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radius: 20px 20px 0 0;\n  position: absolute;\n  top: 450px;\n  left: 0;\n  height: 225px;\n  width: 1235px;\n  background: rgba(0, 0, 0, 0.7);\n  border: 3px solid #ffffff;\n  font-family: Arial, serif;\n  visibility: hidden;\n  opacity: 0;\n  transition: visibility 0s, opacity 0.5s; }\n  .animated_dialog_box.visible {\n    visibility: visible;\n    opacity: 1; }\n  .animated_dialog_box .word {\n    font-size: 40px;\n    color: #ffffff;\n    margin: 0 5px 0 5px;\n    display: inline-block; }\n  .animated_dialog_box .dialog_option {\n    width: 1200px;\n    border: 2px solid #ffffff;\n    font-size: 30px;\n    text-align: center;\n    font-weight: bold;\n    color: #ffffff;\n    margin: 10px auto;\n    padding: 20px; }\n", ""]);
 
 // exports
 

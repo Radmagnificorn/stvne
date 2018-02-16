@@ -32,9 +32,9 @@ class StartArea extends Scene {
                 .then(() => dialog.writeText("good books.", false))
                 .then(() => ActionEvents.waitForClick(dialogBox.element))
                 .then(() => dialog.writeText("do you like to read books?"))
-                .then(() => dialog.writeOptions(["Yes", "No"], false))
+                .then(() => dialog.writeOptions(["Yes, books are awesome!", "No... not a fan."], false))
                 .then((response) => {
-                    if (response === "Yes") {
+                    if (response === "Yes, books are awesome!") {
                         dialog.writeText("Yes, I thought you might");
                     } else {
                         dialog.writeText("Oh, well that's ok...");

@@ -9,6 +9,7 @@
     width: 1235px;
     background: rgba(0, 0, 0, 0.7);
     border: 3px solid #ffffff;
+    font-family: Arial, serif;
 
     &.visible {
         visibility: visible;
@@ -20,7 +21,6 @@
     transition: visibility 0s, opacity 0.5s;
 
     .word {
-        font-family: Arial;
         font-size: 40px;
         color: #ffffff;
         margin: 0 5px 0 5px;
@@ -28,13 +28,13 @@
     }
 
     .dialog_option {
-        height: 40px;
         width: 1200px;
         border: 2px solid #ffffff;
         font-size: 30px;
         text-align: center;
         font-weight: bold;
         color: #ffffff;
-        margin: 5px auto;
+        margin: 10px auto;
+        padding: 20px;
     }
 }
