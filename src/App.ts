@@ -25,7 +25,11 @@ function scaleScreen(gameWindow: GameWindow, document: Document, screen: Screen)
         window.innerHeight / gameWindow.height
     );
 
+    let scaledCenter = gameWindow.width * scale * 0.5;
+    let offset = window.innerWidth * 0.5 - scaledCenter;
+
     gameWindow.rootElement.style.transform = "scale(" + scale + ")";
+    gameWindow.rootElement.style.left = offset + 'px';
 }
 
 

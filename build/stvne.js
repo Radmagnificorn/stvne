@@ -963,7 +963,10 @@ scaleScreen(gameWindow, document, screen);
 game.start();
 function scaleScreen(gameWindow, document, screen) {
     let scale = Math.min(window.innerWidth / gameWindow.width, window.innerHeight / gameWindow.height);
+    let scaledCenter = gameWindow.width * scale * 0.5;
+    let position = window.innerWidth * 0.5 - scaledCenter;
     gameWindow.rootElement.style.transform = "scale(" + scale + ")";
+    gameWindow.rootElement.style.left = position + 'px';
 }
 
 
