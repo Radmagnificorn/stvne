@@ -964,9 +964,9 @@ game.start();
 function scaleScreen(gameWindow, document, screen) {
     let scale = Math.min(window.innerWidth / gameWindow.width, window.innerHeight / gameWindow.height);
     let scaledCenter = gameWindow.width * scale * 0.5;
-    let position = window.innerWidth * 0.5 - scaledCenter;
+    let offset = window.innerWidth * 0.5 - scaledCenter;
     gameWindow.rootElement.style.transform = "scale(" + scale + ")";
-    gameWindow.rootElement.style.left = position + 'px';
+    gameWindow.rootElement.style.left = offset + 'px';
 }
 
 
@@ -1318,6 +1318,25 @@ class SecondArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Scene__["a" /* defa
             .then(__WEBPACK_IMPORTED_MODULE_6__engine_ActionEvents__["a" /* default */].pause(250))
             .then(() => dialog.writeText("welcome to my bridge", false))
             .then(__WEBPACK_IMPORTED_MODULE_6__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox.element))
+            .then(() => dialog.writeText("If you want to pass, you must answer a riddle."))
+            .then(__WEBPACK_IMPORTED_MODULE_6__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox.element))
+            .then(() => dialog.writeText("How many cabbages do you think I could carry at one time?"))
+            .then(() => dialog.presentOptions(["One", "Five", "Twelve", "Fourteen"]))
+            .then((response) => {
+            switch (response) {
+                case 'One':
+                    return dialog.writeText("Really? One? okay ya dick, whatever");
+                case 'Five':
+                    return dialog.writeText("Yeah, I think that's probably about right");
+                default:
+                    return dialog.writeText("Uh, thanks? You're an idiot though. That is not even remotely realistic");
+            }
+        })
+            .then(__WEBPACK_IMPORTED_MODULE_6__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox.element))
+            .then(() => dialog.writeText("Oh well... It doesn't even really matter if you got it right or wrong. I was never going to let you pass."))
+            .then(__WEBPACK_IMPORTED_MODULE_6__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox.element))
+            .then(() => dialog.writeText("bye... "))
+            .then(__WEBPACK_IMPORTED_MODULE_6__engine_ActionEvents__["a" /* default */].pause(500))
             .then(() => dialog.hideDialog());
         background.appendChild(princess);
         background.appendChild(exit);
