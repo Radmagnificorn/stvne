@@ -2,6 +2,6 @@
   "short_name": "STVNE",
   "name": "Stephen's TypeScript Visual Novel Engine",
   "start_url": "index.html?launcher=true",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "landscape"
 }
