@@ -1,5 +1,6 @@
 import GameWindow from "./GameWindow";
 import {Component} from "./components/Component";
+import ImageComponent from "./components/ImageComponent";
 
 class GameObject {
 
@@ -8,10 +9,14 @@ class GameObject {
     private _components: {[key: string]: Component} = {};
     private _element: HTMLElement;
 
-    constructor(x: number = 0, y: number = 0) {
+    constructor(x: number = 0, y: number = 0, img?: HTMLImageElement) {
         this._element = document.createElement('div');
         this._element.style.position = 'absolute';
         this.location = new Vector2d(x, y);
+
+        if (img) {
+            this.addComponent(new ImageComponent(img));
+        }
     }
 
     getChildren(): GameObject[] {

@@ -60,14 +60,15 @@ class DialogComponent extends Component {
         }
     }
 
-    private showDialog() {
+    showDialog() {
         this.isVisible = true;
         this.gameObject.element.classList.add('visible');
     }
 
-    private hideDialog() {
+    hideDialog() {
         this.isVisible = false;
         this.gameObject.element.classList.remove('visible');
+        return Promise.resolve();
     }
 
     writeText(text: string, clearBox: boolean = true): Promise<void> {
@@ -81,20 +82,22 @@ class DialogComponent extends Component {
         return new Promise<void>(resolve => {this.sendFinishedNotification = resolve});
     }
 
-    writeOptions(options: string[], clearBox: boolean = true): Promise<string> {
+    presentOptions(options: string[], clearBox: boolean = false): Promise<string> {
 
         return new Promise<string>(resolve => {
+            let optionContainer = document.createElement('div');
             options.forEach(option => {
                 let button = document.createElement('div');
                 button.innerText = option;
                 button.classList.add('dialog_option');
-                this.gameObject.element.appendChild(button);
+                optionContainer.appendChild(button);
                 button.addEventListener('click', ev => {
                     resolve(option);
                 });
             });
+            this.gameObject.element.appendChild(optionContainer);
 
-            this.writeText('', clearBox);
+            this.writeText('', false);
         });
     }
 

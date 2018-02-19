@@ -4,7 +4,9 @@ import GameWindow from "../GameWindow";
 export abstract class Component {
     protected gameObject: GameObject;
 
-    onAdd(): void {}
+    onAdd() {
+        this.gameObject
+    }
 
     //called by parent when component is added
     register(parent: GameObject): Component {

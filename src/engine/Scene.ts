@@ -1,11 +1,14 @@
 import GameObject from "./GameObject";
 import GameWindow from "./GameWindow";
+import Game from "./Game";
 
 class Scene {
 
     private _sceneGraph: GameObject;
+    protected _gameInstance: Game;
 
-    constructor(rootObject: GameObject = new GameObject()) {
+    constructor(game: Game, rootObject: GameObject = new GameObject()) {
+        this._gameInstance = game;
         this.sceneGraph = rootObject;
     }
 
@@ -19,6 +22,10 @@ class Scene {
 
     loadResources():Promise<any> {
         return Promise.resolve();
+    }
+
+    load() {
+        this._gameInstance.loadScene(this);
     }
 
 }

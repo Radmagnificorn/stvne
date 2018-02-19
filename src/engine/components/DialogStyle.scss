@@ -28,13 +28,14 @@
     }
 
     .dialog_option {
-        width: 1200px;
+        width: 550px;
         border: 2px solid #ffffff;
         font-size: 30px;
         text-align: center;
         font-weight: bold;
         color: #ffffff;
-        margin: 10px auto;
+        margin: 10px;
         padding: 20px;
+        display: inline-block;
     }
 }

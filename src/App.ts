@@ -1,5 +1,5 @@
 import GameWindow from "./engine/GameWindow";
-import Game from "./testgame/Game";
+import Game from "./engine/Game";
 import ResourceLoader from "./engine/ResourceLoader";
 
 let container = document.getElementById('stvne');

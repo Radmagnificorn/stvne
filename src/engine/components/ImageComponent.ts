@@ -5,7 +5,7 @@ class ImageComponent extends Component {
     private _image: HTMLImageElement;
     private _fitImage: boolean;
 
-    constructor(image: HTMLImageElement, fitImage = false) {
+    constructor(image: HTMLImageElement, fitImage = true) {
         super();
         this._image = image;
         this._fitImage = fitImage;
