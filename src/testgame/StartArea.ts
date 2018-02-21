@@ -63,61 +63,20 @@ class StartArea extends Area {
                 await d.writeText("Yeah? well maybe books think that you're a loser...");
                 break;
             default:
-                return d.writeText("Oh, well that's ok...");
+                await d.writeText("Oh, well that's ok...");
         }
 
+        await AE.waitForClick(d);
+        let pt = await gs.get("second_area.princess_talk");
+        if (!pt) {
+            await d.writeText("You should head outside to the left and talk to the princess.");
+        } else {
+            await d.writeText("Well, I guess I don't have much more to say. Please have a look around.")
+        }
 
-        /*
-        AE.pause(2000)()
-            .then(() => AniEvents.fadeIn(vampire.element, 0.5))
-            .then(() => gs.get("second_area.princess_talk"))
-            .then(result => {
-                if (result === "true") {
-                    return d.writeText("I see you talked to the princess");
-                } else {
-                    return d.writeText("Hello, I am a vampire. Welcome to my study. As you can see, I have many books")
-                        .then(AE.waitForClick(dialogBox))
-                        .then(d.ae.writeText("and not just any books..."))
-                        .then(AE.pause(500))
-                        .then(d.ae.writeText("good books.", false))
-                }
-            })
-            .then(AE.waitForClick(dialogBox))
-            .then(d.ae.writeText("do you like to read books?"))
-            .then(d.ae.presentOptions(["Yes, books are awesome!", "No... not a fan.", "Books are for losers", "No, I'm too cool"], false))
-            .then((response) => {
-                if (response === "Yes, books are awesome!") {
-                    return d.writeText("Yes, I thought you might")
-                        .then(AE.waitForClick(dialogBox))
-                        .then(d.ae.writeText("What kind of books do you like to read?"))
-                        .then(d.ae.presentOptions(["Fiction", "Non-fiction"]))
-                        .then((response) => {
-                            if (response === "Fiction") {
-                                return d.writeText("I am a fan of fiction myself")
-                            } else {
-                                return d.writeText("I see, well I generally prefer fiction myself")
-                            }
-                        });
-                } else if (response === "Books are for losers") {
-                    return d.writeText("Yeah? well maybe books think that you're a loser...");
-                } else {
-                    return d.writeText("Oh, well that's ok...");
-                }
-            })
-            .then(AE.waitForClick(dialogBox))
-            .then(() => gs.get("second_area.princess_talk"))
-            .then((pt) => {
-                if (!pt) {
-                    return d.writeText("You should head outside to the left and talk to the princess.")
-                } else {
-                    return d.writeText("Well, I guess I don't have much more to say. Please have a look around.")
-                }
-            })
-            .then(AE.waitForClick(dialogBox))
-            .then(() => d.hideDialog())
-            .then(() => AniEvents.fadeOut(vampire.element, 1))
-            */
-
+        await AE.waitForClick(dialogBox);
+        await d.hideDialog()
+        await AniEvents.fadeOut(vampire, 1);
 
     }
 
