@@ -1,6 +1,6 @@
 import {Component} from "./Component";
 import "./DialogStyle.scss";
-import AnimationTimer from "../AnimationTimer";
+import AnimationTimer from "../animation/AnimationTimer";
 
 class DialogComponent extends Component {
 
@@ -61,14 +61,28 @@ class DialogComponent extends Component {
     }
 
     showDialog() {
+        let aniEnd = this.startAnimationEndListener();
         this.isVisible = true;
         this.gameObject.element.classList.add('visible');
+        return aniEnd;
     }
 
+
     hideDialog() {
+        let aniEnd = this.startAnimationEndListener();
         this.isVisible = false;
         this.gameObject.element.classList.remove('visible');
-        return Promise.resolve();
+        return aniEnd;
+    }
+
+    private startAnimationEndListener() {
+        return new Promise<void>(resolve => {
+            let aniEndListener = () => {
+                resolve();
+                this.element.removeEventListener('transitionend', aniEndListener);
+            };
+            this.element.addEventListener('transitionend', aniEndListener, false);
+        });
     }
 
     writeText(text: string, clearBox: boolean = true): Promise<void> {
@@ -78,9 +92,18 @@ class DialogComponent extends Component {
         this.createStyleableText(text).forEach(word => this.gameObject.element.appendChild(word));
         this.letters = this.showLetters();
         this.showDialog();
-        this._timer.start();
+            this._timer.start();
         return new Promise<void>(resolve => {this.sendFinishedNotification = resolve});
     }
+
+    ae = {
+        writeText: (text: string, clearBox: boolean = true) => {
+            return () => this.writeText(text, clearBox);
+        },
+        presentOptions: (options: string[], clearBox: boolean = false) => {
+            return () => this.presentOptions(options, clearBox);
+        }
+    };
 
     presentOptions(options: string[], clearBox: boolean = false): Promise<string> {
 

@@ -7,11 +7,26 @@ class ResourceLoader {
             img.onerror = () => reject;
             img.src = url;
         });
+    }
 
+    private static async loadNamedImage(name: string, url: string): Promise<[string, HTMLImageElement]> {
+        let img = await this.loadImage(url);
+        return [name, img];
     }
 
     static loadImages(... urls: string[]): Promise<HTMLImageElement[]> {
         return Promise.all(urls.map(url => this.loadImage(url)));
+    }
+
+    static async loadImagesToMap(urls: Map<string, string>): Promise<Map<string, HTMLImageElement>> {
+        let imageMap = new Map<string, HTMLImageElement>();
+        let promises: Promise<[string, HTMLImageElement]>[] = [];
+        urls.forEach(((url, name) => {
+            promises.push(this.loadNamedImage(name, url));
+        }));
+        let images = await Promise.all(promises);
+        images.forEach(i => imageMap.set(i[0], i[1]));
+        return imageMap;
     }
 }
 

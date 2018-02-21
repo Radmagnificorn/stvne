@@ -2,6 +2,7 @@ import GameWindow from "./GameWindow";
 import ResourceLoader from "./ResourceLoader";
 import Scene from "./Scene";
 import StartArea from "../testgame/StartArea";
+import GameState from "./GameState";
 
 class Game {
 
@@ -10,12 +11,14 @@ class Game {
     resourceLoader: ResourceLoader;
     fps: number = 24;
     currentScene: Scene;
+    private _gameState: GameState;
 
     private static _instance: Game;
 
-    constructor(gameWindow: GameWindow, resourceLoader: ResourceLoader) {
+    constructor(gameWindow: GameWindow, resourceLoader: ResourceLoader, gameState: GameState) {
         this.gameWindow = gameWindow;
         this.resourceLoader = resourceLoader;
+        this._gameState = gameState;
     }
 
     loadScene(scene: Scene) {
@@ -33,6 +36,10 @@ class Game {
 
 
 
+    }
+
+    get gameState(): GameState {
+        return this._gameState;
     }
 
     stop() {

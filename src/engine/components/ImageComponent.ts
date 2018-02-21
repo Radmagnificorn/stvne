@@ -12,12 +12,15 @@ class ImageComponent extends Component {
     }
 
     onAdd() {
-        let goElement = this.gameObject.element;
-        goElement.style.backgroundImage = "url('" + this._image.src + "')";
+        this.syncActiveImage();
         if (this._fitImage) {
             this.gameObject.height = this.image.height;
             this.gameObject.width = this.image.width;
         }
+    }
+
+    private syncActiveImage() {
+        this.gameObject.element.style.backgroundImage = "url('" + this._image.src + "')";
     }
 
     get image(): HTMLImageElement {
@@ -26,6 +29,7 @@ class ImageComponent extends Component {
 
     set image(image: HTMLImageElement) {
         this._image = image;
+        this.syncActiveImage();
     }
 
     get name(): string {

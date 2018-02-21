@@ -1,6 +1,7 @@
 import GameWindow from "./engine/GameWindow";
 import Game from "./engine/Game";
 import ResourceLoader from "./engine/ResourceLoader";
+import GameState from "./engine/GameState";
 
 let container = document.getElementById('stvne');
 
@@ -10,7 +11,7 @@ container.appendChild(gameWindow.rootElement);
 
 let resourceLoader = new ResourceLoader();
 
-let game = new Game(gameWindow, resourceLoader);
+let game = new Game(gameWindow, resourceLoader, new GameState());
 
 window.onresize = () => scaleScreen(gameWindow, document, screen);
 scaleScreen(gameWindow, document, screen);

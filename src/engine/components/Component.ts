@@ -15,6 +15,10 @@ export abstract class Component {
         return this;
     }
 
+    get element(): HTMLElement {
+        return this.gameObject.element;
+    }
+
     name: string;
 }
 
