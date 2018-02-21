@@ -11,7 +11,9 @@ import AniEvents from "../engine/animation/AniEvents";
 
 class SecondArea extends Area {
 
-    buildScene(imgs: HTMLImageElement[]) {
+    async buildScene(imgs: HTMLImageElement[]) {
+
+
 
         let gs = this._gameInstance.gameState;
 
@@ -29,41 +31,39 @@ class SecondArea extends Area {
         let dialog = this.dialogComponent;
 
         princess.element.style.opacity = '0';
-        /*
-        AE.pause(1000)().then(() => AniEvents.fadeIn(princess, 0.5));
 
-        AE.waitForClick(princess.element)()
-            .then(() => dialog.writeText("Hello, I am a princess of some sort... "))
-            .then(AE.pause(250))
-            .then(() => dialog.writeText("welcome to my bridge", false))
-            .then(AE.waitForClick(dialog))
-            .then(() => dialog.writeText("If you want to pass, you must answer a riddle."))
-            .then(AE.waitForClick(dialog))
-            .then(() => dialog.writeText("How many cabbages do you think I could carry at one time?"))
-            .then(() => dialog.presentOptions(["One", "Five", "Twelve", "Fourteen"]))
-            .then((response) => {
-                switch (response) {
-                    case 'One':
-                        return dialog.writeText("Really? One? okay ya dick, whatever");
-                    case 'Five':
-                        return dialog.writeText("Yeah, I think that's probably about right");
-                    default:
-                        return dialog.writeText("Uh, thanks? You're an idiot though. That is not even remotely realistic")
-                }
-            })
-            .then(AE.waitForClick(dialog))
-            .then(() => dialog.writeText("Oh well... It doesn't even really matter if you got it right or wrong. I was never going to let you pass."))
-            .then(AE.waitForClick(dialog))
-            .then(() => dialog.writeText("bye... "))
-            .then(() => this.gameState.set("second_area.princess_talk", "true"))
-            .then(AE.pause(500))
-            .then(() => dialog.hideDialog());
-
-        */
         this.gameLayer.appendChild(princess);
         this.gameLayer.appendChild(exit);
         this.backgroundLayer.appendChild(background);
 
+        await AE.pause(1000);
+        await AniEvents.fadeIn(princess, 1);
+        await dialog.writeText("Hello, I am a princess of some sort... ");
+        await AE.pause(250);
+        await dialog.writeText("welcome to my bridge", false);
+        await AE.waitForClick(dialog);
+        await dialog.writeText("If you want to pass, you must answer a riddle.");
+        await AE.waitForClick(dialog);
+        await dialog.writeText("How many cabbages do you think I could carry at one time?");
+        let response = await dialog.presentOptions(["One", "Five", "Twelve", "Fourteen"]);
+        switch (response) {
+            case 'One':
+                await dialog.writeText("Really? One? okay ya dick, whatever");
+                break;
+            case 'Five':
+                await dialog.writeText("Yeah, I think that's probably about right");
+                break;
+            default:
+                await dialog.writeText("Uh, thanks? You're an idiot though. That is not even remotely realistic");
+        }
+
+        await AE.waitForClick(dialog);
+        await dialog.writeText("Oh well... It doesn't even really matter if you got it right or wrong. I was never going to let you pass.");
+        await AE.waitForClick(dialog);
+        await dialog.writeText("bye... ");
+        await this.gameState.set("second_area.princess_talk", "true");
+        await AE.pause(500);
+        await dialog.hideDialog();
 
     }
 
