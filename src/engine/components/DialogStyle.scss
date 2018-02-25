@@ -3,7 +3,7 @@
     padding: 20px;
     border-radius: 20px 20px 0 0;
     position: absolute;
-    top: 450px;
+    top: 0;
     left: 0;
     height: 225px;
     width: 1235px;
@@ -37,5 +37,19 @@
         margin: 10px;
         padding: 20px;
         display: inline-block;
+    }
+
+    .title_box {
+        visibility: hidden;
+        position: absolute;
+        height: 50px;
+        color: #ffffff;
+        top: -20px;
+        font-size: 20px;
+        font-weight: bold;
+
+        &.visible {
+            visibility: visible;
+        }
     }
 }

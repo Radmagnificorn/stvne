@@ -74,7 +74,7 @@ class GameObject {
     }
 
     generateElement() {
-        this._element.innerHTML = '';
+        //this._element.innerHTML = '';
         this.children.forEach(child => {
             this._element.appendChild(child.generateElement());
         });

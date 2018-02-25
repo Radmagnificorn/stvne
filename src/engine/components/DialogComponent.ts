@@ -8,6 +8,9 @@ class DialogComponent extends Component {
     private isVisible: boolean = false;
     private sendFinishedNotification: Function;
     private _timer: AnimationTimer;
+    private _titleBox: HTMLDivElement;
+    private _textArea: HTMLDivElement;
+    private _element: HTMLDivElement;
 
     private _running: boolean = false;
 
@@ -17,8 +20,10 @@ class DialogComponent extends Component {
     }
 
     onAdd() {
-        let element = this.gameObject.element;
-        element.classList.add('animated_dialog_box');
+        this._element = this.createDialogUI();
+        this._titleBox = <HTMLDivElement>this._element.getElementsByClassName('title_box')[0];
+        this._textArea = <HTMLDivElement>this._element.getElementsByClassName('text_area')[0];
+        this.gameObject.element.appendChild(this._element);
     }
 
     private createStyleableText(text: string): HTMLDivElement[] {
@@ -39,6 +44,19 @@ class DialogComponent extends Component {
         return styleableWord;
     }
 
+    private createDialogUI(): HTMLDivElement {
+        let element = document.createElement('div');
+        element.classList.add('animated_dialog_box');
+        let titleBox = document.createElement('div');
+        titleBox.classList.add('title_box');
+        let textArea = document.createElement('div');
+        textArea.classList.add('text_area');
+        element.appendChild(textArea);
+        element.appendChild(titleBox);
+
+        return element;
+    }
+
     update() {
         if (this.isVisible) {
             let letterIterator = this.letters.next();
@@ -52,7 +70,7 @@ class DialogComponent extends Component {
     }
 
     private *showLetters(): Iterator<HTMLSpanElement> {
-        let words = this.gameObject.element.children;
+        let words = this._textArea.children;
         for (let w = 0; w < words.length; w++) {
             for(let l = 0; l < words[w].children.length; l++) {
                 yield <HTMLSpanElement>words[w].children[l];
@@ -63,7 +81,7 @@ class DialogComponent extends Component {
     showDialog() {
         let aniEnd = this.startAnimationEndListener();
         this.isVisible = true;
-        this.gameObject.element.classList.add('visible');
+        this._element.classList.add('visible');
         return aniEnd;
     }
 
@@ -71,7 +89,7 @@ class DialogComponent extends Component {
     hideDialog() {
         let aniEnd = this.startAnimationEndListener();
         this.isVisible = false;
-        this.gameObject.element.classList.remove('visible');
+        this._element.classList.remove('visible');
         return aniEnd;
     }
 
@@ -85,25 +103,22 @@ class DialogComponent extends Component {
         });
     }
 
-    writeText(text: string, clearBox: boolean = true): Promise<void> {
+    writeText(text: string, clearBox: boolean = true, title?: string): Promise<void> {
         if (clearBox) {
-            this.gameObject.element.innerHTML = '';
+            this._textArea.innerHTML = '';
         }
-        this.createStyleableText(text).forEach(word => this.gameObject.element.appendChild(word));
+        if (title) {
+            this._titleBox.classList.add('visible');
+            this._titleBox.innerText = title;
+        } else {
+            this._titleBox.classList.remove('visible');
+        }
+        this.createStyleableText(text).forEach(word => this._textArea.appendChild(word));
         this.letters = this.showLetters();
         this.showDialog();
             this._timer.start();
         return new Promise<void>(resolve => {this.sendFinishedNotification = resolve});
     }
-
-    ae = {
-        writeText: (text: string, clearBox: boolean = true) => {
-            return () => this.writeText(text, clearBox);
-        },
-        presentOptions: (options: string[], clearBox: boolean = false) => {
-            return () => this.presentOptions(options, clearBox);
-        }
-    };
 
     presentOptions(options: string[], clearBox: boolean = false): Promise<string> {
 
@@ -118,7 +133,7 @@ class DialogComponent extends Component {
                     resolve(option);
                 });
             });
-            this.gameObject.element.appendChild(optionContainer);
+            this._textArea.appendChild(optionContainer);
 
             this.writeText('', false);
         });

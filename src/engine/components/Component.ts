@@ -5,7 +5,7 @@ export abstract class Component {
     protected gameObject: GameObject;
 
     onAdd() {
-        this.gameObject
+
     }
 
     //called by parent when component is added

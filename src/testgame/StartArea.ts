@@ -45,7 +45,7 @@ class StartArea extends Area {
         await this.events.vampireIntro(d, vampire, gs);
 
         await AE.waitForClick(dialogBox);
-        await d.writeText("do you like to read books?");
+        await d.writeText("do you like to read books?", true, "Vampire Dave");
         let likesToRead = await d.presentOptions(["Yes, books are awesome!", "No... not a fan.", "Books are for losers", "No, I'm too cool"], false);
         switch (likesToRead) {
             case "Yes, books are awesome!":
