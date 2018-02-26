@@ -60,34 +60,10 @@ class StartArea extends Area {
 
         vampire.element.style.opacity = '0';
 
-        await this.events.vampireIntro(d, vampire, gs);
+        let talkedToPrincess = await gs.get("second_area.princess_talk");
 
-        await AE.waitForClick(dialogBox);
-        let likesToRead = await vampireDave.ask("Do you like to read books?",
-            ["Yes, books are awesome!", "No... not a fan.", "Books are for losers", "No, I'm too cool"]);
-        switch (likesToRead) {
-            case "Yes, books are awesome!":
-                await vampireDave.say("Yes, I thought you might");
-                await AE.waitForClick(dialogBox);
-                await vampireDave.say("What kind of books do you like to read?");
-                let fictionOrNo = await d.presentOptions(["Fiction", "Non-fiction"]);
-                if (fictionOrNo === "Fiction") {
-                    await d.writeText("I am a fan of fiction myself");
-                } else {
-                    await d.writeText("I see, well I generally prefer fiction myself");
-                }
-                break;
-            case "Books are for losers":
-                await vampireDave.say("Yeah? well maybe books think that you're a loser...");
-                break;
-            default:
-                await vampireDave.say("Oh, well that's ok...");
-        }
-
-        await AE.waitForClick(d);
-        let pt = await gs.get("second_area.princess_talk");
-        if (!pt) {
-            await vampireDave.say("You should head outside to the left and talk to the princess.");
+        if (!talkedToPrincess) {
+            await this.events.vampireIntro();
         } else {
             await this.events.princessShowsUp();
         }
@@ -99,11 +75,12 @@ class StartArea extends Area {
     }
 
     events = {
-        vampireIntro: async (d: DialogComponent, vampire: GameObject, gs: GameState) => {
-            let vampireDave = <CharacterComponent>vampire.components['character'];
+        vampireIntro: async () => {
+            let vampireDave = this.vampire;
+            let d = this.dialog;
             await AE.pause(1000);
-            await AniEvents.fadeIn(vampire, 1);
-            let princessTalk = await gs.get("second_area.princess_talk");
+            await AniEvents.fadeIn(vampireDave.element, 1);
+            let princessTalk = await this.gameState.get("second_area.princess_talk");
             if (princessTalk === "true") {
                 await vampireDave.say("I see you talked to the princess");
             } else {
@@ -117,11 +94,39 @@ class StartArea extends Area {
                 await vampireDave.showPortrait('default');
                 await vampireDave.say(" good books.", false);
             }
+
+            await AE.waitForClick(d);
+            let likesToRead = await vampireDave.ask("Do you like to read books?",
+                ["Yes, books are awesome!", "No... not a fan.", "Books are for losers", "No, I'm too cool"]);
+            switch (likesToRead) {
+                case "Yes, books are awesome!":
+                    await vampireDave.say("Yes, I thought you might");
+                    await AE.waitForClick(d);
+                    await vampireDave.say("What kind of books do you like to read?");
+                    let fictionOrNo = await d.presentOptions(["Fiction", "Non-fiction"]);
+                    if (fictionOrNo === "Fiction") {
+                        await d.writeText("I am a fan of fiction myself");
+                    } else {
+                        await d.writeText("I see, well I generally prefer fiction myself");
+                    }
+                    break;
+                case "Books are for losers":
+                    await vampireDave.say("Yeah? well maybe books think that you're a loser...");
+                    break;
+                default:
+                    await vampireDave.say("Oh, well that's ok...");
+            }
+            await AE.waitForClick(d);
+            await vampireDave.say("You should head outside to the left and talk to the princess.");
         },
         princessShowsUp: async () => {
             let princess = this.princess;
             let vampire = this.vampire;
 
+            await AE.pause(1000);
+            await AniEvents.fadeIn(vampire.element, 1);
+            await vampire.say("Oh, hi. How was your meeting with the princess?");
+            await AE.waitForClick(this.dialog);
             await AniEvents.fadeIn(princess.element, 1);
             let cabbages = await this.gameState.get("second_area.cabbages");
             await princess.say("Hey Dave, some weirdo just told me I look like I could carry " +

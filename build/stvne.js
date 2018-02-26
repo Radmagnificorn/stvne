@@ -744,11 +744,12 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
     constructor() {
         super(...arguments);
         this.events = {
-            vampireIntro: (d, vampire, gs) => __awaiter(this, void 0, void 0, function* () {
-                let vampireDave = vampire.components['character'];
+            vampireIntro: () => __awaiter(this, void 0, void 0, function* () {
+                let vampireDave = this.vampire;
+                let d = this.dialog;
                 yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(1000);
-                yield __WEBPACK_IMPORTED_MODULE_7__engine_animation_AniEvents__["a" /* default */].fadeIn(vampire, 1);
-                let princessTalk = yield gs.get("second_area.princess_talk");
+                yield __WEBPACK_IMPORTED_MODULE_7__engine_animation_AniEvents__["a" /* default */].fadeIn(vampireDave.element, 1);
+                let princessTalk = yield this.gameState.get("second_area.princess_talk");
                 if (princessTalk === "true") {
                     yield vampireDave.say("I see you talked to the princess");
                 }
@@ -763,10 +764,37 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
                     yield vampireDave.showPortrait('default');
                     yield vampireDave.say(" good books.", false);
                 }
+                yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
+                let likesToRead = yield vampireDave.ask("Do you like to read books?", ["Yes, books are awesome!", "No... not a fan.", "Books are for losers", "No, I'm too cool"]);
+                switch (likesToRead) {
+                    case "Yes, books are awesome!":
+                        yield vampireDave.say("Yes, I thought you might");
+                        yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
+                        yield vampireDave.say("What kind of books do you like to read?");
+                        let fictionOrNo = yield d.presentOptions(["Fiction", "Non-fiction"]);
+                        if (fictionOrNo === "Fiction") {
+                            yield d.writeText("I am a fan of fiction myself");
+                        }
+                        else {
+                            yield d.writeText("I see, well I generally prefer fiction myself");
+                        }
+                        break;
+                    case "Books are for losers":
+                        yield vampireDave.say("Yeah? well maybe books think that you're a loser...");
+                        break;
+                    default:
+                        yield vampireDave.say("Oh, well that's ok...");
+                }
+                yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
+                yield vampireDave.say("You should head outside to the left and talk to the princess.");
             }),
             princessShowsUp: () => __awaiter(this, void 0, void 0, function* () {
                 let princess = this.princess;
                 let vampire = this.vampire;
+                yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(1000);
+                yield __WEBPACK_IMPORTED_MODULE_7__engine_animation_AniEvents__["a" /* default */].fadeIn(vampire.element, 1);
+                yield vampire.say("Oh, hi. How was your meeting with the princess?");
+                yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(this.dialog);
                 yield __WEBPACK_IMPORTED_MODULE_7__engine_animation_AniEvents__["a" /* default */].fadeIn(princess.element, 1);
                 let cabbages = yield this.gameState.get("second_area.cabbages");
                 yield princess.say("Hey Dave, some weirdo just told me I look like I could carry " +
@@ -799,7 +827,7 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             vampire.addComponent(vampireDave);
             //princess
             let princessGo = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](505, 190);
-            let princess = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("One-eyed Princess", new Map([['default', imgs.get("princess_default")]]), d);
+            let princess = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("Demon-eyed Princess", new Map([['default', imgs.get("princess_default")]]), d);
             princessGo.addComponent(princess);
             princessGo.element.style.opacity = '0';
             this.princess = princess;
@@ -809,32 +837,9 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             this.gameLayer.appendChild(exit);
             this.backgroundLayer.appendChild(background);
             vampire.element.style.opacity = '0';
-            yield this.events.vampireIntro(d, vampire, gs);
-            yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox);
-            let likesToRead = yield vampireDave.ask("Do you like to read books?", ["Yes, books are awesome!", "No... not a fan.", "Books are for losers", "No, I'm too cool"]);
-            switch (likesToRead) {
-                case "Yes, books are awesome!":
-                    yield vampireDave.say("Yes, I thought you might");
-                    yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox);
-                    yield vampireDave.say("What kind of books do you like to read?");
-                    let fictionOrNo = yield d.presentOptions(["Fiction", "Non-fiction"]);
-                    if (fictionOrNo === "Fiction") {
-                        yield d.writeText("I am a fan of fiction myself");
-                    }
-                    else {
-                        yield d.writeText("I see, well I generally prefer fiction myself");
-                    }
-                    break;
-                case "Books are for losers":
-                    yield vampireDave.say("Yeah? well maybe books think that you're a loser...");
-                    break;
-                default:
-                    yield vampireDave.say("Oh, well that's ok...");
-            }
-            yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
-            let pt = yield gs.get("second_area.princess_talk");
-            if (!pt) {
-                yield vampireDave.say("You should head outside to the left and talk to the princess.");
+            let talkedToPrincess = yield gs.get("second_area.princess_talk");
+            if (!talkedToPrincess) {
+                yield this.events.vampireIntro();
             }
             else {
                 yield this.events.princessShowsUp();
@@ -1573,7 +1578,7 @@ class SecondArea extends __WEBPACK_IMPORTED_MODULE_6__engine_Area__["a" /* defau
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__["a" /* default */](imgs[0]));
             let dialog = this.dialogComponent;
             let princessGo = new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* default */](505, 190);
-            let princess = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("One-eyed Princess", new Map([['default', imgs[1]]]), dialog);
+            let princess = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("Demon-eyed Princess", new Map([['default', imgs[1]]]), dialog);
             princessGo.addComponent(princess);
             princessGo.element.style.opacity = '0';
             this.gameLayer.appendChild(princessGo);
