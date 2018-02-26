@@ -120,7 +120,7 @@ class DialogComponent extends Component {
         return new Promise<void>(resolve => {this.sendFinishedNotification = resolve});
     }
 
-    presentOptions(options: string[], clearBox: boolean = false): Promise<string> {
+    presentOptions(options: string[], clearBox: boolean = false, title?: string): Promise<string> {
 
         return new Promise<string>(resolve => {
             let optionContainer = document.createElement('div');
@@ -135,7 +135,7 @@ class DialogComponent extends Component {
             });
             this._textArea.appendChild(optionContainer);
 
-            this.writeText('', false);
+            this.writeText('', false, title);
         });
     }
 

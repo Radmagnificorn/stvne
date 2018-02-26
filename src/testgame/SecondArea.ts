@@ -8,6 +8,7 @@ import AE from "../engine/ActionEvents";
 import PortalComponent from "../engine/components/PortalComponent";
 import Area from "../engine/Area";
 import AniEvents from "../engine/animation/AniEvents";
+import CharacterComponent from "../engine/components/CharacterComponent";
 
 class SecondArea extends Area {
 
@@ -25,27 +26,29 @@ class SecondArea extends Area {
         let background = new GameObject();
         background.addComponent(new ImageComponent(imgs[0]));
 
-        let princess = new GameObject(505,190, imgs[1]);
-
 
         let dialog = this.dialogComponent;
+        let princessGo = new GameObject(505,190);
+        let princess = new CharacterComponent("One-eyed Princess", new Map([['default', imgs[1]]]), dialog);
+        princessGo.addComponent(princess);
 
-        princess.element.style.opacity = '0';
 
-        this.gameLayer.appendChild(princess);
+        princessGo.element.style.opacity = '0';
+
+        this.gameLayer.appendChild(princessGo);
         this.gameLayer.appendChild(exit);
         this.backgroundLayer.appendChild(background);
 
         await AE.pause(1000);
-        await AniEvents.fadeIn(princess, 1);
-        await dialog.writeText("Hello, I am a princess of some sort... ");
+        await AniEvents.fadeIn(princessGo, 1);
+        await princess.say("Hello, I am a princess of some sort... ");
         await AE.pause(250);
-        await dialog.writeText("welcome to my bridge", false);
+        await princess.say("welcome to my bridge", false);
         await AE.waitForClick(dialog);
-        await dialog.writeText("If you want to pass, you must answer a riddle.");
+        await princess.say("If you want to pass, you must answer a riddle.");
         await AE.waitForClick(dialog);
-        await dialog.writeText("How many cabbages do you think I could carry at one time?");
-        let response = await dialog.presentOptions(["One", "Five", "Twelve", "Fourteen"]);
+        let response = await princess.ask("How many cabbages do you think I could carry at one time?",
+            ["One", "Five", "Twelve", "Fourteen"]);
         switch (response) {
             case 'One':
                 await dialog.writeText("Really? One? okay ya dick, whatever");

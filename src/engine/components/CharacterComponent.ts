@@ -1,14 +1,17 @@
 import ImageComponent from "./ImageComponent";
+import DialogComponent from "./DialogComponent";
 
 class CharacterComponent extends ImageComponent {
     private _portraits: Map<string, HTMLImageElement>;
-    private _CharName: string;
+    private _charName: string;
+    private _dialog: DialogComponent;
 
-    constructor(name: string, portraits: Map<string, HTMLImageElement>) {
+    constructor(name: string, portraits: Map<string, HTMLImageElement>, dialog?: DialogComponent) {
         super(portraits.get('default'));
 
-        this._CharName = name;
+        this._charName = name;
         this._portraits = portraits;
+        this._dialog = dialog;
     }
 
     showPortrait(name: string): Promise<void> {
@@ -20,6 +23,20 @@ class CharacterComponent extends ImageComponent {
 
     get name() {
         return "character";
+    }
+
+    say(text: string, clearFirst: boolean = true): Promise<void> {
+        if (this._dialog) {
+            return this._dialog.writeText(text, clearFirst, this._charName);
+        }
+
+        else return Promise.resolve();
+    }
+
+    ask(question: string, options: string[]): Promise<string> {
+        return this.say(question, true).then(() => {
+            return this._dialog.presentOptions(options, false, this._charName);
+        });
     }
 
 

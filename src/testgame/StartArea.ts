@@ -33,10 +33,10 @@ class StartArea extends Area {
         //vampire
         let vampire = new GameObject(286, 60);
 
-        let vampImageComponent = new CharacterComponent("vampire", new Map([
+        let vampireDave = new CharacterComponent("Vampire Dave", new Map([
             ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
-        ]));
-        vampire.addComponent(vampImageComponent);
+        ]), d);
+        vampire.addComponent(vampireDave);
 
 
         this.gameLayer.appendChild(vampire);
@@ -48,13 +48,13 @@ class StartArea extends Area {
         await this.events.vampireIntro(d, vampire, gs);
 
         await AE.waitForClick(dialogBox);
-        await d.writeText("do you like to read books?", true, "Vampire Dave");
-        let likesToRead = await d.presentOptions(["Yes, books are awesome!", "No... not a fan.", "Books are for losers", "No, I'm too cool"], false);
+        let likesToRead = await vampireDave.ask("Do you like to read books?",
+            ["Yes, books are awesome!", "No... not a fan.", "Books are for losers", "No, I'm too cool"]);
         switch (likesToRead) {
             case "Yes, books are awesome!":
-                await d.writeText("Yes, I thought you might");
+                await vampireDave.say("Yes, I thought you might");
                 await AE.waitForClick(dialogBox);
-                await d.writeText("What kind of books do you like to read?");
+                await vampireDave.say("What kind of books do you like to read?");
                 let fictionOrNo = await d.presentOptions(["Fiction", "Non-fiction"]);
                 if (fictionOrNo === "Fiction") {
                     await d.writeText("I am a fan of fiction myself");
@@ -63,18 +63,18 @@ class StartArea extends Area {
                 }
                 break;
             case "Books are for losers":
-                await d.writeText("Yeah? well maybe books think that you're a loser...");
+                await vampireDave.say("Yeah? well maybe books think that you're a loser...");
                 break;
             default:
-                await d.writeText("Oh, well that's ok...");
+                await vampireDave.say("Oh, well that's ok...");
         }
 
         await AE.waitForClick(d);
         let pt = await gs.get("second_area.princess_talk");
         if (!pt) {
-            await d.writeText("You should head outside to the left and talk to the princess.");
+            await vampireDave.say("You should head outside to the left and talk to the princess.");
         } else {
-            await d.writeText("Well, I guess I don't have much more to say. Please have a look around.")
+            await vampireDave.say("Well, I guess I don't have much more to say. Please have a look around.")
         }
 
         await AE.waitForClick(dialogBox);
@@ -85,22 +85,22 @@ class StartArea extends Area {
 
     events = {
         vampireIntro: async (d: DialogComponent, vampire: GameObject, gs: GameState) => {
-            let vampChar = <CharacterComponent>vampire.components['character'];
+            let vampireDave = <CharacterComponent>vampire.components['character'];
             await AE.pause(2000);
             await AniEvents.fadeIn(vampire, 1);
             let princessTalk = await gs.get("second_area.princess_talk");
             if (princessTalk === "true") {
-                await d.writeText("I see you talked to the princess");
+                await vampireDave.say("I see you talked to the princess");
             } else {
-                await d.writeText("Hello, I am a vampire. Welcome to my study.", true, "Vampire Dave");
+                await vampireDave.say("Hello, I am a vampire. Welcome to my study.", true);
                 await AE.waitForClick(d);
-                await vampChar.showPortrait('handsup');
-                await d.writeText("As you can see, I have many books", true, "Vampire Dave");
+                await vampireDave.showPortrait('handsup');
+                await vampireDave.say("As you can see, I have many books", true);
                 await AE.pause(100);
-                await d.writeText(", and not just any books...", false, "Vampire Dave");
+                await vampireDave.say(", and not just any books...", false);
                 await AE.pause(250);
-                await vampChar.showPortrait('default');
-                await d.writeText(" good books.", false, "Vampire Dave");
+                await vampireDave.showPortrait('default');
+                await vampireDave.say(" good books.", false);
             }
         }
     };

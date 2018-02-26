@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -394,7 +394,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(15);
+var	fixUrls = __webpack_require__(16);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -720,9 +720,9 @@ function updateLink (link, options, obj) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__engine_components_PortalComponent__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__SecondArea__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__SecondArea__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__engine_animation_AniEvents__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__ = __webpack_require__(11);
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -745,23 +745,23 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
         super(...arguments);
         this.events = {
             vampireIntro: (d, vampire, gs) => __awaiter(this, void 0, void 0, function* () {
-                let vampChar = vampire.components['character'];
+                let vampireDave = vampire.components['character'];
                 yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(2000);
                 yield __WEBPACK_IMPORTED_MODULE_7__engine_animation_AniEvents__["a" /* default */].fadeIn(vampire, 1);
                 let princessTalk = yield gs.get("second_area.princess_talk");
                 if (princessTalk === "true") {
-                    yield d.writeText("I see you talked to the princess");
+                    yield vampireDave.say("I see you talked to the princess");
                 }
                 else {
-                    yield d.writeText("Hello, I am a vampire. Welcome to my study.", true, "Vampire Dave");
+                    yield vampireDave.say("Hello, I am a vampire. Welcome to my study.", true);
                     yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
-                    yield vampChar.showPortrait('handsup');
-                    yield d.writeText("As you can see, I have many books", true, "Vampire Dave");
+                    yield vampireDave.showPortrait('handsup');
+                    yield vampireDave.say("As you can see, I have many books", true);
                     yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(100);
-                    yield d.writeText(", and not just any books...", false, "Vampire Dave");
+                    yield vampireDave.say(", and not just any books...", false);
                     yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(250);
-                    yield vampChar.showPortrait('default');
-                    yield d.writeText(" good books.", false, "Vampire Dave");
+                    yield vampireDave.showPortrait('default');
+                    yield vampireDave.say(" good books.", false);
                 }
             })
         };
@@ -779,23 +779,22 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__["a" /* default */](imgs.get('background'), true));
             //vampire
             let vampire = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](286, 60);
-            let vampImageComponent = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("vampire", new Map([
+            let vampireDave = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("Vampire Dave", new Map([
                 ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
-            ]));
-            vampire.addComponent(vampImageComponent);
+            ]), d);
+            vampire.addComponent(vampireDave);
             this.gameLayer.appendChild(vampire);
             this.gameLayer.appendChild(exit);
             this.backgroundLayer.appendChild(background);
             vampire.element.style.opacity = '0';
             yield this.events.vampireIntro(d, vampire, gs);
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox);
-            yield d.writeText("do you like to read books?", true, "Vampire Dave");
-            let likesToRead = yield d.presentOptions(["Yes, books are awesome!", "No... not a fan.", "Books are for losers", "No, I'm too cool"], false);
+            let likesToRead = yield vampireDave.ask("Do you like to read books?", ["Yes, books are awesome!", "No... not a fan.", "Books are for losers", "No, I'm too cool"]);
             switch (likesToRead) {
                 case "Yes, books are awesome!":
-                    yield d.writeText("Yes, I thought you might");
+                    yield vampireDave.say("Yes, I thought you might");
                     yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox);
-                    yield d.writeText("What kind of books do you like to read?");
+                    yield vampireDave.say("What kind of books do you like to read?");
                     let fictionOrNo = yield d.presentOptions(["Fiction", "Non-fiction"]);
                     if (fictionOrNo === "Fiction") {
                         yield d.writeText("I am a fan of fiction myself");
@@ -805,18 +804,18 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
                     }
                     break;
                 case "Books are for losers":
-                    yield d.writeText("Yeah? well maybe books think that you're a loser...");
+                    yield vampireDave.say("Yeah? well maybe books think that you're a loser...");
                     break;
                 default:
-                    yield d.writeText("Oh, well that's ok...");
+                    yield vampireDave.say("Oh, well that's ok...");
             }
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
             let pt = yield gs.get("second_area.princess_talk");
             if (!pt) {
-                yield d.writeText("You should head outside to the left and talk to the princess.");
+                yield vampireDave.say("You should head outside to the left and talk to the princess.");
             }
             else {
-                yield d.writeText("Well, I guess I don't have much more to say. Please have a look around.");
+                yield vampireDave.say("Well, I guess I don't have much more to say. Please have a look around.");
             }
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox);
             yield d.hideDialog();
@@ -845,9 +844,9 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Scene__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Scene__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GameObject__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_DialogComponent__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_DialogComponent__ = __webpack_require__(19);
 
 
 
@@ -970,9 +969,48 @@ class AniEvents {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ImageComponent__ = __webpack_require__(1);
+
+class CharacterComponent extends __WEBPACK_IMPORTED_MODULE_0__ImageComponent__["a" /* default */] {
+    constructor(name, portraits, dialog) {
+        super(portraits.get('default'));
+        this._charName = name;
+        this._portraits = portraits;
+        this._dialog = dialog;
+    }
+    showPortrait(name) {
+        return new Promise(resolve => {
+            this.image = this._portraits.get(name);
+            resolve();
+        });
+    }
+    get name() {
+        return "character";
+    }
+    say(text, clearFirst = true) {
+        if (this._dialog) {
+            return this._dialog.writeText(text, clearFirst, this._charName);
+        }
+        else
+            return Promise.resolve();
+    }
+    ask(question, options) {
+        return this.say(question, true).then(() => {
+            return this._dialog.presentOptions(options, false, this._charName);
+        });
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (CharacterComponent);
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_GameWindow__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__engine_Game__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_GameWindow__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__engine_Game__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_GameState__ = __webpack_require__(24);
 
@@ -997,11 +1035,11 @@ function scaleScreen(gameWindow, document, screen) {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameWindow_scss__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameWindow_scss__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameWindow_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__GameWindow_scss__);
 
 class GameWindow {
@@ -1031,11 +1069,11 @@ class GameWindow {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(14);
+var content = __webpack_require__(15);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -1081,7 +1119,7 @@ if(false) {
 }
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(4)(false);
@@ -1095,7 +1133,7 @@ exports.push([module.i, "body {\n  margin: 0;\n  padding: 0;\n  background: #000
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 
@@ -1190,7 +1228,7 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1227,7 +1265,7 @@ class Game {
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1255,14 +1293,14 @@ class Scene {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__DialogStyle_scss__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__DialogStyle_scss__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__DialogStyle_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__DialogStyle_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__animation_AnimationTimer__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__animation_AnimationTimer__ = __webpack_require__(22);
 
 
 
@@ -1362,7 +1400,7 @@ class DialogComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Co
         this._timer.start();
         return new Promise(resolve => { this.sendFinishedNotification = resolve; });
     }
-    presentOptions(options, clearBox = false) {
+    presentOptions(options, clearBox = false, title) {
         return new Promise(resolve => {
             let optionContainer = document.createElement('div');
             options.forEach(option => {
@@ -1375,7 +1413,7 @@ class DialogComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Co
                 });
             });
             this._textArea.appendChild(optionContainer);
-            this.writeText('', false);
+            this.writeText('', false, title);
         });
     }
     get name() {
@@ -1386,11 +1424,11 @@ class DialogComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Co
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(20);
+var content = __webpack_require__(21);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -1436,7 +1474,7 @@ if(false) {
 }
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(4)(false);
@@ -1450,7 +1488,7 @@ exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radi
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1470,7 +1508,7 @@ class AnimationTimer {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1482,6 +1520,7 @@ class AnimationTimer {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__engine_components_PortalComponent__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__engine_Area__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__engine_animation_AniEvents__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__ = __webpack_require__(11);
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -1490,6 +1529,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -1508,22 +1548,23 @@ class SecondArea extends __WEBPACK_IMPORTED_MODULE_6__engine_Area__["a" /* defau
             exit.height = 720;
             let background = new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* default */]();
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__["a" /* default */](imgs[0]));
-            let princess = new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* default */](505, 190, imgs[1]);
             let dialog = this.dialogComponent;
-            princess.element.style.opacity = '0';
-            this.gameLayer.appendChild(princess);
+            let princessGo = new __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* default */](505, 190);
+            let princess = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("One-eyed Princess", new Map([['default', imgs[1]]]), dialog);
+            princessGo.addComponent(princess);
+            princessGo.element.style.opacity = '0';
+            this.gameLayer.appendChild(princessGo);
             this.gameLayer.appendChild(exit);
             this.backgroundLayer.appendChild(background);
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(1000);
-            yield __WEBPACK_IMPORTED_MODULE_7__engine_animation_AniEvents__["a" /* default */].fadeIn(princess, 1);
-            yield dialog.writeText("Hello, I am a princess of some sort... ");
+            yield __WEBPACK_IMPORTED_MODULE_7__engine_animation_AniEvents__["a" /* default */].fadeIn(princessGo, 1);
+            yield princess.say("Hello, I am a princess of some sort... ");
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(250);
-            yield dialog.writeText("welcome to my bridge", false);
+            yield princess.say("welcome to my bridge", false);
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialog);
-            yield dialog.writeText("If you want to pass, you must answer a riddle.");
+            yield princess.say("If you want to pass, you must answer a riddle.");
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialog);
-            yield dialog.writeText("How many cabbages do you think I could carry at one time?");
-            let response = yield dialog.presentOptions(["One", "Five", "Twelve", "Fourteen"]);
+            let response = yield princess.ask("How many cabbages do you think I could carry at one time?", ["One", "Five", "Twelve", "Fourteen"]);
             switch (response) {
                 case 'One':
                     yield dialog.writeText("Really? One? okay ya dick, whatever");
@@ -1553,32 +1594,6 @@ class SecondArea extends __WEBPACK_IMPORTED_MODULE_6__engine_Area__["a" /* defau
     }
 }
 /* harmony default export */ __webpack_exports__["a"] = (SecondArea);
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ImageComponent__ = __webpack_require__(1);
-
-class CharacterComponent extends __WEBPACK_IMPORTED_MODULE_0__ImageComponent__["a" /* default */] {
-    constructor(name, portraits) {
-        super(portraits.get('default'));
-        this._CharName = name;
-        this._portraits = portraits;
-    }
-    showPortrait(name) {
-        return new Promise(resolve => {
-            this.image = this._portraits.get(name);
-            resolve();
-        });
-    }
-    get name() {
-        return "character";
-    }
-}
-/* harmony default export */ __webpack_exports__["a"] = (CharacterComponent);
 
 
 /***/ }),
