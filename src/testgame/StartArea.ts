@@ -13,12 +13,17 @@ import CharacterComponent from "../engine/components/CharacterComponent";
 
 class StartArea extends Area {
 
+    private vampire: CharacterComponent;
+    private princess: CharacterComponent;
+    private dialog: DialogComponent;
+
     async buildScene(imgs: Map<string, HTMLImageElement>) {
 
         let gs = this._gameInstance.gameState;
 
         let d = this.dialogComponent;
         let dialogBox = this.dialogComponent.element;
+        this.dialog = d;
         let exit = new GameObject();
         exit.addComponent(new PortalComponent(new SecondArea(this._gameInstance)));
         exit.width = 50;
@@ -38,8 +43,18 @@ class StartArea extends Area {
         ]), d);
         vampire.addComponent(vampireDave);
 
+        //princess
+        let princessGo = new GameObject(505,190);
+        let princess = new CharacterComponent("Demon-eyed Princess", new Map([['default', imgs.get("princess_default")]]), d);
+        princessGo.addComponent(princess);
+        princessGo.element.style.opacity = '0';
+        this.princess = princess;
+
+        this.vampire = vampireDave;
+
 
         this.gameLayer.appendChild(vampire);
+        this.gameLayer.appendChild(princessGo);
         this.gameLayer.appendChild(exit);
         this.backgroundLayer.appendChild(background);
 
@@ -74,11 +89,11 @@ class StartArea extends Area {
         if (!pt) {
             await vampireDave.say("You should head outside to the left and talk to the princess.");
         } else {
-            await vampireDave.say("Well, I guess I don't have much more to say. Please have a look around.")
+            await this.events.princessShowsUp();
         }
 
         await AE.waitForClick(dialogBox);
-        await d.hideDialog()
+        await d.hideDialog();
         await AniEvents.fadeOut(vampire, 1);
 
     }
@@ -86,7 +101,7 @@ class StartArea extends Area {
     events = {
         vampireIntro: async (d: DialogComponent, vampire: GameObject, gs: GameState) => {
             let vampireDave = <CharacterComponent>vampire.components['character'];
-            await AE.pause(2000);
+            await AE.pause(1000);
             await AniEvents.fadeIn(vampire, 1);
             let princessTalk = await gs.get("second_area.princess_talk");
             if (princessTalk === "true") {
@@ -102,6 +117,20 @@ class StartArea extends Area {
                 await vampireDave.showPortrait('default');
                 await vampireDave.say(" good books.", false);
             }
+        },
+        princessShowsUp: async () => {
+            let princess = this.princess;
+            let vampire = this.vampire;
+
+            await AniEvents.fadeIn(princess.element, 1);
+            let cabbages = await this.gameState.get("second_area.cabbages");
+            await princess.say("Hey Dave, some weirdo just told me I look like I could carry " +
+                (cabbages === "One" ? "only one cabbage" : cabbages.toLowerCase() + " cabbages") + "..." );
+            await AE.waitForClick(this.dialog);
+            await princess.say("oh wait! that's them right there.");
+            await AE.waitForClick(this.dialog);
+            await vampire.showPortrait("handsup");
+            await vampire.say("well what do you want me to do about it?");
         }
     };
 
@@ -112,7 +141,8 @@ class StartArea extends Area {
             ResourceLoader.loadImagesToMap(new Map([
                 ["background", "office.png"],
                 ["vamp_default", "vamp_look_straight.png"],
-                ["vamp_handsup", "test.png"]
+                ["vamp_handsup", "test.png"],
+                ["princess_default", "princess.png"]
             ]))
                 .then(imgs => {
                     resolve();

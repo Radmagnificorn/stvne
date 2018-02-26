@@ -29,10 +29,8 @@ class SecondArea extends Area {
 
         let dialog = this.dialogComponent;
         let princessGo = new GameObject(505,190);
-        let princess = new CharacterComponent("One-eyed Princess", new Map([['default', imgs[1]]]), dialog);
+        let princess = new CharacterComponent("Demon-eyed Princess", new Map([['default', imgs[1]]]), dialog);
         princessGo.addComponent(princess);
-
-
         princessGo.element.style.opacity = '0';
 
         this.gameLayer.appendChild(princessGo);
@@ -59,6 +57,8 @@ class SecondArea extends Area {
             default:
                 await dialog.writeText("Uh, thanks? You're an idiot though. That is not even remotely realistic");
         }
+
+        await gs.set("second_area.cabbages", response);
 
         await AE.waitForClick(dialog);
         await dialog.writeText("Oh well... It doesn't even really matter if you got it right or wrong. I was never going to let you pass.");

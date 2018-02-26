@@ -746,7 +746,7 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
         this.events = {
             vampireIntro: (d, vampire, gs) => __awaiter(this, void 0, void 0, function* () {
                 let vampireDave = vampire.components['character'];
-                yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(2000);
+                yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(1000);
                 yield __WEBPACK_IMPORTED_MODULE_7__engine_animation_AniEvents__["a" /* default */].fadeIn(vampire, 1);
                 let princessTalk = yield gs.get("second_area.princess_talk");
                 if (princessTalk === "true") {
@@ -763,6 +763,19 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
                     yield vampireDave.showPortrait('default');
                     yield vampireDave.say(" good books.", false);
                 }
+            }),
+            princessShowsUp: () => __awaiter(this, void 0, void 0, function* () {
+                let princess = this.princess;
+                let vampire = this.vampire;
+                yield __WEBPACK_IMPORTED_MODULE_7__engine_animation_AniEvents__["a" /* default */].fadeIn(princess.element, 1);
+                let cabbages = yield this.gameState.get("second_area.cabbages");
+                yield princess.say("Hey Dave, some weirdo just told me I look like I could carry " +
+                    (cabbages === "One" ? "only one cabbage" : cabbages.toLowerCase() + " cabbages") + "...");
+                yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(this.dialog);
+                yield princess.say("oh wait! that's them right there.");
+                yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(this.dialog);
+                yield vampire.showPortrait("handsup");
+                yield vampire.say("well what do you want me to do about it?");
             })
         };
     }
@@ -771,6 +784,7 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             let gs = this._gameInstance.gameState;
             let d = this.dialogComponent;
             let dialogBox = this.dialogComponent.element;
+            this.dialog = d;
             let exit = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */]();
             exit.addComponent(new __WEBPACK_IMPORTED_MODULE_5__engine_components_PortalComponent__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_6__SecondArea__["a" /* default */](this._gameInstance)));
             exit.width = 50;
@@ -783,7 +797,15 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
                 ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
             ]), d);
             vampire.addComponent(vampireDave);
+            //princess
+            let princessGo = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](505, 190);
+            let princess = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("One-eyed Princess", new Map([['default', imgs.get("princess_default")]]), d);
+            princessGo.addComponent(princess);
+            princessGo.element.style.opacity = '0';
+            this.princess = princess;
+            this.vampire = vampireDave;
             this.gameLayer.appendChild(vampire);
+            this.gameLayer.appendChild(princessGo);
             this.gameLayer.appendChild(exit);
             this.backgroundLayer.appendChild(background);
             vampire.element.style.opacity = '0';
@@ -815,7 +837,7 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
                 yield vampireDave.say("You should head outside to the left and talk to the princess.");
             }
             else {
-                yield vampireDave.say("Well, I guess I don't have much more to say. Please have a look around.");
+                yield this.events.princessShowsUp();
             }
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox);
             yield d.hideDialog();
@@ -827,7 +849,8 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__["a" /* default */].loadImagesToMap(new Map([
                 ["background", "office.png"],
                 ["vamp_default", "vamp_look_straight.png"],
-                ["vamp_handsup", "test.png"]
+                ["vamp_handsup", "test.png"],
+                ["princess_default", "princess.png"]
             ]))
                 .then(imgs => {
                 resolve();
@@ -1575,6 +1598,7 @@ class SecondArea extends __WEBPACK_IMPORTED_MODULE_6__engine_Area__["a" /* defau
                 default:
                     yield dialog.writeText("Uh, thanks? You're an idiot though. That is not even remotely realistic");
             }
+            yield gs.set("second_area.cabbages", response);
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialog);
             yield dialog.writeText("Oh well... It doesn't even really matter if you got it right or wrong. I was never going to let you pass.");
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialog);
