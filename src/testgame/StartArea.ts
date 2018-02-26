@@ -32,7 +32,10 @@ class StartArea extends Area {
 
         //vampire
         let vampire = new GameObject(286, 60);
-        let vampImageComponent = new CharacterComponent("vampire", {"default": imgs.get('vamp_default'), "handsup": imgs.get('vamp_handsup')});
+
+        let vampImageComponent = new CharacterComponent("vampire", new Map([
+            ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
+        ]));
         vampire.addComponent(vampImageComponent);
 
 
@@ -89,15 +92,15 @@ class StartArea extends Area {
             if (princessTalk === "true") {
                 await d.writeText("I see you talked to the princess");
             } else {
-                await d.writeText("Hello, I am a vampire. Welcome to my study.");
+                await d.writeText("Hello, I am a vampire. Welcome to my study.", true, "Vampire Dave");
                 await AE.waitForClick(d);
                 await vampChar.showPortrait('handsup');
-                await d.writeText("As you can see, I have many books");
+                await d.writeText("As you can see, I have many books", true, "Vampire Dave");
                 await AE.pause(100);
-                await d.writeText(", and not just any books...", false);
+                await d.writeText(", and not just any books...", false, "Vampire Dave");
                 await AE.pause(250);
                 await vampChar.showPortrait('default');
-                await d.writeText(" good books.", false);
+                await d.writeText(" good books.", false, "Vampire Dave");
             }
         }
     };

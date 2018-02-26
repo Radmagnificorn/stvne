@@ -1,11 +1,11 @@
 import ImageComponent from "./ImageComponent";
 
 class CharacterComponent extends ImageComponent {
-    private _portraits: {[key: string]: HTMLImageElement} = {};
+    private _portraits: Map<string, HTMLImageElement>;
     private _CharName: string;
 
-    constructor(name: string, portraits: {[key: string]: HTMLImageElement}) {
-        super(portraits['default']);
+    constructor(name: string, portraits: Map<string, HTMLImageElement>) {
+        super(portraits.get('default'));
 
         this._CharName = name;
         this._portraits = portraits;
@@ -13,7 +13,7 @@ class CharacterComponent extends ImageComponent {
 
     showPortrait(name: string): Promise<void> {
         return new Promise<void>(resolve => {
-            this.image = this._portraits[name];
+            this.image = this._portraits.get(name);
             resolve();
         });
     }

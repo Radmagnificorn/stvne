@@ -121,7 +121,7 @@ class GameObject {
         return this._element;
     }
     generateElement() {
-        this._element.innerHTML = '';
+        //this._element.innerHTML = '';
         this.children.forEach(child => {
             this._element.appendChild(child.generateElement());
         });
@@ -183,7 +183,6 @@ class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Com
 "use strict";
 class Component {
     onAdd() {
-        this.gameObject;
     }
     //called by parent when component is added
     register(parent) {
@@ -754,15 +753,15 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
                     yield d.writeText("I see you talked to the princess");
                 }
                 else {
-                    yield d.writeText("Hello, I am a vampire. Welcome to my study.");
+                    yield d.writeText("Hello, I am a vampire. Welcome to my study.", true, "Vampire Dave");
                     yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
                     yield vampChar.showPortrait('handsup');
-                    yield d.writeText("As you can see, I have many books");
+                    yield d.writeText("As you can see, I have many books", true, "Vampire Dave");
                     yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(100);
-                    yield d.writeText(", and not just any books...", false);
+                    yield d.writeText(", and not just any books...", false, "Vampire Dave");
                     yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(250);
                     yield vampChar.showPortrait('default');
-                    yield d.writeText(" good books.", false);
+                    yield d.writeText(" good books.", false, "Vampire Dave");
                 }
             })
         };
@@ -780,7 +779,9 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__["a" /* default */](imgs.get('background'), true));
             //vampire
             let vampire = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](286, 60);
-            let vampImageComponent = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("vampire", { "default": imgs.get('vamp_default'), "handsup": imgs.get('vamp_handsup') });
+            let vampImageComponent = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("vampire", new Map([
+                ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
+            ]));
             vampire.addComponent(vampImageComponent);
             this.gameLayer.appendChild(vampire);
             this.gameLayer.appendChild(exit);
@@ -788,7 +789,7 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             vampire.element.style.opacity = '0';
             yield this.events.vampireIntro(d, vampire, gs);
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox);
-            yield d.writeText("do you like to read books?");
+            yield d.writeText("do you like to read books?", true, "Vampire Dave");
             let likesToRead = yield d.presentOptions(["Yes, books are awesome!", "No... not a fan.", "Books are for losers", "No, I'm too cool"], false);
             switch (likesToRead) {
                 case "Yes, books are awesome!":
@@ -1270,19 +1271,13 @@ class DialogComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Co
         super();
         this.isVisible = false;
         this._running = false;
-        this.ae = {
-            writeText: (text, clearBox = true) => {
-                return () => this.writeText(text, clearBox);
-            },
-            presentOptions: (options, clearBox = false) => {
-                return () => this.presentOptions(options, clearBox);
-            }
-        };
         this._timer = new __WEBPACK_IMPORTED_MODULE_2__animation_AnimationTimer__["a" /* default */](this.update.bind(this), 30);
     }
     onAdd() {
-        let element = this.gameObject.element;
-        element.classList.add('animated_dialog_box');
+        this._element = this.createDialogUI();
+        this._titleBox = this._element.getElementsByClassName('title_box')[0];
+        this._textArea = this._element.getElementsByClassName('text_area')[0];
+        this.gameObject.element.appendChild(this._element);
     }
     createStyleableText(text) {
         return text.split(' ').map(word => this.createStyleableWord(word));
@@ -1298,6 +1293,17 @@ class DialogComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Co
         });
         return styleableWord;
     }
+    createDialogUI() {
+        let element = document.createElement('div');
+        element.classList.add('animated_dialog_box');
+        let titleBox = document.createElement('div');
+        titleBox.classList.add('title_box');
+        let textArea = document.createElement('div');
+        textArea.classList.add('text_area');
+        element.appendChild(textArea);
+        element.appendChild(titleBox);
+        return element;
+    }
     update() {
         if (this.isVisible) {
             let letterIterator = this.letters.next();
@@ -1311,7 +1317,7 @@ class DialogComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Co
         }
     }
     *showLetters() {
-        let words = this.gameObject.element.children;
+        let words = this._textArea.children;
         for (let w = 0; w < words.length; w++) {
             for (let l = 0; l < words[w].children.length; l++) {
                 yield words[w].children[l];
@@ -1321,13 +1327,13 @@ class DialogComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Co
     showDialog() {
         let aniEnd = this.startAnimationEndListener();
         this.isVisible = true;
-        this.gameObject.element.classList.add('visible');
+        this._element.classList.add('visible');
         return aniEnd;
     }
     hideDialog() {
         let aniEnd = this.startAnimationEndListener();
         this.isVisible = false;
-        this.gameObject.element.classList.remove('visible');
+        this._element.classList.remove('visible');
         return aniEnd;
     }
     startAnimationEndListener() {
@@ -1339,11 +1345,18 @@ class DialogComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Co
             this.element.addEventListener('transitionend', aniEndListener, false);
         });
     }
-    writeText(text, clearBox = true) {
+    writeText(text, clearBox = true, title) {
         if (clearBox) {
-            this.gameObject.element.innerHTML = '';
+            this._textArea.innerHTML = '';
         }
-        this.createStyleableText(text).forEach(word => this.gameObject.element.appendChild(word));
+        if (title) {
+            this._titleBox.classList.add('visible');
+            this._titleBox.innerText = title;
+        }
+        else {
+            this._titleBox.classList.remove('visible');
+        }
+        this.createStyleableText(text).forEach(word => this._textArea.appendChild(word));
         this.letters = this.showLetters();
         this.showDialog();
         this._timer.start();
@@ -1361,7 +1374,7 @@ class DialogComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Co
                     resolve(option);
                 });
             });
-            this.gameObject.element.appendChild(optionContainer);
+            this._textArea.appendChild(optionContainer);
             this.writeText('', false);
         });
     }
@@ -1431,7 +1444,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radius: 20px 20px 0 0;\n  position: absolute;\n  top: 450px;\n  left: 0;\n  height: 225px;\n  width: 1235px;\n  background: rgba(0, 0, 0, 0.7);\n  border: 3px solid #ffffff;\n  font-family: Arial, serif;\n  visibility: hidden;\n  opacity: 0;\n  transition: visibility 0s, opacity 0.5s; }\n  .animated_dialog_box.visible {\n    visibility: visible;\n    opacity: 1; }\n  .animated_dialog_box .word {\n    font-size: 40px;\n    color: #ffffff;\n    margin: 0 5px 0 5px;\n    display: inline-block; }\n  .animated_dialog_box .dialog_option {\n    width: 550px;\n    border: 2px solid #ffffff;\n    font-size: 30px;\n    text-align: center;\n    font-weight: bold;\n    color: #ffffff;\n    margin: 10px;\n    padding: 20px;\n    display: inline-block; }\n", ""]);
+exports.push([module.i, ".animated_dialog_box {\n  padding: 20px;\n  border-radius: 20px 20px 0 0;\n  position: absolute;\n  top: 0;\n  left: 0;\n  height: 225px;\n  width: 1235px;\n  background: rgba(0, 0, 0, 0.7);\n  border: 3px solid #ffffff;\n  font-family: Arial, serif;\n  visibility: hidden;\n  opacity: 0;\n  transition: visibility 0s, opacity 0.5s; }\n  .animated_dialog_box.visible {\n    visibility: visible;\n    opacity: 1; }\n  .animated_dialog_box .word {\n    font-size: 40px;\n    color: #ffffff;\n    margin: 0 5px 0 5px;\n    display: inline-block; }\n  .animated_dialog_box .dialog_option {\n    width: 550px;\n    border: 2px solid #ffffff;\n    font-size: 30px;\n    text-align: center;\n    font-weight: bold;\n    color: #ffffff;\n    margin: 10px;\n    padding: 20px;\n    display: inline-block; }\n  .animated_dialog_box .title_box {\n    visibility: hidden;\n    position: absolute;\n    color: #ffffff;\n    top: -25px;\n    font-size: 23px;\n    font-weight: bold;\n    background: #000000;\n    border: #ffffff 2px solid;\n    padding: 5px 10px;\n    border-radius: 10px; }\n    .animated_dialog_box .title_box.visible {\n      visibility: visible; }\n", ""]);
 
 // exports
 
@@ -1551,14 +1564,13 @@ class SecondArea extends __WEBPACK_IMPORTED_MODULE_6__engine_Area__["a" /* defau
 
 class CharacterComponent extends __WEBPACK_IMPORTED_MODULE_0__ImageComponent__["a" /* default */] {
     constructor(name, portraits) {
-        super(portraits['default']);
-        this._portraits = {};
+        super(portraits.get('default'));
         this._CharName = name;
         this._portraits = portraits;
     }
     showPortrait(name) {
         return new Promise(resolve => {
-            this.image = this._portraits[name];
+            this.image = this._portraits.get(name);
             resolve();
         });
     }
