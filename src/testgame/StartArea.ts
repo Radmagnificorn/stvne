@@ -145,7 +145,7 @@ class StartArea extends Area {
             ResourceLoader.loadImagesToMap(new Map([
                 ["office", require("./resources/office.png")],
                 ["vamp_default", require("./resources/vamp_look_straight.png")],
-                ["vamp_handsup", require("./resources/test.png")],
+                ["vamp_handsup", require("./resources/vamp_hands_up.png")],
                 ["princess_default", require("./resources/princess.png")]
             ]))
                 .then(imgs => {

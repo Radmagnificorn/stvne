@@ -1653,7 +1653,7 @@ module.exports = __webpack_require__.p + "images/1133bdbc993daad4f6a0b0cc7a0856e
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "images/7ab5ca23fa88201039cc4ca3b242a707-test.png";
+module.exports = __webpack_require__.p + "images/7ab5ca23fa88201039cc4ca3b242a707-vamp_hands_up.png";
 
 /***/ }),
 /* 29 */
