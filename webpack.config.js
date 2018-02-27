@@ -12,11 +12,21 @@ module.exports = {
             {
                 test:/\.(s*)css$/,
                 use:['style-loader','css-loader', 'sass-loader']
+            },
+            {
+                test: /\.(png|jp(e*)g|svg)$/,
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        name: 'images/[hash]-[name].[ext]',
+                        limit: 8000
+                    }
+                }]
             }
         ]
     },
     resolve: {
-        extensions: [ '.tsx', '.ts', '.js', '.css' ]
+        extensions: [ '.tsx', '.ts', '.js', '.css', '.png' ]
     },
     output: {
         filename: 'stvne.js',

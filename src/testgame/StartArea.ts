@@ -7,9 +7,12 @@ import PortalComponent from "../engine/components/PortalComponent";
 import SecondArea from "./SecondArea";
 import AniEvents from "../engine/animation/AniEvents";
 import DialogComponent from "../engine/components/DialogComponent";
-import Game from "../engine/Game";
-import GameState from "../engine/GameState";
 import CharacterComponent from "../engine/components/CharacterComponent";
+
+import officeImage from './images/office.png';
+import princessImage from './images/princess.png';
+import vampDefaultImage from './images/vamp_look_straight.png';
+import handsupImage from './images/test.png';
 
 class StartArea extends Area {
 
@@ -144,10 +147,10 @@ class StartArea extends Area {
     loadResources() {
         return new Promise(resolve => {
             ResourceLoader.loadImagesToMap(new Map([
-                ["background", "office.png"],
-                ["vamp_default", "vamp_look_straight.png"],
-                ["vamp_handsup", "test.png"],
-                ["princess_default", "princess.png"]
+                ["background", officeImage],
+                ["vamp_default", vampDefaultImage],
+                ["vamp_handsup", handsupImage],
+                ["princess_default", princessImage]
             ]))
                 .then(imgs => {
                     resolve();
