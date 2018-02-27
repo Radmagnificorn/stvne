@@ -9,10 +9,6 @@ import AniEvents from "../engine/animation/AniEvents";
 import DialogComponent from "../engine/components/DialogComponent";
 import CharacterComponent from "../engine/components/CharacterComponent";
 
-import officeImage from './images/office.png';
-import princessImage from './images/princess.png';
-import vampDefaultImage from './images/vamp_look_straight.png';
-import handsupImage from './images/test.png';
 
 class StartArea extends Area {
 
@@ -35,7 +31,7 @@ class StartArea extends Area {
 
 
         let background = new GameObject(0,0);
-        background.addComponent(new ImageComponent(imgs.get('background'), true));
+        background.addComponent(new ImageComponent(imgs.get('office'), true));
 
 
         //vampire
@@ -147,10 +143,10 @@ class StartArea extends Area {
     loadResources() {
         return new Promise(resolve => {
             ResourceLoader.loadImagesToMap(new Map([
-                ["background", officeImage],
-                ["vamp_default", vampDefaultImage],
-                ["vamp_handsup", handsupImage],
-                ["princess_default", princessImage]
+                ["office", require("./resources/office.png")],
+                ["vamp_default", require("./resources/vamp_look_straight.png")],
+                ["vamp_handsup", require("./resources/test.png")],
+                ["princess_default", require("./resources/princess.png")]
             ]))
                 .then(imgs => {
                     resolve();

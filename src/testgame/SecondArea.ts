@@ -72,7 +72,7 @@ class SecondArea extends Area {
 
     loadResources() {
         return new Promise(resolve => {
-            ResourceLoader.loadImages("palace.png", "princess.png").then(imgs => {
+            ResourceLoader.loadImages(require("./resources/palace.png"), require("./resources/princess.png")).then(imgs => {
                 this.buildScene(imgs);
                 resolve();
             });
