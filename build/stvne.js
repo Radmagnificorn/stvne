@@ -821,7 +821,7 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__["a" /* default */](imgs.get('office'), true));
             //vampire
             let vampire = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](286, 60);
-            let vampireDave = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("Vampire Dave", new Map([
+            let vampireDave = new __WEBPACK_IMPORTED_MODULE_8__engine_components_CharacterComponent__["a" /* default */]("The Baron", new Map([
                 ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
             ]), d);
             vampire.addComponent(vampireDave);
@@ -1641,7 +1641,7 @@ module.exports = __webpack_require__.p + "images/f3356608c658d0488ca34d767a7d046
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "images/962324c1976ede6e1606303d1801d2d9-office.png";
+module.exports = __webpack_require__.p + "images/f97f3be00bf4191279fda68443c5a696-office.png";
 
 /***/ }),
 /* 27 */

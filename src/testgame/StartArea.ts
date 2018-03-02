@@ -37,7 +37,7 @@ class StartArea extends Area {
         //vampire
         let vampire = new GameObject(286, 60);
 
-        let vampireDave = new CharacterComponent("Vampire Dave", new Map([
+        let vampireDave = new CharacterComponent("The Baron", new Map([
             ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
         ]), d);
         vampire.addComponent(vampireDave);
