@@ -9,6 +9,7 @@ import PortalComponent from "../engine/components/PortalComponent";
 import Area from "../engine/Area";
 import AniEvents from "../engine/animation/AniEvents";
 import CharacterComponent from "../engine/components/CharacterComponent";
+import Hallway from "./Hallway";
 
 class SecondArea extends Area {
 
@@ -19,7 +20,7 @@ class SecondArea extends Area {
         let gs = this._gameInstance.gameState;
 
         let exit = new GameObject();
-        exit.addComponent(new PortalComponent(new StartArea(this._gameInstance)));
+        exit.addComponent(new PortalComponent(new Hallway(this._gameInstance)));
         exit.width = 50;
         exit.height = 720;
 

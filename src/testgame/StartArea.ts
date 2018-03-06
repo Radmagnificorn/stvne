@@ -8,6 +8,7 @@ import SecondArea from "./SecondArea";
 import AniEvents from "../engine/animation/AniEvents";
 import DialogComponent from "../engine/components/DialogComponent";
 import CharacterComponent from "../engine/components/CharacterComponent";
+import Hallway from "./Hallway";
 
 
 class StartArea extends Area {
@@ -24,7 +25,7 @@ class StartArea extends Area {
         let dialogBox = this.dialogComponent.element;
         this.dialog = d;
         let exit = new GameObject();
-        exit.addComponent(new PortalComponent(new SecondArea(this._gameInstance)));
+        exit.addComponent(new PortalComponent(new Hallway(this._gameInstance)));
         exit.width = 50;
         exit.height = 720;
 
