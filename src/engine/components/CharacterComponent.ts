@@ -1,5 +1,8 @@
 import ImageComponent from "./ImageComponent";
 import DialogComponent from "./DialogComponent";
+import DialogActor from "./DialogActor";
+import DynamicImage from "./DynamicImage";
+import GameObject from "../GameObject";
 
 class CharacterComponent extends ImageComponent {
     private _portraits: Map<string, HTMLImageElement>;
@@ -25,6 +28,7 @@ class CharacterComponent extends ImageComponent {
         return "character";
     }
 
+
     say(text: string, clearFirst: boolean = true): Promise<void> {
         if (this._dialog) {
             return this._dialog.writeText(text, clearFirst, this._charName);
@@ -41,6 +45,9 @@ class CharacterComponent extends ImageComponent {
 
 
 
+
 }
+
+export class Character extends DynamicImage(DialogActor(GameObject)) {}
 
 export default CharacterComponent;

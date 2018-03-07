@@ -1,11 +1,11 @@
 import GameWindow from "./GameWindow";
 import {Component} from "./components/Component";
-import ImageComponent from "./components/ImageComponent";
 
 class GameObject {
 
     children: GameObject[] = [];
     parent: GameObject;
+    private _wrapImage = true;
     private _components: Map<string, Component>;
     private _element: HTMLElement;
 
@@ -19,12 +19,24 @@ class GameObject {
         this.width = width;
 
         if (img) {
-            this.addComponent(new ImageComponent(img));
+            this.image = img;
         }
     }
 
     getChildren(): GameObject[] {
         return this.children;
+    }
+
+    set wrapImage(wrap: boolean) {
+        this._wrapImage = wrap;
+    }
+
+    set image(img: HTMLImageElement) {
+        this.element.style.backgroundImage = 'url("' + img.src + '")';
+        if (this._wrapImage) {
+            this.height = img.height;
+            this.width = img.width;
+        }
     }
 
     appendChild(child: GameObject) {
