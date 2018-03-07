@@ -1,14 +1,11 @@
-import Scene from "../engine/Scene";
-import StartArea from "./StartArea";
 import ResourceLoader from "../engine/ResourceLoader";
 import GameObject from "../engine/GameObject";
 import ImageComponent from "../engine/components/ImageComponent";
-import AnimatedTextboxComponent, {default as DialogComponent} from "../engine/components/DialogComponent";
 import AE from "../engine/ActionEvents";
-import PortalComponent, {default as Portal} from "../engine/components/PortalComponent";
+import Portal from "../engine/components/PortalComponent";
 import Area from "../engine/Area";
 import AniEvents from "../engine/animation/AniEvents";
-import CharacterComponent from "../engine/components/CharacterComponent";
+import Character from "../engine/components/Character";
 import Hallway from "./Hallway";
 
 class SecondArea extends Area {
@@ -28,17 +25,17 @@ class SecondArea extends Area {
 
 
         let dialog = this.dialogComponent;
-        let princessGo = new GameObject(505,190);
-        let princess = new CharacterComponent("Demon-eyed Princess", new Map([['default', imgs[1]]]), dialog);
-        princessGo.addComponent(princess);
-        princessGo.element.style.opacity = '0';
+        let princess = new Character(505,190);
+        princess.initDialogActor(dialog, "Demon-eyed Princess")
+            .initDynamicImage(new Map([['default', imgs[1]]]));
+        princess.element.style.opacity = '0';
 
-        this.gameLayer.appendChild(princessGo);
+        this.gameLayer.appendChild(princess);
         this.gameLayer.appendChild(toHallway);
         this.backgroundLayer.appendChild(background);
 
         await AE.pause(1000);
-        await AniEvents.fadeIn(princessGo, 1);
+        await AniEvents.fadeIn(princess, 1);
         await princess.say("Hello, I am a princess of some sort... ");
         await AE.pause(250);
         await princess.say("welcome to my bridge", false);

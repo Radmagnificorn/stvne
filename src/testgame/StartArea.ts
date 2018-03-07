@@ -4,17 +4,16 @@ import ResourceLoader from "../engine/ResourceLoader";
 import ImageComponent from "../engine/components/ImageComponent";
 import AE from "../engine/ActionEvents";
 import Portal from "../engine/components/PortalComponent";
-import SecondArea from "./SecondArea";
 import AniEvents from "../engine/animation/AniEvents";
 import DialogComponent from "../engine/components/DialogComponent";
-import CharacterComponent from "../engine/components/CharacterComponent";
+import Character from "../engine/components/Character";
 import Hallway from "./Hallway";
 
 
 class StartArea extends Area {
 
-    private vampire: CharacterComponent;
-    private princess: CharacterComponent;
+    private vampire: Character;
+    private princess: Character;
     private dialog: DialogComponent;
 
     async buildScene(imgs: Map<string, HTMLImageElement>) {
@@ -27,7 +26,6 @@ class StartArea extends Area {
 
         const Exit = Portal(GameObject);
 
-
         let toHallway = new Exit(0, 0, 720, 50);
         toHallway.initPortal(new Hallway(this._gameInstance));
 
@@ -38,29 +36,31 @@ class StartArea extends Area {
 
 
         //vampire
-        let vampire = new GameObject(286, 60);
 
-        let vampireDave = new CharacterComponent("Vampire Dave", new Map([
-            ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
-        ]), d);
-        vampire.addComponent(vampireDave);
+        let vampireDave = new Character(286, 60);
+        vampireDave.initDialogActor(d, "Vampire Dave")
+            .initDynamicImage(new Map([
+                ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
+            ]));
+
 
         //princess
-        let princessGo = new GameObject(505,190);
-        let princess = new CharacterComponent("Demon-eyed Princess", new Map([['default', imgs.get("princess_default")]]), d);
-        princessGo.addComponent(princess);
-        princessGo.element.style.opacity = '0';
+        let princess = new Character(505,190);
+        princess.initDialogActor(d, "Demon-eyed Princess")
+            .initDynamicImage(new Map([['default', imgs.get("princess_default")]]));
+
+        princess.element.style.opacity = '0';
         this.princess = princess;
 
         this.vampire = vampireDave;
 
 
-        this.gameLayer.appendChild(vampire);
-        this.gameLayer.appendChild(princessGo);
+        this.gameLayer.appendChild(vampireDave);
+        this.gameLayer.appendChild(princess);
         this.gameLayer.appendChild(toHallway);
         this.backgroundLayer.appendChild(background);
 
-        vampire.element.style.opacity = '0';
+        vampireDave.element.style.opacity = '0';
 
         let talkedToPrincess = await gs.get("second_area.princess_talk");
 
@@ -72,7 +72,7 @@ class StartArea extends Area {
 
         await AE.waitForClick(dialogBox);
         await d.hideDialog();
-        await AniEvents.fadeOut(vampire, 1);
+        await AniEvents.fadeOut(vampireDave, 1);
 
     }
 
@@ -88,12 +88,12 @@ class StartArea extends Area {
             } else {
                 await vampireDave.say("Hello, I am a vampire. Welcome to my study.", true);
                 await AE.waitForClick(d);
-                await vampireDave.showPortrait('handsup');
+                await vampireDave.showImage('handsup');
                 await vampireDave.say("As you can see, I have many books", true);
                 await AE.pause(100);
                 await vampireDave.say(", and not just any books...", false);
                 await AE.pause(250);
-                await vampireDave.showPortrait('default');
+                await vampireDave.showImage('default');
                 await vampireDave.say(" good books.", false);
             }
 
@@ -136,7 +136,7 @@ class StartArea extends Area {
             await AE.waitForClick(this.dialog);
             await princess.say("oh wait! that's them right there.");
             await AE.waitForClick(this.dialog);
-            await vampire.showPortrait("handsup");
+            await vampire.showImage("handsup");
             await vampire.say("well what do you want me to do about it?");
         }
     };

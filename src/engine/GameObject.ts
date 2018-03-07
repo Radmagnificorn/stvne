@@ -5,7 +5,7 @@ class GameObject {
 
     children: GameObject[] = [];
     parent: GameObject;
-    private _wrapImage = true;
+    private _imageMode: ImageMode = ImageMode.WRAP_IMAGE;
     private _components: Map<string, Component>;
     private _element: HTMLElement;
 
@@ -27,13 +27,13 @@ class GameObject {
         return this.children;
     }
 
-    set wrapImage(wrap: boolean) {
-        this._wrapImage = wrap;
+    set imageMode(mode: ImageMode) {
+        this._imageMode = mode;
     }
 
     set image(img: HTMLImageElement) {
         this.element.style.backgroundImage = 'url("' + img.src + '")';
-        if (this._wrapImage) {
+        if (this._imageMode === ImageMode.WRAP_IMAGE) {
             this.height = img.height;
             this.width = img.width;
         }
@@ -91,13 +91,18 @@ class GameObject {
     }
 
     generateElement() {
-        //this._element.innerHTML = '';
         this.children.forEach(child => {
             this._element.appendChild(child.generateElement());
         });
         return this._element;
     }
 
+}
+
+enum ImageMode {
+    WRAP_IMAGE,
+    CLIP,
+    STRETCH_IMAGE
 }
 
 export class Vector2d {

@@ -68,11 +68,10 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_ImageComponent__ = __webpack_require__(1);
-
 class GameObject {
     constructor(x = 0, y = 0, height = 10, width = 10, img) {
         this.children = [];
+        this._imageMode = ImageMode.WRAP_IMAGE;
         this._element = document.createElement('div');
         this._element.style.position = 'absolute';
         this._components = new Map();
@@ -80,11 +79,21 @@ class GameObject {
         this.height = height;
         this.width = width;
         if (img) {
-            this.addComponent(new __WEBPACK_IMPORTED_MODULE_0__components_ImageComponent__["a" /* default */](img));
+            this.image = img;
         }
     }
     getChildren() {
         return this.children;
+    }
+    set imageMode(mode) {
+        this._imageMode = mode;
+    }
+    set image(img) {
+        this.element.style.backgroundImage = 'url("' + img.src + '")';
+        if (this._imageMode === ImageMode.WRAP_IMAGE) {
+            this.height = img.height;
+            this.width = img.width;
+        }
     }
     appendChild(child) {
         child.setParent(this);
@@ -123,13 +132,18 @@ class GameObject {
         return this._element;
     }
     generateElement() {
-        //this._element.innerHTML = '';
         this.children.forEach(child => {
             this._element.appendChild(child.generateElement());
         });
         return this._element;
     }
 }
+var ImageMode;
+(function (ImageMode) {
+    ImageMode[ImageMode["WRAP_IMAGE"] = 0] = "WRAP_IMAGE";
+    ImageMode[ImageMode["CLIP"] = 1] = "CLIP";
+    ImageMode[ImageMode["STRETCH_IMAGE"] = 2] = "STRETCH_IMAGE";
+})(ImageMode || (ImageMode = {}));
 class Vector2d {
     constructor(x, y) {
         this.x = x;
@@ -143,43 +157,6 @@ class Vector2d {
 
 /***/ }),
 /* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(8);
-
-class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
-    constructor(image, fitImage = true) {
-        super();
-        this._image = image;
-        this._fitImage = fitImage;
-    }
-    onAdd() {
-        this.syncActiveImage();
-        if (this._fitImage) {
-            this.gameObject.height = this.image.height;
-            this.gameObject.width = this.image.width;
-        }
-    }
-    syncActiveImage() {
-        this.gameObject.element.style.backgroundImage = "url('" + this._image.src + "')";
-    }
-    get image() {
-        return this._image;
-    }
-    set image(image) {
-        this._image = image;
-        this.syncActiveImage();
-    }
-    get name() {
-        return "image";
-    }
-}
-/* harmony default export */ __webpack_exports__["a"] = (ImageComponent);
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -226,7 +203,7 @@ class ResourceLoader {
 
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -262,6 +239,43 @@ class Area extends __WEBPACK_IMPORTED_MODULE_0__Scene__["a" /* default */] {
     }
 }
 /* harmony default export */ __webpack_exports__["a"] = (Area);
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(8);
+
+class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
+    constructor(image, fitImage = true) {
+        super();
+        this._image = image;
+        this._fitImage = fitImage;
+    }
+    onAdd() {
+        this.syncActiveImage();
+        if (this._fitImage) {
+            this.gameObject.height = this.image.height;
+            this.gameObject.width = this.image.width;
+        }
+    }
+    syncActiveImage() {
+        this.gameObject.element.style.backgroundImage = "url('" + this._image.src + "')";
+    }
+    get image() {
+        return this._image;
+    }
+    set image(image) {
+        this._image = image;
+        this.syncActiveImage();
+    }
+    get name() {
+        return "image";
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (ImageComponent);
 
 
 /***/ }),
@@ -750,14 +764,14 @@ function updateLink (link, options, obj) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_Area__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_Area__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__engine_components_PortalComponent__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__engine_animation_AniEvents__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__engine_components_CharacterComponent__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__engine_components_Character__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Hallway__ = __webpack_require__(12);
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -792,12 +806,12 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
                 else {
                     yield vampireDave.say("Hello, I am a vampire. Welcome to my study.", true);
                     yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
-                    yield vampireDave.showPortrait('handsup');
+                    yield vampireDave.showImage('handsup');
                     yield vampireDave.say("As you can see, I have many books", true);
                     yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(100);
                     yield vampireDave.say(", and not just any books...", false);
                     yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].pause(250);
-                    yield vampireDave.showPortrait('default');
+                    yield vampireDave.showImage('default');
                     yield vampireDave.say(" good books.", false);
                 }
                 yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
@@ -838,7 +852,7 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
                 yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(this.dialog);
                 yield princess.say("oh wait! that's them right there.");
                 yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(this.dialog);
-                yield vampire.showPortrait("handsup");
+                yield vampire.showImage("handsup");
                 yield vampire.say("well what do you want me to do about it?");
             })
         };
@@ -855,23 +869,23 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             let background = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](0, 0);
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__["a" /* default */](imgs.get('office'), true));
             //vampire
-            let vampire = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](286, 60);
-            let vampireDave = new __WEBPACK_IMPORTED_MODULE_7__engine_components_CharacterComponent__["a" /* default */]("The Baron", new Map([
+            let vampireDave = new __WEBPACK_IMPORTED_MODULE_7__engine_components_Character__["a" /* default */](286, 60);
+            vampireDave.initDialogActor(d, "Vampire Dave")
+                .initDynamicImage(new Map([
                 ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
-            ]), d);
-            vampire.addComponent(vampireDave);
+            ]));
             //princess
-            let princessGo = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](505, 190);
-            let princess = new __WEBPACK_IMPORTED_MODULE_7__engine_components_CharacterComponent__["a" /* default */]("Demon-eyed Princess", new Map([['default', imgs.get("princess_default")]]), d);
-            princessGo.addComponent(princess);
-            princessGo.element.style.opacity = '0';
+            let princess = new __WEBPACK_IMPORTED_MODULE_7__engine_components_Character__["a" /* default */](505, 190);
+            princess.initDialogActor(d, "Demon-eyed Princess")
+                .initDynamicImage(new Map([['default', imgs.get("princess_default")]]));
+            princess.element.style.opacity = '0';
             this.princess = princess;
             this.vampire = vampireDave;
-            this.gameLayer.appendChild(vampire);
-            this.gameLayer.appendChild(princessGo);
+            this.gameLayer.appendChild(vampireDave);
+            this.gameLayer.appendChild(princess);
             this.gameLayer.appendChild(toHallway);
             this.backgroundLayer.appendChild(background);
-            vampire.element.style.opacity = '0';
+            vampireDave.element.style.opacity = '0';
             let talkedToPrincess = yield gs.get("second_area.princess_talk");
             if (!talkedToPrincess) {
                 yield this.events.vampireIntro();
@@ -881,15 +895,15 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             }
             yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(dialogBox);
             yield d.hideDialog();
-            yield __WEBPACK_IMPORTED_MODULE_6__engine_animation_AniEvents__["a" /* default */].fadeOut(vampire, 1);
+            yield __WEBPACK_IMPORTED_MODULE_6__engine_animation_AniEvents__["a" /* default */].fadeOut(vampireDave, 1);
         });
     }
     loadResources() {
         return new Promise(resolve => {
             __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__["a" /* default */].loadImagesToMap(new Map([
-                ["office", __webpack_require__(28)],
-                ["vamp_default", __webpack_require__(29)],
-                ["vamp_handsup", __webpack_require__(30)],
+                ["office", __webpack_require__(30)],
+                ["vamp_default", __webpack_require__(31)],
+                ["vamp_handsup", __webpack_require__(32)],
                 ["princess_default", __webpack_require__(13)]
             ]))
                 .then(imgs => {
@@ -999,38 +1013,16 @@ class AniEvents {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ImageComponent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__DialogActor__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__DynamicImage__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__GameObject__ = __webpack_require__(0);
 
-class CharacterComponent extends __WEBPACK_IMPORTED_MODULE_0__ImageComponent__["a" /* default */] {
-    constructor(name, portraits, dialog) {
-        super(portraits.get('default'));
-        this._charName = name;
-        this._portraits = portraits;
-        this._dialog = dialog;
-    }
-    showPortrait(name) {
-        return new Promise(resolve => {
-            this.image = this._portraits.get(name);
-            resolve();
-        });
-    }
-    get name() {
-        return "character";
-    }
-    say(text, clearFirst = true) {
-        if (this._dialog) {
-            return this._dialog.writeText(text, clearFirst, this._charName);
-        }
-        else
-            return Promise.resolve();
-    }
-    ask(question, options) {
-        return this.say(question, true).then(() => {
-            return this._dialog.presentOptions(options, false, this._charName);
-        });
-    }
+
+
+class Character extends Object(__WEBPACK_IMPORTED_MODULE_1__DynamicImage__["a" /* default */])(Object(__WEBPACK_IMPORTED_MODULE_0__DialogActor__["a" /* default */])(__WEBPACK_IMPORTED_MODULE_2__GameObject__["a" /* default */])) {
 }
-/* harmony default export */ __webpack_exports__["a"] = (CharacterComponent);
+/* harmony export (immutable) */ __webpack_exports__["a"] = Character;
+
 
 
 /***/ }),
@@ -1038,12 +1030,12 @@ class CharacterComponent extends __WEBPACK_IMPORTED_MODULE_0__ImageComponent__["
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_Area__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_Area__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__engine_components_PortalComponent__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__SecondArea__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__SecondArea__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__StartArea__ = __webpack_require__(7);
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1082,7 +1074,7 @@ class Hallway extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* default 
     loadResources() {
         return new Promise(resolve => {
             __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__["a" /* default */].loadImagesToMap(new Map([
-                ["hallway", __webpack_require__(27)]
+                ["hallway", __webpack_require__(29)]
             ]))
                 .then(imgs => {
                 resolve();
@@ -1108,8 +1100,8 @@ module.exports = __webpack_require__.p + "images/acde612f2f7fd10ff9859531aad4246
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_GameWindow__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__engine_Game__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_GameState__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_GameState__ = __webpack_require__(33);
 
 
 
@@ -1609,14 +1601,63 @@ class AnimationTimer {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_ResourceLoader__ = __webpack_require__(2);
+function DialogActor(Base) {
+    return class extends Base {
+        initDialogActor(dialog, title = "") {
+            this._dialog = dialog;
+            this._title = title;
+            return this;
+        }
+        say(text, clearFirst = true) {
+            if (this._dialog) {
+                return this._dialog.writeText(text, clearFirst, this._title);
+            }
+            else
+                return Promise.resolve();
+        }
+        ask(question, options) {
+            return this.say(question, true).then(() => {
+                return this._dialog.presentOptions(options, false, this._title);
+            });
+        }
+    };
+}
+/* harmony default export */ __webpack_exports__["a"] = (DialogActor);
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+function DynamicImage(Base) {
+    return class extends Base {
+        initDynamicImage(images) {
+            this._images = images;
+            this.image = this._images.get("default");
+            return this;
+        }
+        showImage(imageName) {
+            this.image = this._images.get(imageName);
+        }
+    };
+}
+/* harmony default export */ __webpack_exports__["a"] = (DynamicImage);
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_ResourceLoader__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_components_ImageComponent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_components_ImageComponent__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_ActionEvents__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__engine_components_PortalComponent__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__engine_Area__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__engine_Area__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__engine_animation_AniEvents__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__engine_components_CharacterComponent__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__engine_components_Character__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Hallway__ = __webpack_require__(12);
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1645,15 +1686,15 @@ class SecondArea extends __WEBPACK_IMPORTED_MODULE_5__engine_Area__["a" /* defau
             let background = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */]();
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_2__engine_components_ImageComponent__["a" /* default */](imgs[0]));
             let dialog = this.dialogComponent;
-            let princessGo = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](505, 190);
-            let princess = new __WEBPACK_IMPORTED_MODULE_7__engine_components_CharacterComponent__["a" /* default */]("Demon-eyed Princess", new Map([['default', imgs[1]]]), dialog);
-            princessGo.addComponent(princess);
-            princessGo.element.style.opacity = '0';
-            this.gameLayer.appendChild(princessGo);
+            let princess = new __WEBPACK_IMPORTED_MODULE_7__engine_components_Character__["a" /* default */](505, 190);
+            princess.initDialogActor(dialog, "Demon-eyed Princess")
+                .initDynamicImage(new Map([['default', imgs[1]]]));
+            princess.element.style.opacity = '0';
+            this.gameLayer.appendChild(princess);
             this.gameLayer.appendChild(toHallway);
             this.backgroundLayer.appendChild(background);
             yield __WEBPACK_IMPORTED_MODULE_3__engine_ActionEvents__["a" /* default */].pause(1000);
-            yield __WEBPACK_IMPORTED_MODULE_6__engine_animation_AniEvents__["a" /* default */].fadeIn(princessGo, 1);
+            yield __WEBPACK_IMPORTED_MODULE_6__engine_animation_AniEvents__["a" /* default */].fadeIn(princess, 1);
             yield princess.say("Hello, I am a princess of some sort... ");
             yield __WEBPACK_IMPORTED_MODULE_3__engine_ActionEvents__["a" /* default */].pause(250);
             yield princess.say("welcome to my bridge", false);
@@ -1683,7 +1724,7 @@ class SecondArea extends __WEBPACK_IMPORTED_MODULE_5__engine_Area__["a" /* defau
     }
     loadResources() {
         return new Promise(resolve => {
-            __WEBPACK_IMPORTED_MODULE_0__engine_ResourceLoader__["a" /* default */].loadImages(__webpack_require__(26), __webpack_require__(13)).then(imgs => {
+            __WEBPACK_IMPORTED_MODULE_0__engine_ResourceLoader__["a" /* default */].loadImages(__webpack_require__(28), __webpack_require__(13)).then(imgs => {
                 this.buildScene(imgs);
                 resolve();
             });
@@ -1694,37 +1735,37 @@ class SecondArea extends __WEBPACK_IMPORTED_MODULE_5__engine_Area__["a" /* defau
 
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "images/f3356608c658d0488ca34d767a7d046e-palace.png";
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "images/5b560ef711876fc3b69b49007b06536a-hallway.png";
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "images/dbea1641a453b89c7d93ed3f8a9675f5-office.png";
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "images/1133bdbc993daad4f6a0b0cc7a0856ec-vamp_look_straight.png";
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "images/7ab5ca23fa88201039cc4ca3b242a707-vamp_hands_up.png";
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

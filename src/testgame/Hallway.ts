@@ -1,13 +1,10 @@
 import Area from "../engine/Area";
-import GameObject, {Vector2d} from "../engine/GameObject";
+import GameObject from "../engine/GameObject";
 import ResourceLoader from "../engine/ResourceLoader";
 import ImageComponent from "../engine/components/ImageComponent";
-import AE from "../engine/ActionEvents";
-import PortalComponent, {default as Portal} from "../engine/components/PortalComponent";
+import Portal from "../engine/components/PortalComponent";
 import SecondArea from "./SecondArea";
-import AniEvents from "../engine/animation/AniEvents";
 import DialogComponent from "../engine/components/DialogComponent";
-import CharacterComponent from "../engine/components/CharacterComponent";
 import StartArea from "./StartArea";
 
 
