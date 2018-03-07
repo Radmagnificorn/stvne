@@ -19,6 +19,9 @@ export abstract class Component {
         return this.gameObject.element;
     }
 
-    name: string;
+    get name(): string {
+        return 'Component';
+    }
+
 }
 

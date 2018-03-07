@@ -25,7 +25,7 @@ class Area extends Scene {
     }
 
     get dialogComponent(): DialogComponent {
-        return <DialogComponent>this._dialog.components['dialog'];
+        return <DialogComponent>this._dialog.components.get('dialog');
     }
 
     get backgroundLayer() {

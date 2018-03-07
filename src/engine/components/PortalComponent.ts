@@ -1,20 +1,16 @@
-import {Component} from "./Component";
 import Scene from "../Scene";
+import {GameObjectConstructor} from "./Mixins";
 
-class PortalComponent extends Component {
+function Portal<TBase extends GameObjectConstructor>(Base: TBase) {
+    return class extends Base {
+        private _target: Scene;
+        initPortal(target: Scene) {
+            this._target = target;
+            this.element.addEventListener('click', (ev => {this._target.load()}));
+            return this;
+        }
 
-    private _target: Scene;
-
-    constructor(target: Scene) {
-        super();
-        this._target = target;
     }
-
-    onAdd() {
-        this.gameObject.element.addEventListener('click', (ev => {this._target.load()}));
-    }
-
-
 }
 
-export default PortalComponent;
+export default Portal;

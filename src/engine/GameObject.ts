@@ -6,13 +6,17 @@ class GameObject {
 
     children: GameObject[] = [];
     parent: GameObject;
-    private _components: {[key: string]: Component} = {};
+    private _components: Map<string, Component>;
     private _element: HTMLElement;
 
-    constructor(x: number = 0, y: number = 0, img?: HTMLImageElement) {
+    constructor(x: number = 0, y: number = 0,  height: number = 10, width: number = 10, img?: HTMLImageElement) {
         this._element = document.createElement('div');
         this._element.style.position = 'absolute';
+        this._components = new Map<string, Component>();
         this.location = new Vector2d(x, y);
+
+        this.height = height;
+        this.width = width;
 
         if (img) {
             this.addComponent(new ImageComponent(img));
@@ -34,12 +38,13 @@ class GameObject {
     }
 
     addComponent(component: Component) {
-        this._components[component.name] = component.register(this);
+        this._components.set(component.name, component.register(this));
     }
 
     get components() {
         return this._components;
     }
+
 
     get location(): Vector2d {
         return new Vector2d(

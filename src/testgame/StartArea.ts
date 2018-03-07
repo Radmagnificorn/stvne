@@ -3,7 +3,7 @@ import GameObject from "../engine/GameObject";
 import ResourceLoader from "../engine/ResourceLoader";
 import ImageComponent from "../engine/components/ImageComponent";
 import AE from "../engine/ActionEvents";
-import PortalComponent from "../engine/components/PortalComponent";
+import Portal from "../engine/components/PortalComponent";
 import SecondArea from "./SecondArea";
 import AniEvents from "../engine/animation/AniEvents";
 import DialogComponent from "../engine/components/DialogComponent";
@@ -24,10 +24,12 @@ class StartArea extends Area {
         let d = this.dialogComponent;
         let dialogBox = this.dialogComponent.element;
         this.dialog = d;
-        let exit = new GameObject();
-        exit.addComponent(new PortalComponent(new Hallway(this._gameInstance)));
-        exit.width = 50;
-        exit.height = 720;
+
+        const Exit = Portal(GameObject);
+
+
+        let toHallway = new Exit(0, 0, 720, 50);
+        toHallway.initPortal(new Hallway(this._gameInstance));
 
 
 
@@ -38,7 +40,7 @@ class StartArea extends Area {
         //vampire
         let vampire = new GameObject(286, 60);
 
-        let vampireDave = new CharacterComponent("The Baron", new Map([
+        let vampireDave = new CharacterComponent("Vampire Dave", new Map([
             ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
         ]), d);
         vampire.addComponent(vampireDave);
@@ -55,7 +57,7 @@ class StartArea extends Area {
 
         this.gameLayer.appendChild(vampire);
         this.gameLayer.appendChild(princessGo);
-        this.gameLayer.appendChild(exit);
+        this.gameLayer.appendChild(toHallway);
         this.backgroundLayer.appendChild(background);
 
         vampire.element.style.opacity = '0';

@@ -5,7 +5,7 @@ import GameObject from "../engine/GameObject";
 import ImageComponent from "../engine/components/ImageComponent";
 import AnimatedTextboxComponent, {default as DialogComponent} from "../engine/components/DialogComponent";
 import AE from "../engine/ActionEvents";
-import PortalComponent from "../engine/components/PortalComponent";
+import PortalComponent, {default as Portal} from "../engine/components/PortalComponent";
 import Area from "../engine/Area";
 import AniEvents from "../engine/animation/AniEvents";
 import CharacterComponent from "../engine/components/CharacterComponent";
@@ -19,10 +19,9 @@ class SecondArea extends Area {
 
         let gs = this._gameInstance.gameState;
 
-        let exit = new GameObject();
-        exit.addComponent(new PortalComponent(new Hallway(this._gameInstance)));
-        exit.width = 50;
-        exit.height = 720;
+        const Exit = Portal(GameObject);
+        let toHallway = new Exit(0, 0, 720, 50);
+        toHallway.initPortal(new Hallway((this._gameInstance)));
 
         let background = new GameObject();
         background.addComponent(new ImageComponent(imgs[0]));
@@ -35,7 +34,7 @@ class SecondArea extends Area {
         princessGo.element.style.opacity = '0';
 
         this.gameLayer.appendChild(princessGo);
-        this.gameLayer.appendChild(exit);
+        this.gameLayer.appendChild(toHallway);
         this.backgroundLayer.appendChild(background);
 
         await AE.pause(1000);

@@ -3,7 +3,7 @@ import GameObject, {Vector2d} from "../engine/GameObject";
 import ResourceLoader from "../engine/ResourceLoader";
 import ImageComponent from "../engine/components/ImageComponent";
 import AE from "../engine/ActionEvents";
-import PortalComponent from "../engine/components/PortalComponent";
+import PortalComponent, {default as Portal} from "../engine/components/PortalComponent";
 import SecondArea from "./SecondArea";
 import AniEvents from "../engine/animation/AniEvents";
 import DialogComponent from "../engine/components/DialogComponent";
@@ -22,17 +22,14 @@ class Hallway extends Area {
         let d = this.dialogComponent;
         let dialogBox = this.dialogComponent.element;
         this.dialog = d;
-        let outsideExit = new GameObject();
-        outsideExit.addComponent(new PortalComponent(new SecondArea(this._gameInstance)));
-        outsideExit.width = 100;
-        outsideExit.height = 300;
-        outsideExit.location = new Vector2d(725, 200);
 
-        let officeExit = new GameObject();
-        officeExit.addComponent(new PortalComponent(new StartArea(this._gameInstance)));
-        officeExit.width = 1280;
-        officeExit.height = 100;
-        officeExit.location = new Vector2d(0, 620);
+        const Exit = Portal(GameObject);
+        let outsideExit = new Exit(725, 200, 300, 100);
+        outsideExit.initPortal(new SecondArea(this._gameInstance));
+
+
+        let officeExit = new Exit(0, 630, 100, 1280);
+        officeExit.initPortal(new StartArea(this._gameInstance));
 
 
 
