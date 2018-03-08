@@ -4,6 +4,8 @@ import Scene from "./GameScreen";
 import StartArea from "../testgame/StartArea";
 import GameState from "./GameState";
 import StartScreen from "../testgame/StartScreen";
+import AniEvents from "./animation/AniEvents";
+import ActionEvents from "./ActionEvents";
 
 class Game {
 
@@ -27,12 +29,18 @@ class Game {
 
     }
 
-    loadScene(scene: Scene) {
+    async loadScene(scene: Scene) {
+        if (this.currentScene) {
+            await AniEvents.fadeOut(this.currentScene.sceneGraph, 0.2);
+        }
         this.currentScene = scene;
-        scene.loadResources().then(() => {
-           this.gameWindow.setScene(scene);
-           scene.onReady();
-        });
+        await scene.loadResources();
+        this.gameWindow.setScene(scene);
+        scene.sceneGraph.element.style.opacity = '0';
+        await ActionEvents.pause(10);
+        await AniEvents.fadeIn(scene.sceneGraph, 0.2);
+        scene.onReady();
+
     }
 
     start() {

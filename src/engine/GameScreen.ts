@@ -10,6 +10,7 @@ class GameScreen {
     constructor(game: Game, rootObject: GameObject = new GameObject()) {
         this._gameInstance = game;
         this.sceneGraph = rootObject;
+        this.sceneGraph.element.classList.add('scene_graph');
     }
 
     get sceneGraph() {

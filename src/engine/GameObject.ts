@@ -32,7 +32,7 @@ class GameObject {
     }
 
     set image(img: HTMLImageElement) {
-        this.element.style.backgroundImage = 'url("' + img.src + '")';
+        this.element.style.backgroundImage = `url('${img.src}')`;
         if (this._imageMode === ImageMode.WRAP_IMAGE) {
             this.height = img.height;
             this.width = img.width;
