@@ -1384,7 +1384,7 @@ class Game {
             yield scene.loadResources();
             this.gameWindow.setScene(scene);
             scene.sceneGraph.element.style.opacity = '0';
-            yield __WEBPACK_IMPORTED_MODULE_2__ActionEvents__["a" /* default */].pause(10);
+            yield __WEBPACK_IMPORTED_MODULE_2__ActionEvents__["a" /* default */].pause(100);
             yield __WEBPACK_IMPORTED_MODULE_1__animation_AniEvents__["a" /* default */].fadeIn(scene.sceneGraph, 0.2);
             scene.onReady();
         });

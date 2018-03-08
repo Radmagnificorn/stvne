@@ -37,7 +37,7 @@ class Game {
         await scene.loadResources();
         this.gameWindow.setScene(scene);
         scene.sceneGraph.element.style.opacity = '0';
-        await ActionEvents.pause(10);
+        await ActionEvents.pause(100);
         await AniEvents.fadeIn(scene.sceneGraph, 0.2);
         scene.onReady();
 
