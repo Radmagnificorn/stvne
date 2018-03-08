@@ -42,6 +42,7 @@ class GameObject {
     appendChild(child: GameObject) {
         child.setParent(this);
         this.children.push(child);
+        this.element.appendChild(child.element);
     }
 
     private setParent(parent: GameObject): GameObject {
@@ -90,12 +91,7 @@ class GameObject {
         return this._element
     }
 
-    generateElement() {
-        this.children.forEach(child => {
-            this._element.appendChild(child.generateElement());
-        });
-        return this._element;
-    }
+
 
 }
 

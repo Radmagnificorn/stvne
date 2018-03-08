@@ -1,6 +1,6 @@
 import {Vector2d} from "./GameObject";
 import './GameWindow.scss';
-import Scene from "./Scene";
+import Scene from "./GameScreen";
 
 class GameWindow {
 
@@ -34,7 +34,7 @@ class GameWindow {
 
     setScene(scene: Scene) {
         this._rootElement.innerHTML = '';
-        this._rootElement.appendChild(scene.sceneGraph.generateElement());
+        this._rootElement.appendChild(scene.sceneGraph.element);
     }
 }
 

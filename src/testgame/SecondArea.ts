@@ -18,7 +18,7 @@ class SecondArea extends Area {
 
         const Exit = Portal(GameObject);
         let toHallway = new Exit(0, 0, 720, 50);
-        toHallway.initPortal(new Hallway((this._gameInstance)));
+        toHallway.initPortal(new Hallway(this._gameInstance));
 
         let background = new GameObject();
         background.addComponent(new ImageComponent(imgs[0]));

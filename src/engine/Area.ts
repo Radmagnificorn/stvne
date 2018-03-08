@@ -1,9 +1,9 @@
-import Scene from "./Scene";
+import GameScreen from "./GameScreen";
 import GameObject from "./GameObject";
 import Game from "./Game";
 import DialogComponent from "./components/DialogComponent";
 
-class Area extends Scene {
+class Area extends GameScreen {
 
     private _dialog: GameObject;
     private _gameLayer: GameObject;

@@ -2,7 +2,7 @@ import GameObject from "./GameObject";
 import GameWindow from "./GameWindow";
 import Game from "./Game";
 
-class Scene {
+class GameScreen {
 
     private _sceneGraph: GameObject;
     protected _gameInstance: Game;
@@ -24,10 +24,12 @@ class Scene {
         return Promise.resolve();
     }
 
+    onReady(): void {};
+
     load() {
         this._gameInstance.loadScene(this);
     }
 
 }
 
-export default Scene;
+export default GameScreen;

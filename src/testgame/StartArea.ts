@@ -50,6 +50,7 @@ class StartArea extends Area {
             .initDynamicImage(new Map([['default', imgs.get("princess_default")]]));
 
         princess.element.style.opacity = '0';
+        vampireDave.element.style.opacity = '0';
         this.princess = princess;
 
         this.vampire = vampireDave;
@@ -60,27 +61,33 @@ class StartArea extends Area {
         this.gameLayer.appendChild(toHallway);
         this.backgroundLayer.appendChild(background);
 
-        vampireDave.element.style.opacity = '0';
-
-        let talkedToPrincess = await gs.get("second_area.princess_talk");
-
-        if (!talkedToPrincess) {
-            await this.events.vampireIntro();
-        } else {
-            await this.events.princessShowsUp();
-        }
-
-        await AE.waitForClick(dialogBox);
-        await d.hideDialog();
-        await AniEvents.fadeOut(vampireDave, 1);
 
     }
 
+    onReady() {
+        this.events.main();
+    }
+
     events = {
-        vampireIntro: async () => {
+        main: async () => {
             let vampireDave = this.vampire;
             let d = this.dialog;
             await AE.pause(1000);
+            let talkedToPrincess = await this.gameState.get("second_area.princess_talk");
+
+            if (!talkedToPrincess) {
+                await this.events.vampireIntro();
+            } else {
+                await this.events.princessShowsUp();
+            }
+
+            await AE.waitForClick(d);
+            await d.hideDialog();
+            await AniEvents.fadeOut(vampireDave, 1);
+        },
+        vampireIntro: async () => {
+            let vampireDave = this.vampire;
+            let d = this.dialog;
             await AniEvents.fadeIn(vampireDave.element, 1);
             let princessTalk = await this.gameState.get("second_area.princess_talk");
             if (princessTalk === "true") {
@@ -150,11 +157,7 @@ class StartArea extends Area {
                 ["vamp_default", require("./resources/vamp_look_straight.png")],
                 ["vamp_handsup", require("./resources/vamp_hands_up.png")],
                 ["princess_default", require("./resources/princess.png")]
-            ]))
-                .then(imgs => {
-                    resolve();
-                    this.buildScene(imgs)
-                });
+            ])).then(imgs => this.buildScene(imgs)).then(() => resolve());
 
         });
     }

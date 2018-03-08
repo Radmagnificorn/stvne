@@ -17,7 +17,6 @@ class Hallway extends Area {
         let gs = this._gameInstance.gameState;
 
         let d = this.dialogComponent;
-        let dialogBox = this.dialogComponent.element;
         this.dialog = d;
 
         const Exit = Portal(GameObject);
@@ -42,7 +41,7 @@ class Hallway extends Area {
     }
 
 
-    loadResources() {
+    loadResources(): Promise<any> {
         return new Promise(resolve => {
             ResourceLoader.loadImagesToMap(new Map([
                 ["hallway", require("./resources/hallway.png")]
