@@ -3,20 +3,26 @@ import GameObject from "./GameObject";
 import Game from "./Game";
 import DialogComponent from "./components/DialogComponent";
 import AniEvents from "./animation/AniEvents";
-import ActionEvents from "./ActionEvents";
+import "./AreaStyle.scss";
+import {Exit} from "./components/PortalComponent";
 
 class Area extends GameScreen {
 
     private _dialog: GameObject;
     private _gameLayer: GameObject;
     private _backgroundLayer: GameObject;
+    private _uiLayer: GameObject;
     private _transitionLayer: GameObject;
+    private _exits: Exit[] = [];
 
     constructor(game: Game, rootObject: GameObject = new GameObject()) {
         super(game, rootObject);
 
+        this.sceneGraph.element.classList.add("area");
+
         this._backgroundLayer = new GameObject();
         this._gameLayer = new GameObject();
+        this._uiLayer = new GameObject();
         // TODO: make this dynamic for different resolutions
         this._dialog = new GameObject(0, 450);
         this._dialog.addComponent(new DialogComponent());
@@ -27,8 +33,39 @@ class Area extends GameScreen {
         this.sceneGraph.appendChild(this._backgroundLayer);
         this.sceneGraph.appendChild(this._gameLayer);
         this.sceneGraph.appendChild(this._dialog);
+        this.sceneGraph.appendChild(this._uiLayer);
         this.sceneGraph.appendChild(this._transitionLayer);
 
+        this.createUi();
+
+    }
+
+    protected createUi() {
+        let toggleExitsButton = new GameObject(1250, 10, 30, 30);
+        toggleExitsButton.element.classList.add('toggle_exits_button');
+        this._uiLayer.appendChild(toggleExitsButton);
+        toggleExitsButton.element.addEventListener('click', () => this.toggleExits());
+    }
+
+    protected toggleExits() {
+        if (this._exits[0].isVisible()) {
+            this.hidePortals();
+        } else {
+            this.showPortals();
+        }
+    }
+
+    protected setPortals(... exits: Exit[]) {
+        this._exits = exits;
+        exits.forEach(exit => this._uiLayer.appendChild(exit));
+    }
+
+    protected showPortals() {
+        this._exits.forEach(exit => exit.showPortal());
+    }
+
+    protected hidePortals() {
+        this._exits.forEach(exit => exit.hidePortal());
     }
 
     get dialogComponent(): DialogComponent {
@@ -55,12 +92,12 @@ class Area extends GameScreen {
         await this.fadeOut();
     }
 
-    async fadeIn() {
+    private async fadeIn() {
         await AniEvents.fadeOut(this._transitionLayer, 0.25)
         this._transitionLayer.element.style.display = 'none';
     }
 
-    async fadeOut() {
+    private async fadeOut() {
         this._transitionLayer.element.style.display = 'block';
         await AniEvents.fadeIn(this._transitionLayer, 0.25);
     }

@@ -2,7 +2,7 @@ import Area from "../engine/Area";
 import GameObject from "../engine/GameObject";
 import ResourceLoader from "../engine/ResourceLoader";
 import ImageComponent from "../engine/components/ImageComponent";
-import Portal from "../engine/components/PortalComponent";
+import Portal, {Exit} from "../engine/components/PortalComponent";
 import SecondArea from "./SecondArea";
 import DialogComponent from "../engine/components/DialogComponent";
 import StartArea from "./StartArea";
@@ -19,7 +19,7 @@ class Hallway extends Area {
         let d = this.dialogComponent;
         this.dialog = d;
 
-        const Exit = Portal(GameObject);
+
         let outsideExit = new Exit(725, 200, 300, 100);
         outsideExit.initPortal(new SecondArea(this._gameInstance));
 
@@ -27,6 +27,7 @@ class Hallway extends Area {
         let officeExit = new Exit(0, 630, 100, 1280);
         officeExit.initPortal(new StartArea(this._gameInstance));
 
+        this.setPortals(outsideExit, officeExit);
 
 
         let background = new GameObject(0,0);

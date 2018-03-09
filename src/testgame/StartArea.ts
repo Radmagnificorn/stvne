@@ -3,7 +3,7 @@ import GameObject from "../engine/GameObject";
 import ResourceLoader from "../engine/ResourceLoader";
 import ImageComponent from "../engine/components/ImageComponent";
 import AE from "../engine/ActionEvents";
-import Portal from "../engine/components/PortalComponent";
+import Portal, {Exit} from "../engine/components/PortalComponent";
 import AniEvents from "../engine/animation/AniEvents";
 import DialogComponent from "../engine/components/DialogComponent";
 import Character from "../engine/components/Character";
@@ -18,13 +18,8 @@ class StartArea extends Area {
 
     async buildScene(imgs: Map<string, HTMLImageElement>) {
 
-        let gs = this._gameInstance.gameState;
-
-        let d = this.dialogComponent;
-        let dialogBox = this.dialogComponent.element;
-        this.dialog = d;
-
-        const Exit = Portal(GameObject);
+        let dialog = this.dialogComponent;
+        this.dialog = dialog;
 
         let toHallway = new Exit(0, 0, 720, 50);
         toHallway.initPortal(new Hallway(this._gameInstance));
@@ -38,7 +33,7 @@ class StartArea extends Area {
         //vampire
 
         let vampireDave = new Character(286, 60);
-        vampireDave.initDialogActor(d, "Vampire Dave")
+        vampireDave.initDialogActor(dialog, "Vampire Dave")
             .initDynamicImage(new Map([
                 ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
             ]));
@@ -46,7 +41,7 @@ class StartArea extends Area {
 
         //princess
         let princess = new Character(505,190);
-        princess.initDialogActor(d, "Demon-eyed Princess")
+        princess.initDialogActor(dialog, "Demon-eyed Princess")
             .initDynamicImage(new Map([['default', imgs.get("princess_default")]]));
 
         princess.element.style.opacity = '0';
@@ -55,10 +50,11 @@ class StartArea extends Area {
 
         this.vampire = vampireDave;
 
+        this.setPortals(toHallway);
+
 
         this.gameLayer.appendChild(vampireDave);
         this.gameLayer.appendChild(princess);
-        this.gameLayer.appendChild(toHallway);
         this.backgroundLayer.appendChild(background);
 
 
@@ -83,12 +79,12 @@ class StartArea extends Area {
 
             await AE.waitForClick(d);
             await d.hideDialog();
-            await AniEvents.fadeOut(vampireDave, 1);
+            await vampireDave.fadeOut(1);
         },
         vampireIntro: async () => {
             let vampireDave = this.vampire;
             let d = this.dialog;
-            await AniEvents.fadeIn(vampireDave.element, 1);
+            await vampireDave.fadeIn(1);
             let princessTalk = await this.gameState.get("second_area.princess_talk");
             if (princessTalk === "true") {
                 await vampireDave.say("I see you talked to the princess");
@@ -114,9 +110,9 @@ class StartArea extends Area {
                     await vampireDave.say("What kind of books do you like to read?");
                     let fictionOrNo = await d.presentOptions(["Fiction", "Non-fiction"]);
                     if (fictionOrNo === "Fiction") {
-                        await d.writeText("I am a fan of fiction myself");
+                        await vampireDave.say("I am a fan of fiction myself");
                     } else {
-                        await d.writeText("I see, well I generally prefer fiction myself");
+                        await vampireDave.say("I see, well I generally prefer fiction myself");
                     }
                     break;
                 case "Books are for losers":
@@ -139,7 +135,7 @@ class StartArea extends Area {
             await AniEvents.fadeIn(princess.element, 1);
             let cabbages = await this.gameState.get("second_area.cabbages");
             await princess.say("Hey Dave, some weirdo just told me I look like I could carry " +
-                (cabbages === "One" ? "only one cabbage" : cabbages.toLowerCase() + " cabbages") + "..." );
+                (cabbages === "One" ? "only one cabbage" : `${cabbages.toLowerCase()} cabbages`) + "..." );
             await AE.waitForClick(this.dialog);
             await princess.say("oh wait! that's them right there.");
             await AE.waitForClick(this.dialog);

@@ -92,7 +92,6 @@ class GameObject {
     }
 
 
-
 }
 
 enum ImageMode {

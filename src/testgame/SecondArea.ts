@@ -2,7 +2,7 @@ import ResourceLoader from "../engine/ResourceLoader";
 import GameObject from "../engine/GameObject";
 import ImageComponent from "../engine/components/ImageComponent";
 import AE from "../engine/ActionEvents";
-import Portal from "../engine/components/PortalComponent";
+import Portal, {Exit} from "../engine/components/PortalComponent";
 import Area from "../engine/Area";
 import AniEvents from "../engine/animation/AniEvents";
 import Character from "../engine/components/Character";
@@ -12,13 +12,13 @@ class SecondArea extends Area {
 
     async buildScene(imgs: HTMLImageElement[]) {
 
-
-
         let gs = this._gameInstance.gameState;
 
-        const Exit = Portal(GameObject);
+
         let toHallway = new Exit(0, 0, 720, 50);
         toHallway.initPortal(new Hallway(this._gameInstance));
+
+        this.setPortals(toHallway);
 
         let background = new GameObject();
         background.addComponent(new ImageComponent(imgs[0]));

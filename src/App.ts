@@ -29,8 +29,8 @@ function scaleScreen(gameWindow: GameWindow, document: Document, screen: Screen)
     let scaledCenter = gameWindow.width * scale * 0.5;
     let offset = window.innerWidth * 0.5 - scaledCenter;
 
-    gameWindow.rootElement.style.transform = "scale(" + scale + ")";
-    gameWindow.rootElement.style.left = offset + 'px';
+    gameWindow.rootElement.style.transform = `scale(${scale})`;
+    gameWindow.rootElement.style.left = `${offset}px`;
 }
 
 
