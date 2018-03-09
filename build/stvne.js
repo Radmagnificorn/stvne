@@ -686,6 +686,16 @@ function updateLink (link, options, obj) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameScreen__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GameObject__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_DialogComponent__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__animation_AniEvents__ = __webpack_require__(6);
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
 
 
 
@@ -697,9 +707,12 @@ class Area extends __WEBPACK_IMPORTED_MODULE_0__GameScreen__["a" /* default */] 
         // TODO: make this dynamic for different resolutions
         this._dialog = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["a" /* default */](0, 450);
         this._dialog.addComponent(new __WEBPACK_IMPORTED_MODULE_2__components_DialogComponent__["a" /* default */]());
+        this._transitionLayer = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["a" /* default */](0, 0, 720, 1280);
+        this._transitionLayer.element.style.backgroundColor = '#000000';
         this.sceneGraph.appendChild(this._backgroundLayer);
         this.sceneGraph.appendChild(this._gameLayer);
         this.sceneGraph.appendChild(this._dialog);
+        this.sceneGraph.appendChild(this._transitionLayer);
     }
     get dialogComponent() {
         return this._dialog.components.get('dialog');
@@ -713,6 +726,28 @@ class Area extends __WEBPACK_IMPORTED_MODULE_0__GameScreen__["a" /* default */] 
     get gameState() {
         return this._gameInstance.gameState;
     }
+    transitionIn() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.fadeIn();
+        });
+    }
+    transitionOut() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.fadeOut();
+        });
+    }
+    fadeIn() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield __WEBPACK_IMPORTED_MODULE_3__animation_AniEvents__["a" /* default */].fadeOut(this._transitionLayer, 0.25);
+            this._transitionLayer.element.style.display = 'none';
+        });
+    }
+    fadeOut() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this._transitionLayer.element.style.display = 'block';
+            yield __WEBPACK_IMPORTED_MODULE_3__animation_AniEvents__["a" /* default */].fadeIn(this._transitionLayer, 0.25);
+        });
+    }
 }
 /* harmony default export */ __webpack_exports__["a"] = (Area);
 
@@ -722,36 +757,57 @@ class Area extends __WEBPACK_IMPORTED_MODULE_0__GameScreen__["a" /* default */] 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ActionEvents__ = __webpack_require__(7);
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 
-class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
-    constructor(image, fitImage = true) {
-        super();
-        this._image = image;
-        this._fitImage = fitImage;
+class AniEvents {
+    static fadeOut(target, seconds) {
+        return this.fadeTo(target, "0.0", seconds, 1);
     }
-    onAdd() {
-        this.syncActiveImage();
-        if (this._fitImage) {
-            this.gameObject.height = this.image.height;
-            this.gameObject.width = this.image.width;
-        }
+    static fadeIn(target, seconds) {
+        return this.fadeTo(target, "1.0", seconds, 0);
     }
-    syncActiveImage() {
-        this.gameObject.element.style.backgroundImage = "url('" + this._image.src + "')";
+    static fadeTo(target, opacity, seconds, startValue = -1) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let el = this.getElement(target);
+            if (startValue !== -1) {
+                el.style.transitionDuration = '0s';
+                el.style.opacity = `${startValue}`;
+            }
+            el.style.transition = `opacity ${seconds}s`;
+            el.style.transitionTimingFunction = 'linear';
+            el.style.transitionDelay = '0';
+            let eaPromise = this.attachEndAnimationListener(el);
+            // unfortunately there is no event for when css is finished recalculating,
+            // so we have to wait...
+            yield __WEBPACK_IMPORTED_MODULE_0__ActionEvents__["a" /* default */].pause(100);
+            el.style.opacity = opacity;
+            return eaPromise;
+        });
     }
-    get image() {
-        return this._image;
+    static getElement(target) {
+        return target.element || target;
     }
-    set image(image) {
-        this._image = image;
-        this.syncActiveImage();
-    }
-    get name() {
-        return "image";
+    static attachEndAnimationListener(element) {
+        return new Promise(resolve => {
+            let aniEndListener = () => {
+                console.log("removing listener");
+                element.removeEventListener('transitionend', aniEndListener);
+                resolve();
+            };
+            console.log("attaching end animation listener");
+            element.addEventListener('transitionend', aniEndListener, false);
+        });
     }
 }
-/* harmony default export */ __webpack_exports__["a"] = (ImageComponent);
+/* harmony default export */ __webpack_exports__["a"] = (AniEvents);
 
 
 /***/ }),
@@ -789,39 +845,36 @@ class ActionEvents {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-class AniEvents {
-    static fadeOut(target, seconds) {
-        return this.fadeTo(target, "0.0", seconds, 1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(11);
+
+class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Component */] {
+    constructor(image, fitImage = true) {
+        super();
+        this._image = image;
+        this._fitImage = fitImage;
     }
-    static fadeIn(target, seconds) {
-        return this.fadeTo(target, "1.0", seconds, 0);
-    }
-    static fadeTo(target, opacity, seconds, startValue = -1) {
-        let el = this.getElement(target);
-        if (startValue !== -1) {
-            el.style.opacity = `${startValue}`;
+    onAdd() {
+        this.syncActiveImage();
+        if (this._fitImage) {
+            this.gameObject.height = this.image.height;
+            this.gameObject.width = this.image.width;
         }
-        el.style.transition = "opacity " + seconds + "s";
-        el.style.transitionTimingFunction = 'linear';
-        el.style.transitionDelay = '1s';
-        let eaPromise = this.attachEndAnimationListener(el);
-        el.style.opacity = opacity;
-        return eaPromise;
     }
-    static getElement(target) {
-        return target.element || target;
+    syncActiveImage() {
+        this.gameObject.element.style.backgroundImage = "url('" + this._image.src + "')";
     }
-    static attachEndAnimationListener(element) {
-        return new Promise(resolve => {
-            let aniEndListener = () => {
-                resolve();
-                element.removeEventListener('transitionend', aniEndListener);
-            };
-            element.addEventListener('transitionend', aniEndListener, false);
-        });
+    get image() {
+        return this._image;
+    }
+    set image(image) {
+        this._image = image;
+        this.syncActiveImage();
+    }
+    get name() {
+        return "image";
     }
 }
-/* harmony default export */ __webpack_exports__["a"] = (AniEvents);
+/* harmony default export */ __webpack_exports__["a"] = (ImageComponent);
 
 
 /***/ }),
@@ -830,6 +883,14 @@ class AniEvents {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameObject__ = __webpack_require__(0);
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 
 class GameScreen {
     constructor(game, rootObject = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* default */]()) {
@@ -851,6 +912,16 @@ class GameScreen {
     load() {
         this._gameInstance.loadScene(this);
     }
+    transitionIn() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return Promise.resolve();
+        });
+    }
+    transitionOut() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return Promise.resolve();
+        });
+    }
 }
 /* harmony default export */ __webpack_exports__["a"] = (GameScreen);
 
@@ -863,10 +934,10 @@ class GameScreen {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_Area__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__engine_components_PortalComponent__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__engine_animation_AniEvents__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__engine_animation_AniEvents__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__engine_components_Character__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Hallway__ = __webpack_require__(13);
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -1065,7 +1136,7 @@ class Character extends Object(__WEBPACK_IMPORTED_MODULE_1__DynamicImage__["a" /
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_Area__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_ResourceLoader__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__engine_components_PortalComponent__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__SecondArea__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__StartArea__ = __webpack_require__(10);
@@ -1247,7 +1318,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "body {\n  margin: 0;\n  padding: 0;\n  background: #000000; }\n  body #stvne #game_window {\n    position: relative;\n    top: 0;\n    left: 0;\n    margin: 0;\n    transform-origin: top left; }\n    body #stvne #game_window canvas {\n      position: absolute;\n      top: 0;\n      left: 0; }\n  body .scene_graph {\n    opacity: 0; }\n", ""]);
+exports.push([module.i, "body {\n  margin: 0;\n  padding: 0;\n  background: #000000; }\n  body #stvne #game_window {\n    position: relative;\n    top: 0;\n    left: 0;\n    margin: 0;\n    transform-origin: top left; }\n    body #stvne #game_window canvas {\n      position: absolute;\n      top: 0;\n      left: 0; }\n", ""]);
 
 // exports
 
@@ -1353,8 +1424,6 @@ module.exports = function (css) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__testgame_StartScreen__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__animation_AniEvents__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ActionEvents__ = __webpack_require__(7);
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -1364,8 +1433,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 
-
-
 class Game {
     constructor(gameWindow, resourceLoader, gameState) {
         this.running = false;
@@ -1374,18 +1441,19 @@ class Game {
         this.resourceLoader = resourceLoader;
         this._gameState = gameState;
         this._transitionElement = document.createElement('div');
+        document.addEventListener('readystatechange', (e) => {
+            console.log(e.type);
+        });
     }
     loadScene(scene) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.currentScene) {
-                yield __WEBPACK_IMPORTED_MODULE_1__animation_AniEvents__["a" /* default */].fadeOut(this.currentScene.sceneGraph, 0.2);
+                yield this.currentScene.transitionOut();
             }
-            this.currentScene = scene;
             yield scene.loadResources();
             this.gameWindow.setScene(scene);
-            scene.sceneGraph.element.style.opacity = '0';
-            yield __WEBPACK_IMPORTED_MODULE_2__ActionEvents__["a" /* default */].pause(100);
-            yield __WEBPACK_IMPORTED_MODULE_1__animation_AniEvents__["a" /* default */].fadeIn(scene.sceneGraph, 0.2);
+            this.currentScene = scene;
+            yield this.currentScene.transitionIn();
             scene.onReady();
         });
     }
@@ -1721,11 +1789,11 @@ function DynamicImage(Base) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__engine_ResourceLoader__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_components_ImageComponent__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__engine_components_ImageComponent__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__engine_ActionEvents__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__engine_components_PortalComponent__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__engine_Area__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__engine_animation_AniEvents__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__engine_animation_AniEvents__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__engine_components_Character__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Hallway__ = __webpack_require__(13);
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {

@@ -27,25 +27,24 @@ class Game {
 
         this._transitionElement = document.createElement('div');
 
+        document.addEventListener('readystatechange', (e) => {
+            console.log(e.type);
+        });
+
     }
 
     async loadScene(scene: Scene) {
-        if (this.currentScene) {
-            await AniEvents.fadeOut(this.currentScene.sceneGraph, 0.2);
-        }
-        this.currentScene = scene;
+        if (this.currentScene) {await this.currentScene.transitionOut();}
         await scene.loadResources();
         this.gameWindow.setScene(scene);
-        scene.sceneGraph.element.style.opacity = '0';
-        await ActionEvents.pause(100);
-        await AniEvents.fadeIn(scene.sceneGraph, 0.2);
+        this.currentScene = scene;
+        await this.currentScene.transitionIn();
         scene.onReady();
 
     }
 
     start() {
         this.running = true;
-
         let startScreen = new StartScreen(this);
         this.loadScene(startScreen);
 

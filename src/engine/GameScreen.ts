@@ -31,6 +31,14 @@ class GameScreen {
         this._gameInstance.loadScene(this);
     }
 
+    async transitionIn(): Promise<any> {
+        return Promise.resolve();
+    }
+
+    async transitionOut(): Promise<any> {
+        return Promise.resolve();
+    }
+
 }
 
 export default GameScreen;

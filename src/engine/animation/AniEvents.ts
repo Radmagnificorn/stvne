@@ -1,4 +1,5 @@
 import GameObject from "../GameObject";
+import ActionEvents from "../ActionEvents";
 
 class AniEvents {
 
@@ -10,16 +11,22 @@ class AniEvents {
         return this.fadeTo(target, "1.0", seconds, 0);
     }
 
-    static fadeTo(target: HTMLElement | GameObject, opacity: string, seconds: number, startValue: number = -1): Promise<void> {
+    static async fadeTo(target: HTMLElement | GameObject, opacity: string, seconds: number, startValue: number = -1): Promise<void> {
 
         let el = this.getElement(target);
         if (startValue !== -1) {
+            el.style.transitionDuration = '0s';
             el.style.opacity = `${startValue}`;
         }
-        el.style.transition = "opacity " + seconds + "s";
+        el.style.transition = `opacity ${seconds}s`;
         el.style.transitionTimingFunction = 'linear';
-        el.style.transitionDelay = '1s';
+        el.style.transitionDelay = '0';
+
         let eaPromise = this.attachEndAnimationListener(el);
+
+        // unfortunately there is no event for when css is finished recalculating,
+        // so we have to wait...
+        await ActionEvents.pause(100);
 
         el.style.opacity = opacity;
 
@@ -34,9 +41,11 @@ class AniEvents {
     private static attachEndAnimationListener(element: HTMLElement) {
         return new Promise<void>(resolve => {
             let aniEndListener = () => {
-                resolve();
+                console.log("removing listener");
                 element.removeEventListener('transitionend', aniEndListener);
+                resolve();
             };
+            console.log("attaching end animation listener");
             element.addEventListener('transitionend', aniEndListener, false);
         });
     }
