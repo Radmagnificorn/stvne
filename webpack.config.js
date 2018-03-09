@@ -30,6 +30,6 @@ module.exports = {
     },
     output: {
         filename: 'stvne.js',
-        path: path.resolve('./', 'build')
+        path: path.resolve('./', 'docs')
     }
 };
