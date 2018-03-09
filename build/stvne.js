@@ -957,6 +957,8 @@ class GameScreen {
     }
     onReady() { }
     ;
+    onUnload() { }
+    ;
     load() {
         this._gameInstance.loadScene(this);
     }
@@ -1066,6 +1068,9 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
                 }
                 yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
                 yield vampireDave.say("You should head outside to the left and talk to the princess.");
+                yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
+                yield vampireDave.showImage("handsup");
+                yield vampireDave.say("If at any time you aren't sure where you're going. You can hide and show the exits with that button in the top left corner of the screen.");
             }),
             princessShowsUp: () => __awaiter(this, void 0, void 0, function* () {
                 let princess = this.princess;
@@ -1365,7 +1370,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "body {\n  margin: 0;\n  padding: 0;\n  background: #000000; }\n  body #stvne #game_window {\n    position: relative;\n    top: 0;\n    left: 0;\n    margin: 0;\n    transform-origin: top left; }\n    body #stvne #game_window canvas {\n      position: absolute;\n      top: 0;\n      left: 0; }\n", ""]);
+exports.push([module.i, "body {\n  margin: 0;\n  padding: 0;\n  background: #000000; }\n  body #stvne #game_window {\n    position: relative;\n    top: 0;\n    left: 0;\n    margin: 0;\n    transform-origin: top left;\n    overflow: hidden; }\n    body #stvne #game_window canvas {\n      position: absolute;\n      top: 0;\n      left: 0; }\n", ""]);
 
 // exports
 
@@ -1496,6 +1501,7 @@ class Game {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.currentScene) {
                 yield this.currentScene.transitionOut();
+                this.currentScene.onUnload();
             }
             yield scene.loadResources();
             this.gameWindow.setScene(scene);
@@ -1557,9 +1563,16 @@ class StartScreen extends __WEBPACK_IMPORTED_MODULE_0__engine_GameScreen__["a" /
                 bg.image = imgs[0];
                 bg.element.innerHTML = this.screenTemplate;
                 this.sceneGraph.appendChild(bg);
+                this.clickText = bg.element.getElementsByClassName("instruction")[0];
                 resolve();
             });
         });
+    }
+    onReady() {
+        this.aniTimer = setInterval(() => this.clickText.classList.toggle("faded"), 1000);
+    }
+    onUnload() {
+        clearInterval(this.aniTimer);
     }
 }
 /* harmony default export */ __webpack_exports__["a"] = (StartScreen);
@@ -2103,7 +2116,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "#title_screen {\n  font-size: 100px;\n  text-align: center;\n  font-family: Arial, serif;\n  color: #ffffff;\n  text-shadow: 0 0 10px #000000; }\n  #title_screen .title {\n    margin-top: 100px; }\n  #title_screen .instruction {\n    margin-top: 100px;\n    font-size: 50px; }\n", ""]);
+exports.push([module.i, "#title_screen {\n  font-size: 100px;\n  text-align: center;\n  font-family: Arial, serif;\n  color: #ffffff;\n  text-shadow: 0 0 10px #000000; }\n  #title_screen .title {\n    margin-top: 100px; }\n  #title_screen .instruction {\n    margin-top: 100px;\n    font-size: 50px;\n    opacity: 1;\n    transition: opacity linear 1s; }\n    #title_screen .instruction.faded {\n      opacity: 0.25; }\n", ""]);
 
 // exports
 

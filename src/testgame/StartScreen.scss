@@ -12,6 +12,13 @@
   .instruction {
     margin-top: 100px;
     font-size: 50px;
+    opacity: 1;
+
+    transition: opacity linear 1s;
+
+    &.faded {
+      opacity: 0.25;
+    }
   }
 }
 

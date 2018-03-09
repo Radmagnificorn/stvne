@@ -27,6 +27,8 @@ class GameScreen {
 
     onReady(): void {};
 
+    onUnload(): void {};
+
     load() {
         this._gameInstance.loadScene(this);
     }

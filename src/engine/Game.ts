@@ -34,7 +34,10 @@ class Game {
     }
 
     async loadScene(scene: Scene) {
-        if (this.currentScene) {await this.currentScene.transitionOut();}
+        if (this.currentScene) {
+            await this.currentScene.transitionOut();
+            this.currentScene.onUnload();
+        }
         await scene.loadResources();
         this.gameWindow.setScene(scene);
         this.currentScene = scene;

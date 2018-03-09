@@ -123,6 +123,9 @@ class StartArea extends Area {
             }
             await AE.waitForClick(d);
             await vampireDave.say("You should head outside to the left and talk to the princess.");
+            await AE.waitForClick(d);
+            await vampireDave.showImage("handsup");
+            await vampireDave.say("If at any time you aren't sure where you're going. You can show and hide the exit locations with that little white button in the top right corner of the screen.");
         },
         princessShowsUp: async () => {
             let princess = this.princess;

@@ -7,6 +7,8 @@ import "./StartScreen.scss";
 
 class StartScreen extends GameScreen {
 
+    clickText: HTMLDivElement;
+    aniTimer: number;
 
     loadResources() {
         return new Promise(resolve => {
@@ -17,9 +19,18 @@ class StartScreen extends GameScreen {
                 bg.image = imgs[0];
                 bg.element.innerHTML = this.screenTemplate;
                 this.sceneGraph.appendChild(bg);
+                this.clickText = <HTMLDivElement>bg.element.getElementsByClassName("instruction")[0];
                 resolve();
             });
         });
+    }
+
+    onReady() {
+        this.aniTimer = setInterval(() => this.clickText.classList.toggle("faded"), 1000);
+    }
+
+    onUnload() {
+        clearInterval(this.aniTimer);
     }
 
     screenTemplate = `
