@@ -41,7 +41,7 @@ class Area extends GameScreen {
     }
 
     protected createUi() {
-        let toggleExitsButton = new GameObject(1250, 10, 30, 30);
+        let toggleExitsButton = new GameObject(1220, 20, 30, 30);
         toggleExitsButton.element.classList.add('toggle_exits_button');
         this._uiLayer.appendChild(toggleExitsButton);
         toggleExitsButton.element.addEventListener('click', () => this.toggleExits());

@@ -797,7 +797,7 @@ class Area extends __WEBPACK_IMPORTED_MODULE_0__GameScreen__["a" /* default */] 
         this.createUi();
     }
     createUi() {
-        let toggleExitsButton = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["a" /* default */](1250, 10, 30, 30);
+        let toggleExitsButton = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["a" /* default */](1220, 20, 30, 30);
         toggleExitsButton.element.classList.add('toggle_exits_button');
         this._uiLayer.appendChild(toggleExitsButton);
         toggleExitsButton.element.addEventListener('click', () => this.toggleExits());
@@ -1070,7 +1070,7 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
                 yield vampireDave.say("You should head outside to the left and talk to the princess.");
                 yield __WEBPACK_IMPORTED_MODULE_4__engine_ActionEvents__["a" /* default */].waitForClick(d);
                 yield vampireDave.showImage("handsup");
-                yield vampireDave.say("If at any time you aren't sure where you're going. You can hide and show the exits with that button in the top left corner of the screen.");
+                yield vampireDave.say("If at any time you aren't sure where you're going. You can show and hide the exit locations with that little white button in the top right corner of the screen.");
             }),
             princessShowsUp: () => __awaiter(this, void 0, void 0, function* () {
                 let princess = this.princess;
@@ -1095,7 +1095,7 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
         return __awaiter(this, void 0, void 0, function* () {
             let dialog = this.dialogComponent;
             this.dialog = dialog;
-            let toHallway = new __WEBPACK_IMPORTED_MODULE_5__engine_components_PortalComponent__["a" /* Exit */](0, 0, 720, 50);
+            let toHallway = new __WEBPACK_IMPORTED_MODULE_5__engine_components_PortalComponent__["a" /* Exit */](0, 0, 720, 100);
             toHallway.initPortal(new __WEBPACK_IMPORTED_MODULE_8__Hallway__["a" /* default */](this._gameInstance));
             let background = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](0, 0);
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__["a" /* default */](imgs.get('office'), true));

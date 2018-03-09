@@ -21,7 +21,7 @@ class StartArea extends Area {
         let dialog = this.dialogComponent;
         this.dialog = dialog;
 
-        let toHallway = new Exit(0, 0, 720, 50);
+        let toHallway = new Exit(0, 0, 720, 100);
         toHallway.initPortal(new Hallway(this._gameInstance));
 
 
