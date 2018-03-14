@@ -5,7 +5,7 @@ import ImageComponent from "../engine/components/ImageComponent";
 import AE from "../engine/ActionEvents";
 import Portal, {Exit} from "../engine/components/PortalComponent";
 import AniEvents from "../engine/animation/AniEvents";
-import DialogComponent from "../engine/components/DialogComponent";
+
 import Character from "../engine/components/Character";
 import Hallway from "./Hallway";
 
@@ -14,12 +14,10 @@ class StartArea extends Area {
 
     private vampire: Character;
     private princess: Character;
-    private dialog: DialogComponent;
 
     async buildScene(imgs: Map<string, HTMLImageElement>) {
 
         let dialog = this.dialogComponent;
-        this.dialog = dialog;
 
         let toHallway = new Exit(0, 0, 720, 100);
         toHallway.initPortal(new Hallway(this._gameInstance));
@@ -67,10 +65,10 @@ class StartArea extends Area {
     events = {
         main: async () => {
             let vampireDave = this.vampire;
-            let d = this.dialog;
-            await AE.pause(1000);
+            let d = this.dialogComponent;
+            //await AE.pause(1000);
             let talkedToPrincess = await this.gameState.get("second_area.princess_talk");
-
+            await d.fadeIn(1);
             if (!talkedToPrincess) {
                 await this.events.vampireIntro();
             } else {
@@ -78,12 +76,12 @@ class StartArea extends Area {
             }
 
             await AE.waitForClick(d);
-            await d.hideDialog();
+            await d.fadeOut();
             await vampireDave.fadeOut(1);
         },
         vampireIntro: async () => {
             let vampireDave = this.vampire;
-            let d = this.dialog;
+            let d = this.dialogComponent;
             await vampireDave.fadeIn(1);
             let princessTalk = await this.gameState.get("second_area.princess_talk");
             if (princessTalk === "true") {
@@ -130,18 +128,19 @@ class StartArea extends Area {
         princessShowsUp: async () => {
             let princess = this.princess;
             let vampire = this.vampire;
+            let dialog = this.dialogComponent;
 
             await AE.pause(1000);
-            await AniEvents.fadeIn(vampire.element, 1);
+            await vampire.fadeIn(1);
             await vampire.say("Oh, hi. How was your meeting with the princess?");
-            await AE.waitForClick(this.dialog);
-            await AniEvents.fadeIn(princess.element, 1);
+            await AE.waitForClick(dialog);
+            await princess.fadeIn(1);
             let cabbages = await this.gameState.get("second_area.cabbages");
             await princess.say("Hey Dave, some weirdo just told me I look like I could carry " +
                 (cabbages === "One" ? "only one cabbage" : `${cabbages.toLowerCase()} cabbages`) + "..." );
-            await AE.waitForClick(this.dialog);
+            await AE.waitForClick(dialog);
             await princess.say("oh wait! that's them right there.");
-            await AE.waitForClick(this.dialog);
+            await AE.waitForClick(dialog);
             await vampire.showImage("handsup");
             await vampire.say("well what do you want me to do about it?");
         }

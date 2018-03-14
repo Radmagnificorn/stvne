@@ -1,14 +1,14 @@
 
 import {GameObjectConstructor} from "./Mixins";
-import DialogComponent from "./DialogComponent";
+import AreaDialog from "../AreaDialog";
 
 function DialogActor<TBase extends GameObjectConstructor>(Base: TBase) {
     return class extends Base {
 
-        private _dialog: DialogComponent;
+        private _dialog: AreaDialog;
         private _title: string;
 
-        initDialogActor(dialog: DialogComponent, title: string = "") {
+        initDialogActor(dialog: AreaDialog, title: string = "") {
 
             this._dialog = dialog;
             this._title = title;

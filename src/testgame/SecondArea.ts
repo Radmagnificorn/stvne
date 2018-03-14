@@ -35,7 +35,7 @@ class SecondArea extends Area {
         this.backgroundLayer.appendChild(background);
 
         await AE.pause(1000);
-        await AniEvents.fadeIn(princess, 1);
+        await princess.fadeIn(1);
         await princess.say("Hello, I am a princess of some sort... ");
         await AE.pause(250);
         await princess.say("welcome to my bridge", false);
@@ -63,7 +63,7 @@ class SecondArea extends Area {
         await dialog.writeText("bye... ");
         await this.gameState.set("second_area.princess_talk", "true");
         await AE.pause(500);
-        await dialog.hideDialog();
+        await dialog.fadeOut();
 
     }
 

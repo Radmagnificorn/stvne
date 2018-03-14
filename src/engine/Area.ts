@@ -1,14 +1,14 @@
 import GameScreen from "./GameScreen";
 import GameObject from "./GameObject";
 import Game from "./Game";
-import DialogComponent from "./components/DialogComponent";
 import AniEvents from "./animation/AniEvents";
 import "./AreaStyle.scss";
 import {Exit} from "./components/PortalComponent";
+import AreaDialog from "./AreaDialog";
 
 class Area extends GameScreen {
 
-    private _dialog: GameObject;
+    private _dialog: AreaDialog;
     private _gameLayer: GameObject;
     private _backgroundLayer: GameObject;
     private _uiLayer: GameObject;
@@ -24,8 +24,8 @@ class Area extends GameScreen {
         this._gameLayer = new GameObject();
         this._uiLayer = new GameObject();
         // TODO: make this dynamic for different resolutions
-        this._dialog = new GameObject(0, 450);
-        this._dialog.addComponent(new DialogComponent());
+        this._dialog = new AreaDialog(0, 450);
+        this._dialog.initDialogContainter();
 
         this._transitionLayer = new GameObject(0,0,720, 1280);
         this._transitionLayer.element.style.backgroundColor = '#000000';
@@ -68,8 +68,8 @@ class Area extends GameScreen {
         this._exits.forEach(exit => exit.hidePortal());
     }
 
-    get dialogComponent(): DialogComponent {
-        return <DialogComponent>this._dialog.components.get('dialog');
+    get dialogComponent(): AreaDialog {
+        return this._dialog;
     }
 
     get backgroundLayer() {
