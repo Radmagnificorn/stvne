@@ -54,7 +54,7 @@ function DialogContainer<TBase extends GameObjectConstructor>(Base: TBase) {
         }
 
         update() {
-            if (this.isVisible) {
+            //if (this.isVisible) {
                 let letterIterator = this.letters.next();
                 if (!letterIterator.done) {
                     letterIterator.value.style.visibility = 'visible';
@@ -62,7 +62,7 @@ function DialogContainer<TBase extends GameObjectConstructor>(Base: TBase) {
                     this.sendFinishedNotification();
                     this._timer.stop();
                 }
-            }
+            //}
         }
 
         private *showLetters(): Iterator<HTMLSpanElement> {

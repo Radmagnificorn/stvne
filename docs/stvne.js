@@ -1740,16 +1740,16 @@ function DialogContainer(Base) {
             return styleableWord;
         }
         update() {
-            if (this.isVisible) {
-                let letterIterator = this.letters.next();
-                if (!letterIterator.done) {
-                    letterIterator.value.style.visibility = 'visible';
-                }
-                else {
-                    this.sendFinishedNotification();
-                    this._timer.stop();
-                }
+            //if (this.isVisible) {
+            let letterIterator = this.letters.next();
+            if (!letterIterator.done) {
+                letterIterator.value.style.visibility = 'visible';
             }
+            else {
+                this.sendFinishedNotification();
+                this._timer.stop();
+            }
+            //}
         }
         *showLetters() {
             let words = this._textArea.children;
