@@ -14,6 +14,7 @@ class AniEvents {
     static async fadeTo(target: HTMLElement | GameObject, opacity: string, seconds: number, startValue: number = -1): Promise<void> {
 
         let el = this.getElement(target);
+
         if (startValue !== -1) {
             el.style.transitionDuration = '0s';
             el.style.opacity = `${startValue}`;

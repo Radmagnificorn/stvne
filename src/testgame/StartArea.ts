@@ -68,7 +68,6 @@ class StartArea extends Area {
             let d = this.dialogComponent;
             //await AE.pause(1000);
             let talkedToPrincess = await this.gameState.get("second_area.princess_talk");
-            await d.fadeIn(1);
             if (!talkedToPrincess) {
                 await this.events.vampireIntro();
             } else {

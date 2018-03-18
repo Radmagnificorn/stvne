@@ -10,6 +10,7 @@ function AnimationActor<TBase extends GameObjectConstructor>(Base: TBase) {
         async fadeOut(speed = 0.25): Promise<void> {
             return AniEvents.fadeOut(this, speed);
         }
+
     }
 }
 

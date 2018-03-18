@@ -15,8 +15,9 @@ function DialogActor<TBase extends GameObjectConstructor>(Base: TBase) {
             return this;
         }
 
-        say(text: string, clearFirst: boolean = true): Promise<void> {
+        async say(text: string, clearFirst: boolean = true): Promise<void> {
             if (this._dialog) {
+                await this._dialog.fadeIn();
                 return this._dialog.writeText(text, clearFirst, this._title);
             }
 

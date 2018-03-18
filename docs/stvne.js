@@ -975,7 +975,6 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
                 let d = this.dialogComponent;
                 //await AE.pause(1000);
                 let talkedToPrincess = yield this.gameState.get("second_area.princess_talk");
-                yield d.fadeIn(1);
                 if (!talkedToPrincess) {
                     yield this.events.vampireIntro();
                 }
@@ -1121,6 +1120,9 @@ class AniEvents {
     static fadeTo(target, opacity, seconds, startValue = -1) {
         return __awaiter(this, void 0, void 0, function* () {
             let el = this.getElement(target);
+            // don't do it if there is no change
+            if (el.style.opacity == opacity)
+                return Promise.resolve();
             if (startValue !== -1) {
                 el.style.transitionDuration = '0s';
                 el.style.opacity = `${startValue}`;
@@ -1702,10 +1704,6 @@ class AreaDialog extends Object(__WEBPACK_IMPORTED_MODULE_2__components_Animatio
 
 function DialogContainer(Base) {
     return class extends Base {
-        constructor() {
-            super(...arguments);
-            this.isVisible = false;
-        }
         initDialogContainter() {
             let dialogEl = this.createDialogUI();
             this._titleBox = dialogEl.getElementsByClassName('title_box')[0];
@@ -1910,6 +1908,14 @@ class Component {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 function DialogActor(Base) {
     return class extends Base {
         initDialogActor(dialog, title = "") {
@@ -1918,11 +1924,14 @@ function DialogActor(Base) {
             return this;
         }
         say(text, clearFirst = true) {
-            if (this._dialog) {
-                return this._dialog.writeText(text, clearFirst, this._title);
-            }
-            else
-                return Promise.resolve();
+            return __awaiter(this, void 0, void 0, function* () {
+                if (this._dialog) {
+                    yield this._dialog.fadeIn();
+                    return this._dialog.writeText(text, clearFirst, this._title);
+                }
+                else
+                    return Promise.resolve();
+            });
         }
         ask(question, options) {
             return this.say(question, true).then(() => {

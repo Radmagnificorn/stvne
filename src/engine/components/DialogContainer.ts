@@ -5,7 +5,6 @@ function DialogContainer<TBase extends GameObjectConstructor>(Base: TBase) {
     return class extends Base {
 
         private letters: Iterator<HTMLSpanElement>;
-        private isVisible: boolean = false;
         private sendFinishedNotification: Function;
         private _timer: AnimationTimer;
         private _titleBox: HTMLDivElement;
