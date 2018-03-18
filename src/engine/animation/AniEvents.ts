@@ -4,16 +4,21 @@ import ActionEvents from "../ActionEvents";
 class AniEvents {
 
     static fadeOut(target: HTMLElement | GameObject, seconds: number): Promise<void> {
-        return this.fadeTo(target, "0.0", seconds, 1);
+        return this.fadeTo(target, "0.0", seconds);
     }
 
     static fadeIn(target: HTMLElement | GameObject, seconds: number): Promise<void> {
-        return this.fadeTo(target, "1.0", seconds, 0);
+        return this.fadeTo(target, "1.0", seconds);
     }
 
     static async fadeTo(target: HTMLElement | GameObject, opacity: string, seconds: number, startValue: number = -1): Promise<void> {
 
         let el = this.getElement(target);
+
+        // resolve immediately if there is no change in opacity
+        if ( parseFloat(opacity) === parseFloat(el.style.opacity)) {
+            return Promise.resolve();
+        }
 
         if (startValue !== -1) {
             el.style.transitionDuration = '0s';

@@ -1112,17 +1112,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 
 class AniEvents {
     static fadeOut(target, seconds) {
-        return this.fadeTo(target, "0.0", seconds, 1);
+        return this.fadeTo(target, "0.0", seconds);
     }
     static fadeIn(target, seconds) {
-        return this.fadeTo(target, "1.0", seconds, 0);
+        return this.fadeTo(target, "1.0", seconds);
     }
     static fadeTo(target, opacity, seconds, startValue = -1) {
         return __awaiter(this, void 0, void 0, function* () {
             let el = this.getElement(target);
-            // don't do it if there is no change
-            if (el.style.opacity == opacity)
+            // resolve immediately if there is no change in opacity
+            if (parseFloat(opacity) === parseFloat(el.style.opacity)) {
                 return Promise.resolve();
+            }
             if (startValue !== -1) {
                 el.style.transitionDuration = '0s';
                 el.style.opacity = `${startValue}`;
