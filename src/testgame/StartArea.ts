@@ -1,5 +1,5 @@
 import Area from "../engine/Area";
-import GameObject from "../engine/GameObject";
+import GameObject, {ImageMode} from "../engine/GameObject";
 import ResourceLoader from "../engine/ResourceLoader";
 import ImageComponent from "../engine/components/ImageComponent";
 import AE from "../engine/ActionEvents";
@@ -30,7 +30,8 @@ class StartArea extends Area {
 
         //vampire
 
-        let vampireDave = new Character(286, 60);
+        let vampireDave = new Character(286, 60, 497, 384);
+        vampireDave.imageMode = ImageMode.MAINTAIN_ASPECT_FIT;
         vampireDave.initDialogActor(dialog, "Vampire Dave")
             .initDynamicImage(new Map([
                 ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]

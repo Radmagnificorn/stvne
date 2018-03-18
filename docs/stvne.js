@@ -68,6 +68,7 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ImageMode; });
 class GameObject {
     constructor(x = 0, y = 0, height = 10, width = 10, img) {
         this.children = [];
@@ -89,10 +90,24 @@ class GameObject {
         this._imageMode = mode;
     }
     set image(img) {
+        this._image = img;
         this.element.style.backgroundImage = `url('${img.src}')`;
-        if (this._imageMode === ImageMode.WRAP_IMAGE) {
-            this.height = img.height;
-            this.width = img.width;
+        this.resizeImage();
+    }
+    resizeImage() {
+        switch (this._imageMode) {
+            case ImageMode.WRAP_IMAGE:
+                this.height = this._image.height;
+                this.width = this._image.width;
+                this.element.style.backgroundSize = 'auto';
+                break;
+            case ImageMode.MAINTAIN_ASPECT_FIT:
+                this.element.style.backgroundSize = 'contain';
+                break;
+            case ImageMode.MAINTAIN_ASPECT_FILL:
+                this.element.style.backgroundSize = 'cover';
+                break;
+            default:
         }
     }
     appendChild(child) {
@@ -136,8 +151,8 @@ class GameObject {
 var ImageMode;
 (function (ImageMode) {
     ImageMode[ImageMode["WRAP_IMAGE"] = 0] = "WRAP_IMAGE";
-    ImageMode[ImageMode["CLIP"] = 1] = "CLIP";
-    ImageMode[ImageMode["STRETCH_IMAGE"] = 2] = "STRETCH_IMAGE";
+    ImageMode[ImageMode["MAINTAIN_ASPECT_FIT"] = 1] = "MAINTAIN_ASPECT_FIT";
+    ImageMode[ImageMode["MAINTAIN_ASPECT_FILL"] = 2] = "MAINTAIN_ASPECT_FILL";
 })(ImageMode || (ImageMode = {}));
 class Vector2d {
     constructor(x, y) {
@@ -147,7 +162,7 @@ class Vector2d {
 }
 /* unused harmony export Vector2d */
 
-/* harmony default export */ __webpack_exports__["a"] = (GameObject);
+/* harmony default export */ __webpack_exports__["b"] = (GameObject);
 
 
 /***/ }),
@@ -687,7 +702,7 @@ function Portal(Base) {
         }
     };
 }
-class Exit extends Portal(__WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* default */]) {
+class Exit extends Portal(__WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */]) {
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Exit;
 
@@ -749,17 +764,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 
 
 class Area extends __WEBPACK_IMPORTED_MODULE_0__GameScreen__["a" /* default */] {
-    constructor(game, rootObject = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["a" /* default */]()) {
+    constructor(game, rootObject = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["b" /* default */]()) {
         super(game, rootObject);
         this._exits = [];
         this.sceneGraph.element.classList.add("area");
-        this._backgroundLayer = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["a" /* default */]();
-        this._gameLayer = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["a" /* default */]();
-        this._uiLayer = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["a" /* default */]();
+        this._backgroundLayer = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["b" /* default */]();
+        this._gameLayer = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["b" /* default */]();
+        this._uiLayer = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["b" /* default */]();
         // TODO: make this dynamic for different resolutions
         this._dialog = new __WEBPACK_IMPORTED_MODULE_4__AreaDialog__["a" /* default */](0, 450);
         this._dialog.initDialogContainter();
-        this._transitionLayer = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["a" /* default */](0, 0, 720, 1280);
+        this._transitionLayer = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["b" /* default */](0, 0, 720, 1280);
         this._transitionLayer.element.style.backgroundColor = '#000000';
         this.sceneGraph.appendChild(this._backgroundLayer);
         this.sceneGraph.appendChild(this._gameLayer);
@@ -769,7 +784,7 @@ class Area extends __WEBPACK_IMPORTED_MODULE_0__GameScreen__["a" /* default */] 
         this.createUi();
     }
     createUi() {
-        let toggleExitsButton = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["a" /* default */](1220, 20, 30, 30);
+        let toggleExitsButton = new __WEBPACK_IMPORTED_MODULE_1__GameObject__["b" /* default */](1220, 20, 30, 30);
         toggleExitsButton.element.classList.add('toggle_exits_button');
         this._uiLayer.appendChild(toggleExitsButton);
         toggleExitsButton.element.addEventListener('click', () => this.toggleExits());
@@ -880,7 +895,7 @@ class ImageComponent extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* Com
 
 
 
-class Character extends Object(__WEBPACK_IMPORTED_MODULE_3__AnimationActor__["a" /* default */])(Object(__WEBPACK_IMPORTED_MODULE_1__DynamicImage__["a" /* default */])(Object(__WEBPACK_IMPORTED_MODULE_0__DialogActor__["a" /* default */])(__WEBPACK_IMPORTED_MODULE_2__GameObject__["a" /* default */]))) {
+class Character extends Object(__WEBPACK_IMPORTED_MODULE_3__AnimationActor__["a" /* default */])(Object(__WEBPACK_IMPORTED_MODULE_1__DynamicImage__["a" /* default */])(Object(__WEBPACK_IMPORTED_MODULE_0__DialogActor__["a" /* default */])(__WEBPACK_IMPORTED_MODULE_2__GameObject__["b" /* default */]))) {
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Character;
 
@@ -902,7 +917,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 
 class GameScreen {
-    constructor(game, rootObject = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* default */]()) {
+    constructor(game, rootObject = new __WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */]()) {
         this._gameInstance = game;
         this.sceneGraph = rootObject;
         this.sceneGraph.element.classList.add('scene_graph');
@@ -1056,10 +1071,11 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             let dialog = this.dialogComponent;
             let toHallway = new __WEBPACK_IMPORTED_MODULE_5__engine_components_PortalComponent__["a" /* Exit */](0, 0, 720, 100);
             toHallway.initPortal(new __WEBPACK_IMPORTED_MODULE_7__Hallway__["a" /* default */](this._gameInstance));
-            let background = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](0, 0);
+            let background = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["b" /* default */](0, 0);
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__["a" /* default */](imgs.get('office'), true));
             //vampire
-            let vampireDave = new __WEBPACK_IMPORTED_MODULE_6__engine_components_Character__["a" /* default */](286, 60);
+            let vampireDave = new __WEBPACK_IMPORTED_MODULE_6__engine_components_Character__["a" /* default */](286, 60, 497, 384);
+            vampireDave.imageMode = __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* ImageMode */].MAINTAIN_ASPECT_FIT;
             vampireDave.initDialogActor(dialog, "Vampire Dave")
                 .initDynamicImage(new Map([
                 ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
@@ -1244,7 +1260,7 @@ class Hallway extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* default 
             let officeExit = new __WEBPACK_IMPORTED_MODULE_4__engine_components_PortalComponent__["a" /* Exit */](0, 630, 100, 1280);
             officeExit.initPortal(new __WEBPACK_IMPORTED_MODULE_6__StartArea__["a" /* default */](this._gameInstance));
             this.setPortals(outsideExit, officeExit);
-            let background = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */](0, 0);
+            let background = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["b" /* default */](0, 0);
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__["a" /* default */](imgs.get('hallway'), true));
             let butler = new __WEBPACK_IMPORTED_MODULE_7__engine_components_Character__["a" /* default */](100, 100);
             butler.initDynamicImage(new Map([["default", imgs.get("butler")]]));
@@ -1591,7 +1607,7 @@ class StartScreen extends __WEBPACK_IMPORTED_MODULE_0__engine_GameScreen__["a" /
     loadResources() {
         return new Promise(resolve => {
             __WEBPACK_IMPORTED_MODULE_1__engine_ResourceLoader__["a" /* default */].loadImages(__webpack_require__(41)).then((imgs) => {
-                const BG = Object(__WEBPACK_IMPORTED_MODULE_3__engine_components_PortalComponent__["b" /* default */])(__WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* default */]);
+                const BG = Object(__WEBPACK_IMPORTED_MODULE_3__engine_components_PortalComponent__["b" /* default */])(__WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["b" /* default */]);
                 let bg = new BG();
                 bg.initPortal(new __WEBPACK_IMPORTED_MODULE_4__StartArea__["a" /* default */](this._gameInstance));
                 bg.image = imgs[0];
@@ -1690,7 +1706,7 @@ exports.push([module.i, ".area .portal {\n  background: rgba(200, 0, 0, 0.25);\n
 
 
 
-class AreaDialog extends Object(__WEBPACK_IMPORTED_MODULE_2__components_AnimationActor__["a" /* default */])(Object(__WEBPACK_IMPORTED_MODULE_1__components_DialogContainer__["a" /* default */])(__WEBPACK_IMPORTED_MODULE_0__GameObject__["a" /* default */])) {
+class AreaDialog extends Object(__WEBPACK_IMPORTED_MODULE_2__components_AnimationActor__["a" /* default */])(Object(__WEBPACK_IMPORTED_MODULE_1__components_DialogContainer__["a" /* default */])(__WEBPACK_IMPORTED_MODULE_0__GameObject__["b" /* default */])) {
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = AreaDialog;
 
@@ -2000,7 +2016,7 @@ class SecondArea extends __WEBPACK_IMPORTED_MODULE_5__engine_Area__["a" /* defau
             let toHallway = new __WEBPACK_IMPORTED_MODULE_4__engine_components_PortalComponent__["a" /* Exit */](0, 0, 720, 50);
             toHallway.initPortal(new __WEBPACK_IMPORTED_MODULE_7__Hallway__["a" /* default */](this._gameInstance));
             this.setPortals(toHallway);
-            let background = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* default */]();
+            let background = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["b" /* default */]();
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_2__engine_components_ImageComponent__["a" /* default */](imgs[0]));
             let dialog = this.dialogComponent;
             let princess = new __WEBPACK_IMPORTED_MODULE_6__engine_components_Character__["a" /* default */](505, 190);

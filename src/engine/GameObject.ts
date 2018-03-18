@@ -8,6 +8,7 @@ class GameObject {
     private _imageMode: ImageMode = ImageMode.WRAP_IMAGE;
     private _components: Map<string, Component>;
     private _element: HTMLElement;
+    private _image: HTMLImageElement;
 
     constructor(x: number = 0, y: number = 0,  height: number = 10, width: number = 10, img?: HTMLImageElement) {
         this._element = document.createElement('div');
@@ -32,10 +33,26 @@ class GameObject {
     }
 
     set image(img: HTMLImageElement) {
+        this._image = img;
         this.element.style.backgroundImage = `url('${img.src}')`;
-        if (this._imageMode === ImageMode.WRAP_IMAGE) {
-            this.height = img.height;
-            this.width = img.width;
+        this.resizeImage();
+    }
+
+    resizeImage() {
+        switch (this._imageMode) {
+            case ImageMode.WRAP_IMAGE:
+                this.height = this._image.height;
+                this.width = this._image.width;
+                this.element.style.backgroundSize = 'auto';
+                break;
+            case ImageMode.MAINTAIN_ASPECT_FIT:
+                this.element.style.backgroundSize = 'contain';
+                break;
+            case ImageMode.MAINTAIN_ASPECT_FILL:
+                this.element.style.backgroundSize = 'cover';
+                break;
+            default:
+                // do nothing;
         }
     }
 
@@ -94,10 +111,10 @@ class GameObject {
 
 }
 
-enum ImageMode {
+export enum ImageMode {
     WRAP_IMAGE,
-    CLIP,
-    STRETCH_IMAGE
+    MAINTAIN_ASPECT_FIT,
+    MAINTAIN_ASPECT_FILL
 }
 
 export class Vector2d {
