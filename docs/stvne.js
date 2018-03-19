@@ -70,9 +70,9 @@
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ImageMode; });
 class GameObject {
-    constructor(x = 0, y = 0, height = 10, width = 10, img) {
+    constructor(x = 0, y = 0, height = 10, width = 10, img = new Image()) {
         this.children = [];
-        this._imageMode = ImageMode.WRAP_IMAGE;
+        this._imageMode = ImageMode.CLIP;
         this._element = document.createElement('div');
         this._element.style.position = 'absolute';
         this._components = new Map();
@@ -88,24 +88,36 @@ class GameObject {
     }
     set imageMode(mode) {
         this._imageMode = mode;
+        this.resizeImage();
     }
     set image(img) {
         this._image = img;
         this.element.style.backgroundImage = `url('${img.src}')`;
         this.resizeImage();
     }
+    get image() {
+        return this._image;
+    }
     resizeImage() {
         switch (this._imageMode) {
             case ImageMode.WRAP_IMAGE:
-                this.height = this._image.height;
-                this.width = this._image.width;
+                this.setHeight(this._image.height);
+                this.setWidth(this._image.width);
                 this.element.style.backgroundSize = 'auto';
                 break;
-            case ImageMode.MAINTAIN_ASPECT_FIT:
+            case ImageMode.MAINTAIN_ASPECT_BY_HEIGHT:
                 this.element.style.backgroundSize = 'contain';
+                this.setWidth(this._image.width * this.imgScale.height);
+                break;
+            case ImageMode.MAINTAIN_ASPECT_BY_WIDTH:
+                this.element.style.backgroundSize = 'contain';
+                this.setHeight(this._image.height * this.imgScale.width);
                 break;
             case ImageMode.MAINTAIN_ASPECT_FILL:
                 this.element.style.backgroundSize = 'cover';
+                break;
+            case ImageMode.CLIP:
+                this.element.style.backgroundSize = 'auto';
                 break;
             default:
         }
@@ -135,13 +147,27 @@ class GameObject {
     get height() {
         return parseInt(this._element.style.height, 10);
     }
+    get imgScale() {
+        return {
+            height: this.height / this._image.height,
+            width: 1.0 * this.width / this._image.width
+        };
+    }
     set height(height) {
+        this.setHeight(height);
+        this.resizeImage();
+    }
+    setHeight(height) {
         this._element.style.height = height + 'px';
     }
     get width() {
         return parseInt(this._element.style.width, 10);
     }
     set width(width) {
+        this.setWidth(width);
+        this.resizeImage();
+    }
+    setWidth(width) {
         this._element.style.width = width + 'px';
     }
     get element() {
@@ -151,8 +177,10 @@ class GameObject {
 var ImageMode;
 (function (ImageMode) {
     ImageMode[ImageMode["WRAP_IMAGE"] = 0] = "WRAP_IMAGE";
-    ImageMode[ImageMode["MAINTAIN_ASPECT_FIT"] = 1] = "MAINTAIN_ASPECT_FIT";
-    ImageMode[ImageMode["MAINTAIN_ASPECT_FILL"] = 2] = "MAINTAIN_ASPECT_FILL";
+    ImageMode[ImageMode["MAINTAIN_ASPECT_BY_HEIGHT"] = 1] = "MAINTAIN_ASPECT_BY_HEIGHT";
+    ImageMode[ImageMode["MAINTAIN_ASPECT_BY_WIDTH"] = 2] = "MAINTAIN_ASPECT_BY_WIDTH";
+    ImageMode[ImageMode["MAINTAIN_ASPECT_FILL"] = 3] = "MAINTAIN_ASPECT_FILL";
+    ImageMode[ImageMode["CLIP"] = 4] = "CLIP";
 })(ImageMode || (ImageMode = {}));
 class Vector2d {
     constructor(x, y) {
@@ -1074,8 +1102,8 @@ class StartArea extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* defaul
             let background = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["b" /* default */](0, 0);
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__["a" /* default */](imgs.get('office'), true));
             //vampire
-            let vampireDave = new __WEBPACK_IMPORTED_MODULE_6__engine_components_Character__["a" /* default */](286, 60, 497, 384);
-            vampireDave.imageMode = __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* ImageMode */].MAINTAIN_ASPECT_FIT;
+            let vampireDave = new __WEBPACK_IMPORTED_MODULE_6__engine_components_Character__["a" /* default */](270, 20, 1000);
+            vampireDave.imageMode = __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* ImageMode */].MAINTAIN_ASPECT_BY_HEIGHT;
             vampireDave.initDialogActor(dialog, "Vampire Dave")
                 .initDynamicImage(new Map([
                 ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
@@ -1263,6 +1291,7 @@ class Hallway extends __WEBPACK_IMPORTED_MODULE_0__engine_Area__["a" /* default 
             let background = new __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["b" /* default */](0, 0);
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_3__engine_components_ImageComponent__["a" /* default */](imgs.get('hallway'), true));
             let butler = new __WEBPACK_IMPORTED_MODULE_7__engine_components_Character__["a" /* default */](100, 100);
+            butler.imageMode = __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* ImageMode */].WRAP_IMAGE;
             butler.initDynamicImage(new Map([["default", imgs.get("butler")]]));
             butler.initDialogActor(this.dialogComponent, "Mysterious Butler");
             butler.element.style.opacity = "0";
@@ -1611,6 +1640,7 @@ class StartScreen extends __WEBPACK_IMPORTED_MODULE_0__engine_GameScreen__["a" /
                 let bg = new BG();
                 bg.initPortal(new __WEBPACK_IMPORTED_MODULE_4__StartArea__["a" /* default */](this._gameInstance));
                 bg.image = imgs[0];
+                bg.imageMode = __WEBPACK_IMPORTED_MODULE_2__engine_GameObject__["a" /* ImageMode */].WRAP_IMAGE;
                 bg.element.innerHTML = this.screenTemplate;
                 this.sceneGraph.appendChild(bg);
                 this.clickText = bg.element.getElementsByClassName("instruction")[0];
@@ -2020,6 +2050,7 @@ class SecondArea extends __WEBPACK_IMPORTED_MODULE_5__engine_Area__["a" /* defau
             background.addComponent(new __WEBPACK_IMPORTED_MODULE_2__engine_components_ImageComponent__["a" /* default */](imgs[0]));
             let dialog = this.dialogComponent;
             let princess = new __WEBPACK_IMPORTED_MODULE_6__engine_components_Character__["a" /* default */](505, 190);
+            princess.imageMode = __WEBPACK_IMPORTED_MODULE_1__engine_GameObject__["a" /* ImageMode */].WRAP_IMAGE;
             princess.initDialogActor(dialog, "Demon-eyed Princess")
                 .initDynamicImage(new Map([['default', imgs[1]]]));
             princess.element.style.opacity = '0';

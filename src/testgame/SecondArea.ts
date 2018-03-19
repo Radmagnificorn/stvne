@@ -1,5 +1,5 @@
 import ResourceLoader from "../engine/ResourceLoader";
-import GameObject from "../engine/GameObject";
+import GameObject, {ImageMode} from "../engine/GameObject";
 import ImageComponent from "../engine/components/ImageComponent";
 import AE from "../engine/ActionEvents";
 import Portal, {Exit} from "../engine/components/PortalComponent";
@@ -26,6 +26,7 @@ class SecondArea extends Area {
 
         let dialog = this.dialogComponent;
         let princess = new Character(505,190);
+        princess.imageMode = ImageMode.WRAP_IMAGE;
         princess.initDialogActor(dialog, "Demon-eyed Princess")
             .initDynamicImage(new Map([['default', imgs[1]]]));
         princess.element.style.opacity = '0';

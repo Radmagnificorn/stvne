@@ -5,12 +5,12 @@ class GameObject {
 
     children: GameObject[] = [];
     parent: GameObject;
-    private _imageMode: ImageMode = ImageMode.WRAP_IMAGE;
+    private _imageMode: ImageMode = ImageMode.CLIP;
     private _components: Map<string, Component>;
     private _element: HTMLElement;
     private _image: HTMLImageElement;
 
-    constructor(x: number = 0, y: number = 0,  height: number = 10, width: number = 10, img?: HTMLImageElement) {
+    constructor(x: number = 0, y: number = 0,  height: number = 10, width: number = 10, img: HTMLImageElement = new Image()) {
         this._element = document.createElement('div');
         this._element.style.position = 'absolute';
         this._components = new Map<string, Component>();
@@ -30,6 +30,7 @@ class GameObject {
 
     set imageMode(mode: ImageMode) {
         this._imageMode = mode;
+        this.resizeImage();
     }
 
     set image(img: HTMLImageElement) {
@@ -38,18 +39,30 @@ class GameObject {
         this.resizeImage();
     }
 
-    resizeImage() {
+    get image() {
+        return this._image;
+    }
+
+    private resizeImage() {
         switch (this._imageMode) {
             case ImageMode.WRAP_IMAGE:
-                this.height = this._image.height;
-                this.width = this._image.width;
+                this.setHeight(this._image.height);
+                this.setWidth(this._image.width);
                 this.element.style.backgroundSize = 'auto';
                 break;
-            case ImageMode.MAINTAIN_ASPECT_FIT:
+            case ImageMode.MAINTAIN_ASPECT_BY_HEIGHT:
                 this.element.style.backgroundSize = 'contain';
+                this.setWidth(this._image.width * this.imgScale.height);
+                break;
+            case ImageMode.MAINTAIN_ASPECT_BY_WIDTH:
+                this.element.style.backgroundSize = 'contain';
+                this.setHeight(this._image.height * this.imgScale.width);
                 break;
             case ImageMode.MAINTAIN_ASPECT_FILL:
                 this.element.style.backgroundSize = 'cover';
+                break;
+            case ImageMode.CLIP:
+                this.element.style.backgroundSize = 'auto';
                 break;
             default:
                 // do nothing;
@@ -91,7 +104,19 @@ class GameObject {
         return parseInt(this._element.style.height, 10);
     }
 
+    get imgScale(): {height: number, width: number} {
+        return {
+            height: this.height / this._image.height,
+            width: 1.0 * this.width / this._image.width
+        }
+    }
+
     set height(height: number) {
+        this.setHeight(height);
+        this.resizeImage();
+    }
+
+    private setHeight(height: number) {
         this._element.style.height = height + 'px';
     }
 
@@ -100,6 +125,11 @@ class GameObject {
     }
 
     set width(width: number) {
+        this.setWidth(width);
+        this.resizeImage();
+    }
+
+    private setWidth(width: number) {
         this._element.style.width = width + 'px';
     }
 
@@ -113,8 +143,10 @@ class GameObject {
 
 export enum ImageMode {
     WRAP_IMAGE,
-    MAINTAIN_ASPECT_FIT,
-    MAINTAIN_ASPECT_FILL
+    MAINTAIN_ASPECT_BY_HEIGHT,
+    MAINTAIN_ASPECT_BY_WIDTH,
+    MAINTAIN_ASPECT_FILL,
+    CLIP
 }
 
 export class Vector2d {

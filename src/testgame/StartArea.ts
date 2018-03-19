@@ -30,8 +30,8 @@ class StartArea extends Area {
 
         //vampire
 
-        let vampireDave = new Character(286, 60, 497, 384);
-        vampireDave.imageMode = ImageMode.MAINTAIN_ASPECT_FIT;
+        let vampireDave = new Character(270, 20, 1000);
+        vampireDave.imageMode = ImageMode.MAINTAIN_ASPECT_BY_HEIGHT;
         vampireDave.initDialogActor(dialog, "Vampire Dave")
             .initDynamicImage(new Map([
                 ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]

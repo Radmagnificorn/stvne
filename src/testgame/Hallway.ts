@@ -1,5 +1,5 @@
 import Area from "../engine/Area";
-import GameObject from "../engine/GameObject";
+import GameObject, {ImageMode} from "../engine/GameObject";
 import ResourceLoader from "../engine/ResourceLoader";
 import ImageComponent from "../engine/components/ImageComponent";
 import Portal, {Exit} from "../engine/components/PortalComponent";
@@ -32,6 +32,7 @@ class Hallway extends Area {
         background.addComponent(new ImageComponent(imgs.get('hallway'), true));
 
         let butler = new Character(100, 100);
+        butler.imageMode = ImageMode.WRAP_IMAGE;
         butler.initDynamicImage(new Map([["default", imgs.get("butler")]]));
         butler.initDialogActor(this.dialogComponent, "Mysterious Butler");
         butler.element.style.opacity = "0";
