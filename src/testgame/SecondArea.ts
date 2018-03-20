@@ -1,10 +1,8 @@
 import ResourceLoader from "../engine/ResourceLoader";
 import GameObject, {ImageMode} from "../engine/GameObject";
-import ImageComponent from "../engine/components/ImageComponent";
 import AE from "../engine/ActionEvents";
-import Portal, {Exit} from "../engine/components/PortalComponent";
+import {Exit} from "../engine/components/PortalComponent";
 import Area from "../engine/Area";
-import AniEvents from "../engine/animation/AniEvents";
 import Character from "../engine/components/Character";
 import Hallway from "./Hallway";
 
@@ -20,8 +18,8 @@ class SecondArea extends Area {
 
         this.setPortals(toHallway);
 
-        let background = new GameObject();
-        background.addComponent(new ImageComponent(imgs[0]));
+        let background = new GameObject(0, 0,0, 0, imgs[0]);
+        background.imageMode = ImageMode.WRAP_IMAGE;
 
 
         let dialog = this.dialogComponent;

@@ -1,13 +1,12 @@
 import Area from "../engine/Area";
 import GameObject, {ImageMode} from "../engine/GameObject";
 import ResourceLoader from "../engine/ResourceLoader";
-import ImageComponent from "../engine/components/ImageComponent";
 import AE from "../engine/ActionEvents";
-import Portal, {Exit} from "../engine/components/PortalComponent";
-import AniEvents from "../engine/animation/AniEvents";
+import {Exit} from "../engine/components/PortalComponent";
 
 import Character from "../engine/components/Character";
 import Hallway from "./Hallway";
+import Vampire from "./characters/vampire/Vampire";
 
 
 class StartArea extends Area {
@@ -22,24 +21,25 @@ class StartArea extends Area {
         let toHallway = new Exit(0, 0, 720, 100);
         toHallway.initPortal(new Hallway(this._gameInstance));
 
-
-
-        let background = new GameObject(0,0);
-        background.addComponent(new ImageComponent(imgs.get('office'), true));
-
+        let background = new GameObject(0,0, 0, 0, imgs.get('office'));
+        background.imageMode = ImageMode.WRAP_IMAGE;
 
         //vampire
 
-        let vampireDave = new Character(270, 20, 1000);
+        let vampireDave = new Vampire(690, 215, 500, dialog);
+
+        /*
+        let vampireDave = new Character(690, 215, 500);
         vampireDave.imageMode = ImageMode.MAINTAIN_ASPECT_BY_HEIGHT;
         vampireDave.initDialogActor(dialog, "Vampire Dave")
             .initDynamicImage(new Map([
                 ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
             ]));
 
-
+        */
         //princess
         let princess = new Character(505,190);
+        princess.imageMode = ImageMode.WRAP_IMAGE;
         princess.initDialogActor(dialog, "Demon-eyed Princess")
             .initDynamicImage(new Map([['default', imgs.get("princess_default")]]));
 
@@ -152,8 +152,6 @@ class StartArea extends Area {
         return new Promise(resolve => {
             ResourceLoader.loadImagesToMap(new Map([
                 ["office", require("./resources/office.png")],
-                ["vamp_default", require("./resources/vamp_look_straight.png")],
-                ["vamp_handsup", require("./resources/vamp_hands_up.png")],
                 ["princess_default", require("./resources/princess.png")]
             ])).then(imgs => this.buildScene(imgs)).then(() => resolve());
 

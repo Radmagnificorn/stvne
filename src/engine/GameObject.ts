@@ -1,4 +1,3 @@
-import GameWindow from "./GameWindow";
 import {Component} from "./components/Component";
 
 class GameObject {
@@ -6,14 +5,12 @@ class GameObject {
     children: GameObject[] = [];
     parent: GameObject;
     private _imageMode: ImageMode = ImageMode.CLIP;
-    private _components: Map<string, Component>;
     private _element: HTMLElement;
     private _image: HTMLImageElement;
 
     constructor(x: number = 0, y: number = 0,  height: number = 10, width: number = 10, img: HTMLImageElement = new Image()) {
         this._element = document.createElement('div');
         this._element.style.position = 'absolute';
-        this._components = new Map<string, Component>();
         this.location = new Vector2d(x, y);
 
         this.height = height;
@@ -79,15 +76,6 @@ class GameObject {
         this.parent = parent;
         return this;
     }
-
-    addComponent(component: Component) {
-        this._components.set(component.name, component.register(this));
-    }
-
-    get components() {
-        return this._components;
-    }
-
 
     get location(): Vector2d {
         return new Vector2d(

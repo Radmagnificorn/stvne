@@ -1,7 +1,6 @@
 import Area from "../engine/Area";
 import GameObject, {ImageMode} from "../engine/GameObject";
 import ResourceLoader from "../engine/ResourceLoader";
-import ImageComponent from "../engine/components/ImageComponent";
 import Portal, {Exit} from "../engine/components/PortalComponent";
 import SecondArea from "./SecondArea";
 import StartArea from "./StartArea";
@@ -11,7 +10,7 @@ import ActionEvents from "../engine/ActionEvents";
 
 class Hallway extends Area {
 
-    private _bulter: Character;
+    private _butler: Character;
 
     async buildScene(imgs: Map<string, HTMLImageElement>) {
 
@@ -28,15 +27,15 @@ class Hallway extends Area {
         this.setPortals(outsideExit, officeExit);
 
 
-        let background = new GameObject(0,0);
-        background.addComponent(new ImageComponent(imgs.get('hallway'), true));
+        let background = new GameObject(0,0,0,0, imgs.get('hallway'));
+        background.imageMode = ImageMode.WRAP_IMAGE;
 
         let butler = new Character(100, 100);
         butler.imageMode = ImageMode.WRAP_IMAGE;
         butler.initDynamicImage(new Map([["default", imgs.get("butler")]]));
         butler.initDialogActor(this.dialogComponent, "Mysterious Butler");
         butler.element.style.opacity = "0";
-        this._bulter = butler;
+        this._butler = butler;
 
         this.gameLayer.appendChild(butler);
         this.backgroundLayer.appendChild(background);
@@ -46,7 +45,7 @@ class Hallway extends Area {
     events = {
         butlerDialog: async () => {
             let dialog = this.dialogComponent;
-            let butler = this._bulter;
+            let butler = this._butler;
             await butler.fadeIn(1);
             await butler.ask("Greetings. I am a butler. Is there anything I can get for you?", ["you can get out of my way...", "no thank you"]);
             await butler.say("very good then");
