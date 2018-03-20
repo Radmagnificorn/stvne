@@ -29,6 +29,14 @@ function DialogActor<TBase extends GameObjectConstructor>(Base: TBase) {
                 return this._dialog.presentOptions(options, false, this._title);
             });
         }
+
+        set title(title: string) {
+            this._title = title;
+        }
+
+        get title() {
+            return this._title;
+        }
     }
 }
 

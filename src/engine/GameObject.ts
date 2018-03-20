@@ -4,7 +4,7 @@ class GameObject {
 
     children: GameObject[] = [];
     parent: GameObject;
-    private _imageMode: ImageMode = ImageMode.CLIP;
+    private _imageMode: ImageMode;
     private _element: HTMLElement;
     private _image: HTMLImageElement;
 
@@ -13,8 +13,12 @@ class GameObject {
         this._element.style.position = 'absolute';
         this.location = new Vector2d(x, y);
 
-        this.height = height;
-        this.width = width;
+        this.imageMode = ImageMode.CLIP;
+
+        this.setHeight(height);
+        this.setWidth(width);
+
+        this.resizeImage();
 
         if (img) {
             this.image = img;
@@ -28,6 +32,10 @@ class GameObject {
     set imageMode(mode: ImageMode) {
         this._imageMode = mode;
         this.resizeImage();
+    }
+
+    get imageMode() {
+        return this._imageMode;
     }
 
     set image(img: HTMLImageElement) {

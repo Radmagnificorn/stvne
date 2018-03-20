@@ -1,8 +1,9 @@
 import GameObject from "./GameObject";
 import GameWindow from "./GameWindow";
 import Game from "./Game";
+import {Loadable} from "./Loadable";
 
-class GameScreen {
+class GameScreen implements Loadable{
 
     private _sceneGraph: GameObject;
     protected _gameInstance: Game;

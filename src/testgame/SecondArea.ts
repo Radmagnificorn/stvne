@@ -5,6 +5,7 @@ import {Exit} from "../engine/components/PortalComponent";
 import Area from "../engine/Area";
 import Character from "../engine/components/Character";
 import Hallway from "./Hallway";
+import Princess from "./characters/princess/Princess";
 
 class SecondArea extends Area {
 
@@ -23,10 +24,9 @@ class SecondArea extends Area {
 
 
         let dialog = this.dialogComponent;
-        let princess = new Character(505,190);
-        princess.imageMode = ImageMode.WRAP_IMAGE;
-        princess.initDialogActor(dialog, "Demon-eyed Princess")
-            .initDynamicImage(new Map([['default', imgs[1]]]));
+        let princess = new Princess(505,190, 500, dialog);
+        await princess.loadResources();
+
         princess.element.style.opacity = '0';
 
         this.gameLayer.appendChild(princess);
@@ -68,7 +68,7 @@ class SecondArea extends Area {
 
     loadResources() {
         return new Promise(resolve => {
-            ResourceLoader.loadImages(require("./resources/palace.png"), require("./resources/princess.png")).then(imgs => {
+            ResourceLoader.loadImages(require("./resources/palace.png")).then(imgs => {
                 this.buildScene(imgs);
                 resolve();
             });

@@ -7,6 +7,7 @@ import {Exit} from "../engine/components/PortalComponent";
 import Character from "../engine/components/Character";
 import Hallway from "./Hallway";
 import Vampire from "./characters/vampire/Vampire";
+import Princess from "./characters/princess/Princess";
 
 
 class StartArea extends Area {
@@ -27,21 +28,11 @@ class StartArea extends Area {
         //vampire
 
         let vampireDave = new Vampire(690, 215, 500, dialog);
+        await vampireDave.loadResources();
 
-        /*
-        let vampireDave = new Character(690, 215, 500);
-        vampireDave.imageMode = ImageMode.MAINTAIN_ASPECT_BY_HEIGHT;
-        vampireDave.initDialogActor(dialog, "Vampire Dave")
-            .initDynamicImage(new Map([
-                ["default", imgs.get('vamp_default')], ['handsup', imgs.get('vamp_handsup')]
-            ]));
-
-        */
         //princess
-        let princess = new Character(505,190);
-        princess.imageMode = ImageMode.WRAP_IMAGE;
-        princess.initDialogActor(dialog, "Demon-eyed Princess")
-            .initDynamicImage(new Map([['default', imgs.get("princess_default")]]));
+        let princess = new Princess(505,190, 500, dialog);
+        await princess.loadResources();
 
         princess.element.style.opacity = '0';
         vampireDave.element.style.opacity = '0';
@@ -150,10 +141,9 @@ class StartArea extends Area {
 
     loadResources() {
         return new Promise(resolve => {
-            ResourceLoader.loadImagesToMap(new Map([
-                ["office", require("./resources/office.png")],
-                ["princess_default", require("./resources/princess.png")]
-            ])).then(imgs => this.buildScene(imgs)).then(() => resolve());
+            ResourceLoader.loadImagesToMap([
+                ["office", require("./resources/office.png")]
+            ]).then(imgs => this.buildScene(imgs)).then(() => resolve());
 
         });
     }

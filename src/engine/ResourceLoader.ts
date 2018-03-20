@@ -18,11 +18,11 @@ class ResourceLoader {
         return Promise.all(urls.map(url => this.loadImage(url)));
     }
 
-    static async loadImagesToMap(urls: Map<string, string>): Promise<Map<string, HTMLImageElement>> {
+    static async loadImagesToMap(urls: [string, string][]): Promise<Map<string, HTMLImageElement>> {
         let imageMap = new Map<string, HTMLImageElement>();
         let promises: Promise<[string, HTMLImageElement]>[] = [];
-        urls.forEach(((url, name) => {
-            promises.push(this.loadNamedImage(name, url));
+        urls.forEach(((urlSet) => {
+            promises.push(this.loadNamedImage(urlSet[0], urlSet[1]));
         }));
         let images = await Promise.all(promises);
         images.forEach(i => imageMap.set(i[0], i[1]));

@@ -8,7 +8,14 @@ function DynamicImage<TBase extends GameObjectConstructor>(Base: TBase) {
 
         initDynamicImage(images: Map<string, HTMLImageElement>) {
             this._images = images;
-            this.image = this._images.get("default");
+
+            let def = images.get("default");
+            let defImg = def ? def : images.values().next().value;
+
+            if (this.image.src === "") {
+                this.image = defImg;
+            }
+            //this.image = this._images.get("default");
             return this;
         }
 

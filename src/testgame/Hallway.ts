@@ -6,6 +6,7 @@ import SecondArea from "./SecondArea";
 import StartArea from "./StartArea";
 import Character from "../engine/components/Character";
 import ActionEvents from "../engine/ActionEvents";
+import Butler from "./characters/butler/Butler";
 
 
 class Hallway extends Area {
@@ -30,10 +31,9 @@ class Hallway extends Area {
         let background = new GameObject(0,0,0,0, imgs.get('hallway'));
         background.imageMode = ImageMode.WRAP_IMAGE;
 
-        let butler = new Character(100, 100);
-        butler.imageMode = ImageMode.WRAP_IMAGE;
-        butler.initDynamicImage(new Map([["default", imgs.get("butler")]]));
-        butler.initDialogActor(this.dialogComponent, "Mysterious Butler");
+        let butler = new Butler(100, 100, 700, this.dialogComponent);
+        await butler.loadResources();
+
         butler.element.style.opacity = "0";
         this._butler = butler;
 
@@ -62,10 +62,9 @@ class Hallway extends Area {
 
     loadResources(): Promise<any> {
         return new Promise(resolve => {
-            ResourceLoader.loadImagesToMap(new Map([
-                ["hallway", require("./resources/hallway.png")],
-                ["butler", require("./resources/butler.png")]
-            ]))
+            ResourceLoader.loadImagesToMap([
+                ["hallway", require("./resources/hallway.png")]
+            ])
                 .then(imgs => {
                     resolve();
                     this.buildScene(imgs)
