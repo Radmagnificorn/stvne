@@ -18,7 +18,7 @@ module.exports = {
                 use: [{
                     loader: 'url-loader',
                     options: {
-                        name: 'images/[hash]-[name].[ext]'
+                        name: 'images/[hash]-[name].[ext]',
                     }
                 }]
             }
@@ -29,6 +29,7 @@ module.exports = {
     },
     output: {
         filename: 'stvne.js',
+        chunkFilename: "zones/[name].bundle.js",
         path: path.resolve('./', 'docs')
     }
 };

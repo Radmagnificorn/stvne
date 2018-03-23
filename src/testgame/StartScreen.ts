@@ -2,7 +2,6 @@ import GameScreen from "../engine/GameScreen";
 import ResourceLoader from "../engine/ResourceLoader";
 import GameObject, {ImageMode} from "../engine/GameObject";
 import Portal from "../engine/components/PortalComponent";
-import StartArea from "./StartArea";
 import "./StartScreen.scss";
 
 class StartScreen extends GameScreen {
@@ -10,21 +9,20 @@ class StartScreen extends GameScreen {
     clickText: HTMLDivElement;
     aniTimer: number;
 
-    loadResources() {
-        return new Promise(resolve => {
-            ResourceLoader.loadImages(require('./resources/splash.png')).then((imgs) => {
-                const BG = Portal(GameObject);
-                let bg = new BG();
-                bg.initPortal(new StartArea(this._gameInstance));
-                bg.image = imgs[0];
-                bg.imageMode = ImageMode.WRAP_IMAGE;
-                bg.element.innerHTML = this.screenTemplate;
-                this.sceneGraph.appendChild(bg);
-                this.clickText = <HTMLDivElement>bg.element.getElementsByClassName("instruction")[0];
-                resolve();
-            });
-        });
-    }
+    async loadResources(): Promise<any> {
+            let imgs = await ResourceLoader.loadImages(require('./resources/splash.png'));
+            const {Zone1} = await import(/*webpackChunkName: "zone1"*/ './Zone1');
+            const BG = Portal(GameObject);
+            let bg = new BG();
+            bg.initPortal(new Zone1.StartArea(this._gameInstance));
+            bg.image = imgs[0];
+            bg.imageMode = ImageMode.WRAP_IMAGE;
+            bg.element.innerHTML = this.screenTemplate;
+            this.sceneGraph.appendChild(bg);
+            this.clickText = <HTMLDivElement>bg.element.getElementsByClassName("instruction")[0];
+    };
+
+
 
     onReady() {
         this.aniTimer = setInterval(() => this.clickText.classList.toggle("faded"), 1000);
