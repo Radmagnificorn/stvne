@@ -5,10 +5,11 @@ import AnimationActor from "./AnimationActor";
 import AreaDialog from "../AreaDialog";
 import {Loadable} from "../Loadable";
 import ResourceLoader from "../ResourceLoader";
+import TimingEventEnabled from "./TimingEventEnabled";
 
 
 
-export default class Character extends AnimationActor(DynamicImage(DialogActor(GameObject))) implements Loadable {
+export default class Character extends TimingEventEnabled(AnimationActor(DynamicImage(DialogActor(GameObject)))) implements Loadable {
 
     private imageList: [string, string][];
 
