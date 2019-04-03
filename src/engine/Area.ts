@@ -102,6 +102,14 @@ class Area extends GameScreen {
         await AniEvents.fadeIn(this._transitionLayer, 0.25);
     }
 
+    lockNavigation() {
+        this._exits.forEach(exit => exit.lock());
+    }
+
+    unlockNavigation() {
+        this._exits.forEach(exit => exit.unlock());
+    }
+
 }
 
 export default Area;

@@ -42,6 +42,7 @@ class StartArea extends Area {
 
         this.setPortals(toHallway);
 
+        this.lockNavigation();
 
         this.gameLayer.appendChild(vampireDave);
         this.gameLayer.appendChild(princess);
@@ -70,6 +71,7 @@ class StartArea extends Area {
             await dialog.waitForClick();
             await dialog.fadeOut();
             await vampireDave.fadeOut(1);
+            this.unlockNavigation();
         },
         vampireIntro: async () => {
             let vampireDave = this.vampire;
