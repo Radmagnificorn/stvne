@@ -13,10 +13,8 @@ class Hallway extends Area {
 
     private _butler: Character;
 
+
     async buildScene(imgs: Map<string, HTMLImageElement>) {
-
-        let gs = this._gameInstance.gameState;
-
 
         let outsideExit = new Exit(725, 200, 300, 100);
         outsideExit.initPortal(new SecondArea(this._gameInstance));
@@ -44,19 +42,26 @@ class Hallway extends Area {
 
     events = {
         butlerDialog: async () => {
+            let gs = this._gameInstance.gameState;
             let dialog = this.dialogComponent;
             let butler = this._butler;
+
+            this.lockNavigation();
             await butler.fadeIn(1);
-            await butler.ask("Greetings. I am a butler. Is there anything I can get for you?", ["you can get out of my way...", "no thank you"]);
+            let butlerAnswer = await butler.ask("Greetings. I am a butler. Is there anything I can get for you?", ["you can get out of my way...", "no thank you"]);
+            gs.setFlag("butler.rude_response", (butlerAnswer === "you can get out of my way..."));
             await butler.say("very good then");
             await ActionEvents.waitForClick(dialog);
             await butler.fadeOut(1);
             await dialog.fadeOut();
+            this.unlockNavigation();
         }
     };
 
     onReady() {
-        this.events.butlerDialog();
+        if (!this.gameState.getFlag("butler.rude_response")) {
+            this.events.butlerDialog();
+        }
     }
 
 
